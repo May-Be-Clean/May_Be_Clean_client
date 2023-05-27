@@ -22,6 +22,7 @@ if (flutterVersionName == null) {
 }
 
 def googleMapApiKey = localProperties.getProperty('google.map.key')
+def kakaoKey = localProperties.getProperty('kakao.key')
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
@@ -52,6 +53,7 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         manifestPlaceholders["googleMapApiKey"] = googleMapApiKey
+        manifestPlaceholders["kakaoKey"] = kakaoKey
     }
 
     buildTypes {

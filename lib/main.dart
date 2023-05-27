@@ -4,9 +4,20 @@ import 'screens.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:may_be_clean/states/states.dart';
 import 'package:may_be_clean/consts/consts.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:may_be_clean/env/env.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  KakaoSdk.init(nativeAppKey: ENV.kakaoNativeKey);
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.light,
+      statusBarIconBrightness: Brightness.dark));
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   runApp(const MyBeClean());
 }
 
