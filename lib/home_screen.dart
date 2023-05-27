@@ -77,8 +77,8 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
               children: const [
                 MapScreen(),
                 ReviewScreen(),
-                ReviewScreen(),
-                ReviewScreen(),
+                LikeScreen(),
+                MyPage(),
               ],
             ),
           ),
