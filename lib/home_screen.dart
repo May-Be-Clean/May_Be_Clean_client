@@ -56,6 +56,7 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
       initialIndex: widget.initScreenIndex,
       child: Scaffold(
         key: _scaffoldKey,
+        backgroundColor: Colors.white,
         body: WillPopScope(
           onWillPop: (() async {
             if (!_isPoping) {
