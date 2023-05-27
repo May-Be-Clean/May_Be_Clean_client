@@ -19,14 +19,34 @@ class _MapScreenState extends State<MapScreen> {
   final List<String> _selectedCategories = [];
 
   Widget _header() {
-    return Container(
-      decoration: const BoxDecoration(color: Colors.white),
+    return SizedBox(
       width: Get.width,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("님 근처에 있는"),
-          const Text("친환경 가게들을 찾아봤어요"),
+          Container(
+              width: Get.width,
+              padding: const EdgeInsets.all(10),
+              decoration: const BoxDecoration(color: Colors.white),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RichText(
+                    text: const TextSpan(
+                      text: "심상현",
+                      style: FontSystem.subtitleSemiBold,
+                      children: [
+                        TextSpan(
+                            text: "님 근처에 있는",
+                            style: FontSystem.subtitleRegular),
+                      ],
+                    ),
+                  ),
+                  const Text(
+                    "친환경 가게들을 찾아봤어요",
+                    style: FontSystem.subtitleRegular,
+                  ),
+                ],
+              )),
           SizedBox(
             height: 40,
             child: ListView.separated(
@@ -36,8 +56,9 @@ class _MapScreenState extends State<MapScreen> {
               separatorBuilder: (context, index) => const SizedBox(width: 5),
               itemBuilder: (context, index) {
                 final category = storeCategories.values.toList()[index];
+                final categoryName = storeCategories.keys.toList()[index];
                 bool isSelected = false;
-                if (_selectedCategories.contains(category[0])) {
+                if (_selectedCategories.contains(categoryName)) {
                   isSelected = true;
                 }
                 return CategoryButton(
@@ -47,9 +68,9 @@ class _MapScreenState extends State<MapScreen> {
                     isSelected: isSelected,
                     action: () {
                       if (isSelected) {
-                        _selectedCategories.remove(category[0]);
+                        _selectedCategories.remove(categoryName);
                       } else {
-                        _selectedCategories.add(category[0]);
+                        _selectedCategories.add(categoryName);
                       }
                       isSelected = !isSelected;
                       setState(() {});

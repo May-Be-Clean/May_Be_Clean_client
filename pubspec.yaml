@@ -25,6 +25,8 @@ dependencies:
   shared_preferences: ^2.0.18
   geolocator: ^9.0.0
   tuple: ^2.0.1
+  readmore: ^2.2.0
+  cached_network_image: ^3.2.3
   kakao_flutter_sdk: ^1.4.3
 
 dev_dependencies:
@@ -40,6 +42,8 @@ flutter:
     - assets/icons/
     - assets/icons/navigation/
     - assets/icons/category/
+    - assets/icons/clover/
+    - assets/icons/review/
 
 fonts:
   - family: pretendard
