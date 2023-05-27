@@ -42,7 +42,8 @@ class _MapScreenState extends State<MapScreen> {
                 }
                 return CategoryButton(
                     title: category[0],
-                    imageAsset: category[1],
+                    unselectedSvg: category[1],
+                    selectedSvg: category[2],
                     isSelected: isSelected,
                     action: () {
                       if (isSelected) {

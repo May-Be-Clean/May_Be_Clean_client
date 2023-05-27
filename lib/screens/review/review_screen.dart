@@ -29,8 +29,9 @@ class ReviewScreen extends StatelessWidget {
             const Text('잡담'),
             CategoryButton(
                 title: "무야호",
-                imageAsset: "assets/icons/category/accessory.svg",
-                isSelected: false,
+                selectedSvg: "assets/icons/category/accessory.svg",
+                unselectedSvg: "assets/icons/category/accessory.svg",
+                isSelected: true,
                 action: () {})
           ],
         ),

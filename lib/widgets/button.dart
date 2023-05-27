@@ -4,13 +4,15 @@ import 'package:may_be_clean/consts/consts.dart';
 
 class CategoryButton extends StatefulWidget {
   final String title;
-  final String imageAsset;
+  final String selectedSvg;
+  final String unselectedSvg;
   final bool isSelected;
   final Function() action;
 
   const CategoryButton({
     required this.title,
-    required this.imageAsset,
+    required this.selectedSvg,
+    required this.unselectedSvg,
     required this.isSelected,
     required this.action,
     super.key,
@@ -42,14 +44,14 @@ class _CategoryButtonState extends State<CategoryButton> {
           child: Row(
             children: [
               SvgPicture.asset(
-                widget.imageAsset,
+                (widget.isSelected) ? widget.selectedSvg : widget.unselectedSvg,
                 width: 16,
               ),
               const SizedBox(width: 2),
-              Text(
-                widget.title,
-                style: FontSystem.body2,
-              ),
+              Text(widget.title,
+                  style: FontSystem.body2.copyWith(
+                    color: (widget.isSelected) ? Colors.white : Colors.black,
+                  )),
             ],
           )),
     );
