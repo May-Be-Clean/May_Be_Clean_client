@@ -1,0 +1,57 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:may_be_clean/consts/consts.dart';
+
+class CategoryButton extends StatefulWidget {
+  final String title;
+  final String imageAsset;
+  final bool isSelected;
+  final Function() action;
+
+  const CategoryButton({
+    required this.title,
+    required this.imageAsset,
+    required this.isSelected,
+    required this.action,
+    super.key,
+  });
+
+  @override
+  State<CategoryButton> createState() => _CategoryButtonState();
+}
+
+class _CategoryButtonState extends State<CategoryButton> {
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: widget.action,
+      child: Container(
+          padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
+          margin: const EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(50),
+            color: (widget.isSelected) ? ColorSystem.primary : Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.3),
+                blurRadius: 1,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              SvgPicture.asset(
+                widget.imageAsset,
+                width: 16,
+              ),
+              const SizedBox(width: 2),
+              Text(
+                widget.title,
+                style: FontSystem.body2,
+              ),
+            ],
+          )),
+    );
+  }
+}
