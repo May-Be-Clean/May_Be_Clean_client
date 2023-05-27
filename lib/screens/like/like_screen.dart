@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 
-class RankingScreen extends StatefulWidget {
-  const RankingScreen({super.key});
+class LikeScreen extends StatefulWidget {
+  const LikeScreen({super.key});
 
   @override
-  State<RankingScreen> createState() => _RankingScreenState();
+  State<LikeScreen> createState() => _LikeScreenState();
 }
 
-class _RankingScreenState extends State<RankingScreen> {
+class _LikeScreenState extends State<LikeScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      body: Column(
+        children: [
+          Text("LikeScreen"),
+        ],
+      ),
+    );
   }
 }
