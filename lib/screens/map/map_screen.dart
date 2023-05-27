@@ -49,11 +49,10 @@ class _MapScreenState extends State<MapScreen> {
               )),
           SizedBox(
             height: 40,
-            child: ListView.separated(
+            child: ListView.builder(
               itemCount: storeCategories.length,
               scrollDirection: Axis.horizontal,
               shrinkWrap: true,
-              separatorBuilder: (context, index) => const SizedBox(width: 5),
               itemBuilder: (context, index) {
                 final category = storeCategories.values.toList()[index];
                 final categoryName = storeCategories.keys.toList()[index];
