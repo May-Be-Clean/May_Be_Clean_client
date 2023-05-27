@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'screens.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:may_be_clean/states/global.dart';
-import 'package:may_be_clean/utils/utils.dart';
+import 'package:may_be_clean/states/states.dart';
+import 'package:may_be_clean/consts/consts.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +30,7 @@ class MyBeClean extends StatelessWidget {
       supportedLocales: const [Locale('ko', 'KR')],
       initialBinding: BindingsBuilder(() {
         Get.put(GlobalState());
+        Get.put(StoreState());
       }),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(

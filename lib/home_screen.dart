@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,10 +7,11 @@ import 'package:may_be_clean/states/global.dart';
 import 'package:flutter/services.dart';
 import 'package:may_be_clean/utils/utils.dart';
 import 'package:may_be_clean/screens.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeScreen extends StatefulWidget {
   final int initScreenIndex;
-  const HomeScreen({this.initScreenIndex = 2, super.key});
+  const HomeScreen({this.initScreenIndex = 0, super.key});
   @override
   State<HomeScreen> createState() => _HomeScreen();
 }
@@ -20,14 +20,14 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _globalStates = Get.find<GlobalState>();
 
-  int _index = 2;
+  int _index = 0;
   bool _isPoping = false;
 
   @override
   void initState() {
     super.initState();
     _globalStates.tabController = TabController(
-        length: 5, initialIndex: widget.initScreenIndex, vsync: this);
+        length: 4, initialIndex: widget.initScreenIndex, vsync: this);
     _index = widget.initScreenIndex;
   }
 
@@ -52,7 +52,7 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 5,
+      length: 4,
       initialIndex: widget.initScreenIndex,
       child: Scaffold(
         key: _scaffoldKey,
@@ -74,17 +74,17 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
               controller: _globalStates.tabController,
               physics: const NeverScrollableScrollPhysics(),
               children: const [
-                CommunityScreen(),
-                CommunityScreen(),
-                CommunityScreen(),
-                CommunityScreen(),
-                CommunityScreen(),
+                MapScreen(),
+                ReviewScreen(),
+                ReviewScreen(),
+                ReviewScreen(),
               ],
             ),
           ),
         ),
         bottomNavigationBar: Container(
-          height: (Platform.isAndroid || window.physicalSize.width <= 1080)
+          height: (Platform.isAndroid ||
+                  View.of(context).physicalSize.width <= 1080)
               ? 56
               : 90,
           decoration: BoxDecoration(
@@ -103,105 +103,33 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
             onTap: _onTapNavigator,
             tabs: [
               Tab(
-                height: 60,
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.book_outlined,
-                      color: (_index == 0) ? ColorSystem.primary : Colors.grey,
-                      size: 36,
-                    ),
-                    const Text(
-                      "아이템",
-                      style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700),
-                      overflow: TextOverflow.ellipsis,
-                    )
-                  ],
-                ),
-              ),
+                  height: 60,
+                  child: (_index == 0)
+                      ? SvgPicture.asset(
+                          'assets/icons/navigation/map_selected.svg')
+                      : SvgPicture.asset(
+                          'assets/icons/navigation/map_unselected.svg')),
               Tab(
-                height: 60,
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.star_outline_rounded,
-                      color: (_index == 1) ? ColorSystem.primary : Colors.grey,
-                      size: 36,
-                    ),
-                    const Text(
-                      "랭킹",
-                      style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700),
-                      overflow: TextOverflow.ellipsis,
-                    )
-                  ],
-                ),
-              ),
+                  height: 60,
+                  child: (_index == 1)
+                      ? SvgPicture.asset(
+                          'assets/icons/navigation/review_selected.svg')
+                      : SvgPicture.asset(
+                          'assets/icons/navigation/review_unselected.svg')),
               Tab(
-                height: 60,
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.home,
-                      color: (_index == 2) ? ColorSystem.primary : Colors.grey,
-                      size: 36,
-                    ),
-                    const Text(
-                      "홈",
-                      style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700),
-                      overflow: TextOverflow.ellipsis,
-                    )
-                  ],
-                ),
-              ),
+                  height: 60,
+                  child: (_index == 2)
+                      ? SvgPicture.asset(
+                          'assets/icons/navigation/like_selected.svg')
+                      : SvgPicture.asset(
+                          'assets/icons/navigation/like_unselected.svg')),
               Tab(
-                height: 60,
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.panorama_photosphere_outlined,
-                      color: (_index == 3) ? ColorSystem.primary : Colors.grey,
-                      size: 36,
-                    ),
-                    const Text(
-                      "커뮤니티",
-                      style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700),
-                      overflow: TextOverflow.ellipsis,
-                    )
-                  ],
-                ),
-              ),
-              Tab(
-                height: 60,
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.person,
-                      color: (_index == 4) ? ColorSystem.primary : Colors.grey,
-                      size: 36,
-                    ),
-                    const Text(
-                      "마이",
-                      style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700),
-                      overflow: TextOverflow.ellipsis,
-                    )
-                  ],
-                ),
-              ),
+                  height: 60,
+                  child: (_index == 3)
+                      ? SvgPicture.asset(
+                          'assets/icons/navigation/mypage_selected.svg')
+                      : SvgPicture.asset(
+                          'assets/icons/navigation/mypage_unselected.svg')),
             ],
           ),
         ),
