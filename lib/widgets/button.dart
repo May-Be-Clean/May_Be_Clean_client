@@ -63,3 +63,43 @@ class _CategoryButtonState extends State<CategoryButton> {
     );
   }
 }
+
+class ReviewButton extends StatelessWidget {
+  final String title;
+  final String image;
+  final Function() action;
+
+  const ReviewButton({
+    super.key,
+    required this.title,
+    required this.image,
+    required this.action,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: action,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
+        margin: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50),
+          color: ColorSystem.gray3,
+          border: Border.all(width: 0.5, color: ColorSystem.gray2),
+        ),
+        child: Row(
+          children: [
+            Image.asset(
+              image,
+              width: 16,
+            ),
+            const SizedBox(width: 2),
+            Text(title,
+                style: FontSystem.caption.copyWith(color: Colors.black)),
+          ],
+        ),
+      ),
+    );
+  }
+}
