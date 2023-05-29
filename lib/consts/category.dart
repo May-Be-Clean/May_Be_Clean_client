@@ -22,8 +22,9 @@ Map<String, List<String>> storeCategories = {
   ],
   'restaurant': [
     '레스토랑',
-    'assets/icons/category/cafe.svg',
-    'assets/icons/category/cafe.svg',
+    'assets/icons/category/restaurant.svg',
+    'assets/icons/category/restaurant_selected.svg'
+
   ],
   'cafe': [
     '카페',

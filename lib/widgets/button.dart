@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:may_be_clean/consts/consts.dart';
 
-class CategoryButton extends StatefulWidget {
+class CategoryButton extends StatelessWidget {
   final String title;
   final String selectedSvg;
   final String unselectedSvg;
@@ -17,20 +17,16 @@ class CategoryButton extends StatefulWidget {
     required this.unselectedSvg,
     required this.isSelected,
     required this.action,
+
     this.fontSize = 15,
     this.width = 15,
     super.key,
   });
 
   @override
-  State<CategoryButton> createState() => _CategoryButtonState();
-}
-
-class _CategoryButtonState extends State<CategoryButton> {
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: widget.action,
+      onTap: action,
       child: Container(
         padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
         margin: const EdgeInsets.all(5),
