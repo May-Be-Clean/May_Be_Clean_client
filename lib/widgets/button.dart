@@ -7,6 +7,8 @@ class CategoryButton extends StatefulWidget {
   final String selectedSvg;
   final String unselectedSvg;
   final bool isSelected;
+  final double fontSize;
+  final double width;
   final Function() action;
 
   const CategoryButton({
@@ -15,6 +17,8 @@ class CategoryButton extends StatefulWidget {
     required this.unselectedSvg,
     required this.isSelected,
     required this.action,
+    this.fontSize = 15,
+    this.width = 15,
     super.key,
   });
 
@@ -28,32 +32,34 @@ class _CategoryButtonState extends State<CategoryButton> {
     return GestureDetector(
       onTap: widget.action,
       child: Container(
-          padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
-          margin: const EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50),
-            color: (widget.isSelected) ? ColorSystem.primary : Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.3),
-                blurRadius: 1,
-                spreadRadius: 2,
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              SvgPicture.asset(
-                (widget.isSelected) ? widget.selectedSvg : widget.unselectedSvg,
-                width: 16,
-              ),
-              const SizedBox(width: 2),
-              Text(widget.title,
-                  style: FontSystem.body2.copyWith(
-                    color: (widget.isSelected) ? Colors.white : Colors.black,
-                  )),
-            ],
-          )),
+        padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
+        margin: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50),
+          color: (widget.isSelected) ? ColorSystem.primary : Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              blurRadius: 1,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            SvgPicture.asset(
+              (widget.isSelected) ? widget.selectedSvg : widget.unselectedSvg,
+              width: widget.width,
+            ),
+            const SizedBox(width: 2),
+            Text(widget.title,
+                style: FontSystem.body2.copyWith(
+                  fontSize: widget.fontSize,
+                  color: (widget.isSelected) ? Colors.white : Colors.black,
+                )),
+          ],
+        ),
+      ),
     );
   }
 }
