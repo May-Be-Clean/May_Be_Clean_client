@@ -8,6 +8,7 @@ class CategoryButton extends StatelessWidget {
   final String unselectedSvg;
   final bool isSelected;
   final double fontSize;
+  final double width;
   final Function() action;
 
   const CategoryButton({
@@ -16,7 +17,9 @@ class CategoryButton extends StatelessWidget {
     required this.unselectedSvg,
     required this.isSelected,
     required this.action,
-    this.fontSize = 12,
+
+    this.fontSize = 15,
+    this.width = 15,
     super.key,
   });
 
@@ -25,33 +28,34 @@ class CategoryButton extends StatelessWidget {
     return GestureDetector(
       onTap: action,
       child: Container(
-          padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
-          margin: const EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50),
-            color: (isSelected) ? ColorSystem.primary : Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.3),
-                blurRadius: 1,
-                spreadRadius: 2,
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              SvgPicture.asset(
-                (isSelected) ? selectedSvg : unselectedSvg,
-                width: 16,
-              ),
-              const SizedBox(width: 2),
-              Text(title,
-                  style: FontSystem.caption.copyWith(
-                    color: (isSelected) ? Colors.white : Colors.black,
-                    fontSize: fontSize,
-                  )),
-            ],
-          )),
+        padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
+        margin: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50),
+          color: (widget.isSelected) ? ColorSystem.primary : Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              blurRadius: 1,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            SvgPicture.asset(
+              (widget.isSelected) ? widget.selectedSvg : widget.unselectedSvg,
+              width: widget.width,
+            ),
+            const SizedBox(width: 2),
+            Text(widget.title,
+                style: FontSystem.body2.copyWith(
+                  fontSize: widget.fontSize,
+                  color: (widget.isSelected) ? Colors.white : Colors.black,
+                )),
+          ],
+        ),
+      ),
     );
   }
 }
