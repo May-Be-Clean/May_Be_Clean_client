@@ -32,23 +32,23 @@ class _StoreComfirmDialogState extends State<StoreComfirmDialog> {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: 200),
+      constraints: const BoxConstraints(maxHeight: 200),
       child: AlertDialog(
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(16), // You can change this value as you need.
           ),
         ),
-        insetPadding: EdgeInsets.all(15),
-        contentPadding: EdgeInsets.only(left: 20, right: 20),
-        titlePadding: EdgeInsets.all(0),
-        title: Container(
+        insetPadding: const EdgeInsets.all(15),
+        contentPadding: const EdgeInsets.only(left: 20, right: 20),
+        titlePadding: const EdgeInsets.all(0),
+        title: SizedBox(
           height: 30,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -58,7 +58,7 @@ class _StoreComfirmDialogState extends State<StoreComfirmDialog> {
           ),
         ),
         // buttonPadding: EdgeInsets.all(10),
-        content: Container(
+        content: SizedBox(
           height: 350,
           child: SingleChildScrollView(
             child: Column(
@@ -68,12 +68,12 @@ class _StoreComfirmDialogState extends State<StoreComfirmDialog> {
                     Image.asset(
                       "assets/images/CloverLeaves${count}.png",
                     ),
-                    Container(
+                    SizedBox(
                       width: Get.width * 0.50,
                       child: Text(
                         store,
                         softWrap: true,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 20,
                         ),
@@ -82,19 +82,19 @@ class _StoreComfirmDialogState extends State<StoreComfirmDialog> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Container(
                   alignment: Alignment.centerLeft,
                   child: Text.rich(
                     TextSpan(
-                        text: "${name}",
-                        style: TextStyle(
+                        text: name,
+                        style: const TextStyle(
                           fontSize: 14,
                           color: Colors.green,
                         ),
-                        children: [
+                        children: const [
                           TextSpan(
                             text: "님이 등록한 가계예요.",
                             style: TextStyle(color: Colors.grey),
@@ -102,7 +102,7 @@ class _StoreComfirmDialogState extends State<StoreComfirmDialog> {
                         ]),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 SizedBox(
@@ -135,7 +135,7 @@ class _StoreComfirmDialogState extends State<StoreComfirmDialog> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
                 Row(
@@ -145,12 +145,12 @@ class _StoreComfirmDialogState extends State<StoreComfirmDialog> {
                       width: 20,
                       height: 20,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Text(
-                      "${phoneNumber}",
-                      style: TextStyle(
+                      phoneNumber,
+                      style: const TextStyle(
                         color: Colors.black,
                         fontSize: 12,
                       ),
@@ -164,12 +164,12 @@ class _StoreComfirmDialogState extends State<StoreComfirmDialog> {
                       width: 20,
                       height: 20,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Text(
-                      "${location}",
-                      style: TextStyle(
+                      location,
+                      style: const TextStyle(
                         color: Colors.black,
                         fontSize: 12,
                       ),
@@ -178,12 +178,12 @@ class _StoreComfirmDialogState extends State<StoreComfirmDialog> {
                 ),
                 Row(
                   children: [
-                    SizedBox(width: 30),
+                    const SizedBox(width: 30),
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "지번: ${location1}",
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.grey,
                           fontSize: 12,
                         ),
@@ -198,22 +198,22 @@ class _StoreComfirmDialogState extends State<StoreComfirmDialog> {
                       width: 20,
                       height: 20,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Text(
-                      "${openingHours}",
-                      style: TextStyle(
+                      openingHours,
+                      style: const TextStyle(
                         color: Colors.black,
                         fontSize: 12,
                       ),
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
-                Text(
+                const Text(
                   "해당 가게가 정말 친환경 가게가 맞나요?",
                   style: TextStyle(
                     fontSize: 15,
@@ -229,15 +229,15 @@ class _StoreComfirmDialogState extends State<StoreComfirmDialog> {
             alignment: Alignment.center,
             child: Container(
               width: 260,
-              padding: EdgeInsets.all(15),
+              padding: const EdgeInsets.all(15),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: Color.fromRGBO(104, 158, 132, 1),
+                color: const Color.fromRGBO(104, 158, 132, 1),
                 borderRadius:
                     BorderRadius.circular(10), // 원하는 BorderRadius 값 설정
               ),
               child: GestureDetector(
-                child: Text(
+                child: const Text(
                   '친환경 가게가 맞아요',
                   style: TextStyle(
                     fontSize: 16,
@@ -279,7 +279,7 @@ class _StoreComfirmDialogState extends State<StoreComfirmDialog> {
           //     ),
           //   ),
           // ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           )
         ],
@@ -313,16 +313,16 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
           Radius.circular(16), // You can change this value as you need.
         ),
       ),
-      insetPadding: EdgeInsets.all(15),
-      contentPadding: EdgeInsets.only(left: 25, right: 25),
-      titlePadding: EdgeInsets.all(0),
-      title: Container(
+      insetPadding: const EdgeInsets.all(15),
+      contentPadding: const EdgeInsets.only(left: 25, right: 25),
+      titlePadding: const EdgeInsets.all(0),
+      title: SizedBox(
         height: 30,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             IconButton(
-              icon: Icon(Icons.close),
+              icon: const Icon(Icons.close),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -336,7 +336,7 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
           // ConstrainedBox(
           // constraints: BoxConstraints(maxHeight: 350),
           // child:
-          Container(
+          SizedBox(
         height: 350,
         child: SingleChildScrollView(
           child: Column(
@@ -347,28 +347,28 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                   children: [
                     Container(
                       alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(top: 20),
+                      margin: const EdgeInsets.only(top: 20),
                       child:
                           Text("가게 이름 *", style: FontSystem.body1.copyWith()),
                     ),
-                    Container(
+                    SizedBox(
                       width: 300,
                       height: 40,
                       child: TextFormField(
                         style: FontSystem.body1.copyWith(),
                         decoration: InputDecoration(
-                          border: UnderlineInputBorder(
+                          border: const UnderlineInputBorder(
                             borderSide: BorderSide(
                               color: Color.fromRGBO(229, 229, 229, 1),
                             ),
                           ),
                           hintText: "가게 이름을 입력해주세요",
-                          contentPadding: EdgeInsets.only(bottom: 5),
+                          contentPadding: const EdgeInsets.only(bottom: 5),
                           hintStyle: FontSystem.body2.copyWith(),
                         ),
                         onChanged: (value) {
                           setState(() {
-                            store_name = value as String;
+                            store_name = value;
                           });
                         },
                         // onSaved: (value) {
@@ -386,7 +386,7 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                     ),
                     Container(
                       alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(top: 20),
+                      margin: const EdgeInsets.only(top: 20),
                       child:
                           Text("가게 분류 *", style: FontSystem.body1.copyWith()),
                     ),
@@ -394,7 +394,7 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                       alignment: Alignment.centerLeft,
                       child: Text("(1개 이상의 친환경 카테고리를 선택해주세요.)",
                           style: FontSystem.caption.copyWith(
-                            color: Color.fromRGBO(104, 158, 132, 1),
+                            color: const Color.fromRGBO(104, 158, 132, 1),
                           )),
                     ),
                     SizedBox(
@@ -438,19 +438,19 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                     ),
                     Container(
                       alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(top: 20),
+                      margin: const EdgeInsets.only(top: 20),
                       child:
                           Text("가게 주소 *", style: FontSystem.body1.copyWith()),
                     ),
-                    Container(
+                    SizedBox(
                       width: 300,
                       height: 40,
                       child: TextFormField(
                         style: FontSystem.body1.copyWith(),
                         decoration: InputDecoration(
-                          border: UnderlineInputBorder(),
+                          border: const UnderlineInputBorder(),
                           hintText: "가게 주소를 입력해주세요",
-                          contentPadding: EdgeInsets.only(bottom: 0),
+                          contentPadding: const EdgeInsets.only(bottom: 0),
                           hintStyle: FontSystem.body2.copyWith(),
                         ),
                         onChanged: (value) {
@@ -473,7 +473,7 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                     ),
                     Container(
                       alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(top: 20),
+                      margin: const EdgeInsets.only(top: 20),
                       child: Text.rich(
                         TextSpan(
                             text: "가게 전화시간",
@@ -482,24 +482,24 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                               TextSpan(
                                 text: " ex) 02-123-1234",
                                 style: FontSystem.caption.copyWith(
-                                  color: Color.fromRGBO(104, 158, 132, 1),
+                                  color: const Color.fromRGBO(104, 158, 132, 1),
                                 ),
                               )
                             ]),
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       width: 300,
                       height: 40,
                       child: TextFormField(
                         style: FontSystem.body1.copyWith(),
                         decoration: InputDecoration(
-                          border: UnderlineInputBorder(
+                          border: const UnderlineInputBorder(
                               borderSide: BorderSide(
                             color: Color.fromRGBO(229, 229, 229, 1),
                           )),
                           hintText: "가게 전화번호를 입력해주세요",
-                          contentPadding: EdgeInsets.only(bottom: 5),
+                          contentPadding: const EdgeInsets.only(bottom: 5),
                           hintStyle: FontSystem.body2.copyWith(),
                         ),
                         onSaved: (value) {
@@ -517,7 +517,7 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                     ),
                     Container(
                       alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(top: 20),
+                      margin: const EdgeInsets.only(top: 20),
                       child: Text.rich(
                         TextSpan(
                             text: "가게 영업시간",
@@ -526,21 +526,21 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                               TextSpan(
                                 text: " ex) 9:00 - 17:00",
                                 style: FontSystem.caption.copyWith(
-                                  color: Color.fromRGBO(104, 158, 132, 1),
+                                  color: const Color.fromRGBO(104, 158, 132, 1),
                                 ),
                               )
                             ]),
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       width: 300,
                       height: 40,
                       child: TextFormField(
                         style: FontSystem.body1.copyWith(),
                         decoration: InputDecoration(
-                          border: UnderlineInputBorder(),
+                          border: const UnderlineInputBorder(),
                           hintText: "가게 영업시간을 입력해주세요",
-                          contentPadding: EdgeInsets.only(bottom: 5),
+                          contentPadding: const EdgeInsets.only(bottom: 5),
                           hintStyle: FontSystem.body2.copyWith(),
                         ),
                         onSaved: (value) {
@@ -559,7 +559,7 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 40,
               )
             ],
@@ -572,14 +572,14 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
           alignment: Alignment.center,
           child: Container(
             width: 260,
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: Color.fromRGBO(104, 158, 132, 1),
+              color: const Color.fromRGBO(104, 158, 132, 1),
               borderRadius: BorderRadius.circular(10), // 원하는 BorderRadius 값 설정
             ),
             child: GestureDetector(
-              child: Text(
+              child: const Text(
                 '가게 등록하기',
                 style: TextStyle(
                   fontSize: 16,
@@ -596,7 +596,7 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                     barrierDismissible: false, // 다이얼로그 이외의 바탕 눌러도 안꺼지도록 설정
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        content: SingleChildScrollView(
+                        content: const SingleChildScrollView(
                           child: ListBody(
                             //List Body를 기준으로 Text 설정
                             children: <Widget>[
@@ -606,7 +606,7 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                         ),
                         actions: [
                           TextButton(
-                            child: Text('확인'),
+                            child: const Text('확인'),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
@@ -624,7 +624,7 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
             ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 8,
         ),
       ],
