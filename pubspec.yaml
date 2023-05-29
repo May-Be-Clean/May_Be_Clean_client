@@ -42,10 +42,11 @@ flutter:
     - assets/icons/
     - assets/icons/navigation/
     - assets/icons/category/
-
     - assets/images/
     - assets/icons/clover/
     - assets/icons/review/
+
+    - assets/images/
 
 fonts:
   - family: pretendard
