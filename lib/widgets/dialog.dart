@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:may_be_clean/consts/consts.dart';
 
 import '../consts/category.dart';
 import '../consts/font.dart';
@@ -627,6 +628,218 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
         const SizedBox(
           height: 8,
         ),
+      ],
+    );
+  }
+}
+
+class ReviewAddDialog extends StatefulWidget {
+  const ReviewAddDialog({super.key});
+
+  @override
+  State<ReviewAddDialog> createState() => _ReviewAddDialogState();
+}
+
+class _ReviewAddDialogState extends State<ReviewAddDialog> {
+  double getTextImageSize(String title, String imagePath) {
+    // 텍스트의 크기 측정
+    final textSpan = TextSpan(text: title);
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout();
+    final textWidth = textPainter.width;
+
+    // 이미지의 크기를 고려하여 버튼의 너비 계산
+    final imageSize = 26.0; // 예시로 이미지의 고정된 크기를 가정
+    final padding = 8.0; // 예시로 버튼 주위의 여백을 가정
+    final buttonWidth = textWidth + imageSize + padding;
+
+    return buttonWidth;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(16), // You can change this value as you need.
+        ),
+      ),
+      insetPadding: const EdgeInsets.all(20),
+      contentPadding: const EdgeInsets.only(left: 25, right: 25),
+      titlePadding: const EdgeInsets.only(bottom: 0),
+      title: SizedBox(
+        height: 50,
+        child: Stack(
+          children: [
+            Center(
+              child: Text(
+                "후기 등록하기",
+                style: FontSystem.body1.copyWith(
+                  color: ColorSystem.primary,
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  alignment: Alignment.centerRight,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      content: SizedBox(
+        width: Get.width,
+        height: 350,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Image.asset(
+                    "assets/images/CloverLeaves${count}.png",
+                  ),
+                  SizedBox(
+                    width: Get.width * 0.50,
+                    child: Text(
+                      store,
+                      softWrap: true,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                margin: const EdgeInsets.only(top: 20),
+                child: Text("이 점이 마음에 들어요", style: FontSystem.body1.copyWith()),
+              ),
+              SizedBox(
+                width: Get.width,
+                child: Wrap(
+                  direction: Axis.horizontal,
+                  alignment: WrapAlignment.start,
+                  spacing: -2,
+                  runSpacing: 1,
+                  children: List.generate(9, (index) {
+                    final reviewCategory =
+                        reviewCategories.values.toList()[index];
+                    final buttonWidth =
+                        getTextImageSize(reviewCategory[0], reviewCategory[1]);
+                    return SizedBox(
+                      width: buttonWidth,
+                      child: ReviewButton(
+                        title: reviewCategory[0],
+                        image: reviewCategory[1],
+                        action: () {},
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                margin: const EdgeInsets.only(top: 20),
+                child: Text("글 작성하기 *", style: FontSystem.body1.copyWith()),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              SizedBox(
+                width: 300,
+                height: 150,
+                child: TextFormField(
+                  maxLength: 500,
+                  maxLines: 20,
+                  style: FontSystem.caption.copyWith(),
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(5),
+                    // EdgeInsets.symmetric(vertical: 100, horizontal: 5),
+                    // border: const UnderlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: ColorSystem.primary,
+                        width: 2.0,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: ColorSystem.gray2,
+                        width: 1.0,
+                      ),
+                    ),
+                    hintText:
+                        "가게에 대한 후기를 작성해주세요. (깨끗한 커뮤니티를 위해 단순 욕설 및 비하는 자제해주세요.)",
+                    hintStyle: FontSystem.caption.copyWith(
+                      color: ColorSystem.gray1,
+                    ),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      store_location = value;
+                    });
+                  },
+                  // onSaved: (value) {
+                  //   setState(() {
+                  //     store_location = value as String;
+                  //   });
+                  // },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: <Widget>[
+        Container(
+          alignment: Alignment.center,
+          child: Container(
+            width: 260,
+            padding: const EdgeInsets.all(15),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: const Color.fromRGBO(104, 158, 132, 1),
+              borderRadius: BorderRadius.circular(10), // 원하는 BorderRadius 값 설정
+            ),
+            child: GestureDetector(
+              child: const Text(
+                '작성 완료',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        )
       ],
     );
   }
