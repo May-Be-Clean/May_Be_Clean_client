@@ -641,6 +641,7 @@ class ReviewAddDialog extends StatefulWidget {
 }
 
 class _ReviewAddDialogState extends State<ReviewAddDialog> {
+  String _text = '';
   double getTextImageSize(String title, String imagePath) {
     // 텍스트의 크기 측정
     final textSpan = TextSpan(text: title);
@@ -771,13 +772,13 @@ class _ReviewAddDialogState extends State<ReviewAddDialog> {
                     contentPadding: const EdgeInsets.all(5),
                     // EdgeInsets.symmetric(vertical: 100, horizontal: 5),
                     // border: const UnderlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(
+                    focusedBorder: const OutlineInputBorder(
                       borderSide: BorderSide(
                         color: ColorSystem.primary,
                         width: 2.0,
                       ),
                     ),
-                    enabledBorder: OutlineInputBorder(
+                    enabledBorder: const OutlineInputBorder(
                       borderSide: BorderSide(
                         color: ColorSystem.gray2,
                         width: 1.0,
@@ -791,7 +792,7 @@ class _ReviewAddDialogState extends State<ReviewAddDialog> {
                   ),
                   onChanged: (value) {
                     setState(() {
-                      store_location = value;
+                      _text = value;
                     });
                   },
                   // onSaved: (value) {
@@ -832,7 +833,24 @@ class _ReviewAddDialogState extends State<ReviewAddDialog> {
                 ),
               ),
               onTap: () {
-                Navigator.of(context).pop();
+                if (_text != '') {
+                  Navigator.of(context).pop();
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      content: Text('후기글을 작성해 주세요!'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('확인'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
               },
             ),
           ),
