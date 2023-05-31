@@ -107,31 +107,35 @@ class ReviewButton extends StatelessWidget {
 class MyPageButton extends StatelessWidget {
   final String Title;
   final String Count;
+  final VoidCallback onTap;
 
   const MyPageButton({
-    super.key,
     required this.Title,
     required this.Count,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          Title,
-          style: FontSystem.caption.copyWith(),
-        ),
-        const SizedBox(
-          height: 5,
-        ),
-        Text(
-          Count,
-          style: FontSystem.subtitleSemiBold.copyWith(
-            color: ColorSystem.primary,
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Text(
+            Title,
+            style: FontSystem.caption.copyWith(),
           ),
-        ),
-      ],
+          const SizedBox(
+            height: 5,
+          ),
+          Text(
+            Count,
+            style: FontSystem.subtitleSemiBold.copyWith(
+              color: ColorSystem.primary,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
