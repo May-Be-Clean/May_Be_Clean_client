@@ -139,3 +139,33 @@ class MyPageButton extends StatelessWidget {
     );
   }
 }
+
+class MyPageInformationButton extends StatelessWidget {
+  final String title;
+  final VoidCallback onTap;
+
+  const MyPageInformationButton({
+    required this.title,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: SizedBox(
+        height: 50,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              title,
+              style: FontSystem.body2.copyWith(),
+            ),
+            const Icon(Icons.chevron_right),
+          ],
+        ),
+      ),
+    );
+  }
+}
