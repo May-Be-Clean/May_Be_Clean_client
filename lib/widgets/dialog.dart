@@ -862,3 +862,117 @@ class _ReviewAddDialogState extends State<ReviewAddDialog> {
     );
   }
 }
+
+class ReviewCheckDialog extends StatefulWidget {
+  const ReviewCheckDialog({super.key});
+
+  @override
+  State<ReviewCheckDialog> createState() => _ReviewCheckDialogState();
+}
+
+class _ReviewCheckDialogState extends State<ReviewCheckDialog> {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(16), // You can change this value as you need.
+        ),
+      ),
+      insetPadding: const EdgeInsets.all(20),
+      contentPadding: const EdgeInsets.only(left: 25, right: 25),
+      titlePadding: const EdgeInsets.only(bottom: 0),
+      title: SizedBox(
+        height: 50,
+        child: Stack(
+          children: [
+            Center(
+              child: Text(
+                "후기 등록하기",
+                style: FontSystem.body1.copyWith(
+                  color: ColorSystem.primary,
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  alignment: Alignment.centerRight,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      content: SizedBox(
+        width: Get.width,
+        height: 350,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '후기가 성공적으로',
+              style: FontSystem.subtitleSemiBold.copyWith(),
+            ),
+            const Text(
+              '등록되었어요!',
+              style: FontSystem.subtitleSemiBold,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Image.asset('assets/icons/review/map.png'),
+            const SizedBox(
+              height: 20,
+            ),
+            Text(
+              "등록된 후기는 '후기'페이지 또는",
+              style: FontSystem.body2.copyWith(),
+            ),
+            Text(
+              "'MY'페이지에서 확인 가능해요.",
+              style: FontSystem.body2.copyWith(),
+            ),
+            const SizedBox(
+              height: 20,
+            )
+          ],
+        ),
+      ),
+      actions: <Widget>[
+        Container(
+          alignment: Alignment.center,
+          child: Container(
+            width: 260,
+            padding: const EdgeInsets.all(15),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: const Color.fromRGBO(104, 158, 132, 1),
+              borderRadius: BorderRadius.circular(10), // 원하는 BorderRadius 값 설정
+            ),
+            child: GestureDetector(
+              child: const Text(
+                '내가 작성한 후기 보러 가기',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              onTap: () {},
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        )
+      ],
+    );
+    ;
+  }
+}
