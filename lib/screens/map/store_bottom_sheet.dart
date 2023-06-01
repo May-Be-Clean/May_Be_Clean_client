@@ -21,7 +21,7 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
     return CustomBottomSheet(
       initialChildSize: 0.15,
       minChildSize: 0.15,
-      maxChildSize: 1.0,
+      maxChildSize: 0.7,
       padding: const EdgeInsets.only(left: 20, right: 20, top: 15),
       children: [
         Row(
