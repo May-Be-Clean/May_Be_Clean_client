@@ -34,6 +34,7 @@ class CustomBottomSheet extends StatelessWidget {
         onTap: () {},
         child: DraggableScrollableSheet(
           expand: false,
+
           controller: controller,
           initialChildSize: initialChildSize,
           maxChildSize: maxChildSize,

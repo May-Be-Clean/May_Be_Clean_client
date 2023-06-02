@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:may_be_clean/consts/consts.dart';
 
+
 import '../../widgets/widgets.dart';
 
 List<String> hashtag = ["리필스테이션", "업사이클링"];
@@ -31,6 +32,7 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                 store, //가게 이름
                 softWrap: true,
                 style: const TextStyle(
+
                   fontWeight: FontWeight.w500,
                   fontSize: 22,
                 ),
@@ -47,6 +49,7 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                 ),
               ),
             ),
+
           ],
         ),
         Row(
@@ -58,6 +61,7 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                   child: Text(
                     '#${item}', //해시태그 (현재에는 전역변수로 더미데이터 구현)
                     style: const TextStyle(
+
                       color: Color.fromRGBO(176, 176, 176, 1),
                       fontSize: 12,
                     ),
@@ -113,6 +117,7 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
             SizedBox(
               child: Text.rich(
                 style: const TextStyle(
+
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
@@ -122,6 +127,7 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                     style: const TextStyle(color: Colors.green),
                   ),
                   const TextSpan(text: "건 >"), //후기 총 개수
+
                 ]),
               ),
             ),
@@ -131,6 +137,7 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                 alignment: Alignment.centerRight,
                 child: GestureDetector(
                   child: const Text(
+
                     "후기 등록하기", //후기 등록하기 스크린으로 연결
                     style: TextStyle(
                       color: Colors.green,
@@ -181,6 +188,7 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                     padding: const EdgeInsets.only(right: 10),
                     alignment: Alignment.centerRight,
                     child: const Text("26"), //항목 개수
+
                   ),
                 )
               ],
@@ -273,6 +281,7 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                     padding: const EdgeInsets.only(right: 10),
                     alignment: Alignment.centerRight,
                     child: const Text("26"), //항목 개수
+
                   ),
                 )
               ],
@@ -290,6 +299,7 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
               height: 20,
             ),
             const SizedBox(
+
               width: 10,
             ),
             Text(
@@ -303,12 +313,15 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
         ),
         Row(
           children: [
+
             const SizedBox(width: 30),
+
             Container(
               alignment: Alignment.centerLeft,
               child: Text(
                 "지번: ${location1}",
                 style: const TextStyle(
+
                   color: Colors.grey,
                   fontSize: 15,
                 ),
@@ -317,6 +330,7 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
           ],
         ),
         const SizedBox(
+
           height: 10,
         ),
         Row(
@@ -332,6 +346,7 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
             Text(
               phoneNumber,
               style: const TextStyle(
+
                 color: Colors.black,
                 fontSize: 15,
               ),
@@ -366,6 +381,7 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
         Container(
           padding: const EdgeInsets.only(top: 15, bottom: 15),
           decoration: const BoxDecoration(
+
             border: Border(
               top: BorderSide(
                 color: Color.fromRGBO(16, 17, 18, 0.15),

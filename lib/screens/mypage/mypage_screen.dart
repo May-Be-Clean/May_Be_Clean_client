@@ -7,6 +7,7 @@ import 'package:may_be_clean/consts/consts.dart';
 import 'package:may_be_clean/utils/utils.dart';
 import 'package:may_be_clean/widgets/widgets.dart';
 
+
 class MyPage extends StatefulWidget {
   const MyPage({super.key});
 
@@ -196,6 +197,7 @@ class _MyPageState extends State<MyPage> {
             //     child: Text("로그인")),
           ],
         ),
+
       ),
     );
   }
