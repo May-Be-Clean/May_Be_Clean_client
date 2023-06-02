@@ -47,6 +47,7 @@ flutter:
     - assets/icons/review/
 
 
+
 fonts:
   - family: pretendard
     fonts:

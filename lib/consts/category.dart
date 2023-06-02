@@ -24,7 +24,6 @@ Map<String, List<String>> storeCategories = {
     '레스토랑',
     'assets/icons/category/restaurant.svg',
     'assets/icons/category/restaurant_selected.svg'
-
   ],
   'cafe': [
     '카페',
