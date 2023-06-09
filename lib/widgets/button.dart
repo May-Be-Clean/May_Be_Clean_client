@@ -98,6 +98,7 @@ class ReviewCategoryItem extends StatelessWidget {
 class ReviewButton extends StatelessWidget {
   final String title;
   final String image;
+  final bool isSelected;
   final Function() action;
 
   const ReviewButton({
@@ -105,6 +106,7 @@ class ReviewButton extends StatelessWidget {
     required this.title,
     required this.image,
     required this.action,
+    this.isSelected = false,
   });
 
   @override
@@ -112,13 +114,17 @@ class ReviewButton extends StatelessWidget {
     return GestureDetector(
       onTap: action,
       child: Container(
-        padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
-        margin: const EdgeInsets.all(5),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(50),
-          color: ColorSystem.gray3,
-          border: Border.all(width: 0.5, color: ColorSystem.gray2),
-        ),
+        padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
+        margin: const EdgeInsets.all(3),
+        decoration: (isSelected)
+            ? BoxDecoration(
+                color: ColorSystem.primary,
+                borderRadius: BorderRadius.circular(50))
+            : BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                color: ColorSystem.gray3,
+                border: Border.all(width: 0.5, color: ColorSystem.gray2),
+              ),
         child: Row(
           children: [
             Image.asset(
@@ -127,7 +133,8 @@ class ReviewButton extends StatelessWidget {
             ),
             const SizedBox(width: 2),
             Text(title,
-                style: FontSystem.caption.copyWith(color: Colors.black)),
+                style: FontSystem.body2.copyWith(
+                    color: (isSelected) ? Colors.white : Colors.black)),
           ],
         ),
       ),
