@@ -9,7 +9,7 @@ Future<void> showToast(String message,
       toastLength: toastLength,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,
-      backgroundColor: Colors.grey,
+      backgroundColor: Colors.black,
       textColor: Colors.white,
       fontSize: 16.0);
 }
