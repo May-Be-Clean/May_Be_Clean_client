@@ -13,7 +13,7 @@ class StoreReviewListScreen extends StatefulWidget {
 class _StoreReviewListScreenState extends State<StoreReviewListScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       appBar: CustomAppBar(
         title: "방문자 후기",
       ),

@@ -119,7 +119,9 @@ class ReviewButton extends StatelessWidget {
         decoration: (isSelected)
             ? BoxDecoration(
                 color: ColorSystem.primary,
-                borderRadius: BorderRadius.circular(50))
+                borderRadius: BorderRadius.circular(50),
+                border: Border.all(width: 0.5, color: ColorSystem.primary),
+              )
             : BoxDecoration(
                 borderRadius: BorderRadius.circular(50),
                 color: ColorSystem.gray3,
