@@ -1,12 +1,10 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:may_be_clean/consts/consts.dart';
 import 'package:may_be_clean/utils/utils.dart';
 import 'package:may_be_clean/widgets/widgets.dart';
-
+import 'package:may_be_clean/states/states.dart';
 
 class MyPage extends StatefulWidget {
   const MyPage({super.key});
@@ -16,7 +14,7 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<MyPage> {
-  bool _isSigning = false;
+  final _globalState = Get.find<GlobalState>();
 
   @override
   Widget build(BuildContext context) {
@@ -29,17 +27,21 @@ class _MyPageState extends State<MyPage> {
               height: 40,
             ),
             Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset(
-                  "assets/icons/review/kind.png",
-                  scale: 1.5,
+                const CustomTooltip(
+                  message: "다음 레벨까지 얼마 안남았어요!",
+                ),
+                SvgPicture.asset(
+                  expToBadge(_globalState.user?.exp ?? 20),
+                  width: 100,
+                  height: 100,
                 ),
                 const SizedBox(
                   height: 10,
                 ),
                 Text(
-                  "환경수호자",
+                  expToBadgeTitle(_globalState.user?.exp ?? 20),
                   style: FontSystem.body1.copyWith(
                     color: ColorSystem.primary,
                   ),
@@ -54,12 +56,15 @@ class _MyPageState extends State<MyPage> {
                       width: 25,
                     ),
                     Text(
-                      "새싹밭의 파수꾼",
+                      _globalState.user?.name ?? "익명의 유저",
                       style: FontSystem.subtitleSemiBold.copyWith(),
                     ),
                     GestureDetector(
-                      onTap: () {}, //이름 바꾸기
-                      child: SvgPicture.asset('assets/icons/category/edit.svg'),
+                      onTap: () {
+                        //TODO 프로필 수정 API 연결
+                      },
+                      child: SvgPicture.asset('assets/icons/category/edit.svg',
+                          width: 25),
                     )
                   ],
                 ),
@@ -70,26 +75,26 @@ class _MyPageState extends State<MyPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Bronze",
+                      "BRONZE",
                       style: FontSystem.caption.copyWith(
-                        color: ColorSystem.gray2,
+                        color: ColorSystem.gray1,
                       ),
                     ),
                     Text(
-                      "silver",
+                      "SILVER",
                       style: FontSystem.caption.copyWith(
-                        color: ColorSystem.gray2,
+                        color: ColorSystem.gray1,
                       ),
                     ),
                   ],
                 ),
-                WeecanProgressBar(
-                  60, // 남은 경험치 / 현재레벨 경험치
-                  barHeight: 10,
-                  color: ColorSystem.primary,
-                ),
-                const SizedBox(
-                  height: 5,
+                Container(
+                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                  child: const ProgressBar(
+                    60, // 남은 경험치 / 현재레벨 경험치
+                    barHeight: 10,
+                    color: ColorSystem.primary,
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -108,37 +113,32 @@ class _MyPageState extends State<MyPage> {
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     MyPageButton(
-                      Title: "내가 작성한 후기",
-                      Count: "8",
+                      title: "내가 작성한 후기",
+                      count: "8",
                       onTap: () {},
                     ),
                     Container(
-                      margin: const EdgeInsets.only(right: 10, left: 10),
                       color: ColorSystem.gray2,
                       width: 1,
                       height: 50,
                     ),
                     MyPageButton(
-                      Title: "내가 등록한 가게",
-                      Count: "8",
+                      title: "내가 등록한 가게",
+                      count: "8",
                       onTap: () {},
                     ),
                     Container(
-                      margin: const EdgeInsets.only(right: 10, left: 10),
                       color: ColorSystem.gray2,
                       width: 1,
                       height: 50,
                     ),
                     MyPageButton(
-                      Title: "내가 인증한 가게",
-                      Count: "8",
+                      title: "내가 인증한 가게",
+                      count: "8",
                       onTap: () {},
                     ),
                   ],
@@ -148,10 +148,7 @@ class _MyPageState extends State<MyPage> {
                 ),
                 Container(
                   alignment: Alignment.centerLeft,
-                  child: Text(
-                    "앱 정보",
-                    style: FontSystem.body1.copyWith(),
-                  ),
+                  child: const Text("앱 정보", style: FontSystem.body1),
                 ),
                 MyPageInformationButton(title: "서비스 이용약관", onTap: () {}),
                 MyPageInformationButton(title: "이용규칙", onTap: () {}),
@@ -159,45 +156,116 @@ class _MyPageState extends State<MyPage> {
                 MyPageInformationButton(title: "오픈소스 사용정보", onTap: () {}),
               ],
             ),
-
-            // TextButton(
-            //     onPressed: () async {
-            //       try {
-            //         OAuthToken oauth;
-
-            //         final isInstalled = await isKakaoTalkInstalled();
-
-            //         if (isInstalled) {
-            //           oauth = await UserApi.instance.loginWithKakaoTalk();
-            //         } else {
-            //           oauth = await UserApi.instance.loginWithKakaoAccount();
-            //         }
-
-            //         log(oauth.accessToken);
-            //         log(oauth.expiresAt.toString());
-            //         log(oauth.refreshToken.toString());
-
-            //         setState(() {
-            //           _isSigning = true;
-            //         });
-            //       } catch (e, s) {
-            //         setState(() {
-            //           _isSigning = false;
-            //         });
-
-            //         if (e is KakaoAuthException &&
-            //             e.error.toString() == "access_denied") {
-            //           return;
-            //         }
-
-            //         showToast("로그인 중 문제가 발생하였습니다");
-            //         log(e.toString(), stackTrace: s);
-            //       }
-            //     },
-            //     child: Text("로그인")),
           ],
         ),
+      ),
+    );
+  }
+}
 
+class CustomTooltip extends StatelessWidget {
+  final String message;
+
+  const CustomTooltip({required this.message, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(10.0),
+          decoration: BoxDecoration(
+            color: ColorSystem.primary,
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: Text(
+            message,
+            style: FontSystem.caption.copyWith(color: ColorSystem.white),
+          ),
+        ),
+        CustomPaint(
+          painter: TrianglePainter(),
+          child: const SizedBox(width: 20, height: 10),
+        ),
+      ],
+    );
+  }
+}
+
+class TrianglePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    var paint = Paint()..color = ColorSystem.primary;
+
+    var path = Path();
+    path.lineTo(size.width / 2, size.height);
+    path.lineTo(size.width, 0);
+    path.close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
+}
+
+class MyPageButton extends StatelessWidget {
+  final String title;
+  final String count;
+  final Function() onTap;
+
+  const MyPageButton({
+    required this.title,
+    required this.count,
+    required this.onTap,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Text(title, style: FontSystem.caption),
+          const SizedBox(
+            height: 5,
+          ),
+          Text(
+            count,
+            style: FontSystem.subtitleSemiBold.copyWith(
+              color: ColorSystem.primary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class MyPageInformationButton extends StatelessWidget {
+  final String title;
+  final VoidCallback onTap;
+
+  const MyPageInformationButton({
+    required this.title,
+    required this.onTap,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: SizedBox(
+        height: 50,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(title, style: FontSystem.body2),
+            const Icon(Icons.chevron_right),
+          ],
+        ),
       ),
     );
   }
