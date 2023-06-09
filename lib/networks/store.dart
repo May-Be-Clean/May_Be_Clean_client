@@ -4,8 +4,11 @@ class StoreNetwork {
   static Future<Store> getStore() async {
     return Store(
       id: 4,
-      name: '매장 이름',
-      address: '매장 주소',
+      name: '덕분애',
+      address1: '서울 서초구 서운로26길 11 2층',
+      address2: '서울 서초구 서초동 1337-1',
+      latitude: 37.486,
+      longitude: 127.019,
       phone: '매장 전화번호',
       cloverCount: 4,
       category: ['매장 카테고리'],
