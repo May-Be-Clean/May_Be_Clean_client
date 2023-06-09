@@ -65,8 +65,9 @@ class _ReviewScreenState extends State<ReviewScreen> {
 }
 
 class _ReviewCard extends StatelessWidget {
+  final _storeStates = Get.find<StoreState>();
   final Review review;
-  const _ReviewCard(this.review);
+  _ReviewCard(this.review);
 
   @override
   Widget build(BuildContext context) {
@@ -76,15 +77,30 @@ class _ReviewCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              SvgPicture.asset(countToClover(review.cloverCount)),
-              const SizedBox(width: 5),
-              Text(
-                "마료마료",
-                style: FontSystem.body1.copyWith(color: ColorSystem.primary),
-              )
-            ],
+          GestureDetector(
+            onTap: () {
+              Get.bottomSheet(
+                StoreBottomSheet(
+                  _storeStates.stores[0],
+                  dismiss: () {
+                    Get.back();
+                  },
+                  isBottomSheet: true,
+                ),
+                isScrollControlled: true,
+              );
+            },
+            behavior: HitTestBehavior.translucent,
+            child: Row(
+              children: [
+                SvgPicture.asset(countToClover(review.cloverCount)),
+                const SizedBox(width: 5),
+                Text(
+                  review.storeName,
+                  style: FontSystem.body1.copyWith(color: ColorSystem.primary),
+                )
+              ],
+            ),
           ),
           Container(
             height: 15,
