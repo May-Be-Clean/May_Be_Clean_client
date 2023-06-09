@@ -137,11 +137,10 @@ class _ReviewCard extends StatelessWidget {
                 separatorBuilder: (context, index) => const SizedBox(width: 5),
                 itemBuilder: (context, index) {
                   final image = review.images[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Get.to(() => ExpandImageScreen(imageUrls: review.images));
-                    },
-                    child: RoundedImage(imageUrl: image),
+                  return RoundedImage(
+                    imageUrl: image,
+                    onTap: () => Get.to(
+                        () => ExpandImageScreen(imageUrls: review.images)),
                   );
                 },
                 itemCount: review.images.length),
