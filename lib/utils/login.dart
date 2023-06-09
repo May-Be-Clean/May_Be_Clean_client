@@ -4,6 +4,7 @@ import 'package:may_be_clean/utils/utils.dart';
 import 'package:may_be_clean/states/states.dart';
 import 'package:get/get.dart';
 import 'package:may_be_clean/models/model.dart' as model;
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 Future<void> kakaoLogin(Function() loginStart, Function() loginEnd) async {
   final globalStates = Get.find<GlobalState>();
@@ -17,9 +18,11 @@ Future<void> kakaoLogin(Function() loginStart, Function() loginEnd) async {
     } else {
       oauth = await UserApi.instance.loginWithKakaoAccount();
     }
+
     final model.User user = await model.User.authKakao(oauth.accessToken);
-    globalStates.login(user);
-    log('KAKAO SUCESS : ${user.email}');
+    final model.UserData userData =
+        await model.UserData.getUserData(user.accessToken!);
+    globalStates.login(userData);
 
     loginEnd();
   } catch (e, s) {
@@ -35,41 +38,33 @@ Future<void> kakaoLogin(Function() loginStart, Function() loginEnd) async {
 }
 
 Future<void> appleLogin(Function() loginStart, Function() loginEnd) async {
-  // try {
-  //   final appleCredential = await SignInWithApple.getAppleIDCredential(
-  //     scopes: [
-  //       AppleIDAuthorizationScopes.email,
-  //       AppleIDAuthorizationScopes.fullName,
-  //     ],
-  //     webAuthenticationOptions: WebAuthenticationOptions(
-  //       clientId: "app.weecan.com",
-  //       redirectUri:
-  //           Uri.parse("${ENV.apiEndpoint}/callbacks/sign_in_with_apple"),
-  //     ),
-  //   );
+  try {
+    final appleCredential = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+      webAuthenticationOptions: WebAuthenticationOptions(
+        clientId: "plant.may-be-clean.com",
+        redirectUri: Uri.parse(
+          "https://develop.api.maybeclean.link/callbacks/sign_in_with_apple",
+        ),
+      ),
+    );
+    loginStart();
+    log(appleCredential.toString());
+    log(appleCredential.authorizationCode.toString());
+    loginEnd();
+  } catch (e, s) {
+    loginEnd();
 
-  //   setState(() {
-  //     _isSigning = true;
-  //   });
+    if (e is SignInWithAppleAuthorizationException) {
+      if (e.code == AuthorizationErrorCode.canceled) {
+        return;
+      }
+    }
 
-  //   final oauthCredential = OAuthProvider("apple.com").credential(
-  //     idToken: appleCredential.identityToken,
-  //     accessToken: appleCredential.authorizationCode,
-  //   );
-
-  //   FirebaseAuth.instance.signInWithCredential(oauthCredential);
-  // } catch (e, s) {
-  //   setState(() {
-  //     _isSigning = false;
-  //   });
-
-  //   if (e is SignInWithAppleAuthorizationException) {
-  //     if (e.code == AuthorizationErrorCode.canceled) {
-  //       return;
-  //     }
-  //   }
-
-  //   showToast("로그인 중 문제가 발생하였습니다");
-  //   log(e.toString(), stackTrace: s);
-  // }
+    showToast("로그인 중 문제가 발생하였습니다");
+    log(e.toString(), stackTrace: s);
+  }
 }
