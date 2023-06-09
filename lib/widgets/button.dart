@@ -8,17 +8,21 @@ class CategoryButton extends StatelessWidget {
   final String unselectedSvg;
   final bool isSelected;
   final double fontSize;
-  final double width;
-  final Function() action;
+  final double imageSize;
+  final EdgeInsets padding;
+  final EdgeInsets margin;
+  final Function()? action;
 
   const CategoryButton({
     required this.title,
     required this.selectedSvg,
     required this.unselectedSvg,
     required this.isSelected,
-    required this.action,
+    this.action,
+    this.padding = const EdgeInsets.fromLTRB(10, 7, 10, 7),
+    this.margin = const EdgeInsets.all(5),
     this.fontSize = 15,
-    this.width = 15,
+    this.imageSize = 15,
     super.key,
   });
 
@@ -27,8 +31,8 @@ class CategoryButton extends StatelessWidget {
     return GestureDetector(
       onTap: action,
       child: Container(
-        padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
-        margin: const EdgeInsets.all(5),
+        padding: padding,
+        margin: margin,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50),
           color: (isSelected) ? ColorSystem.primary : Colors.white,
@@ -44,7 +48,7 @@ class CategoryButton extends StatelessWidget {
           children: [
             SvgPicture.asset(
               (isSelected) ? selectedSvg : unselectedSvg,
-              width: width,
+              width: imageSize,
             ),
             const SizedBox(width: 2),
             Text(title,
@@ -54,6 +58,38 @@ class CategoryButton extends StatelessWidget {
                 )),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ReviewCategoryItem extends StatelessWidget {
+  final String title;
+  final String image;
+
+  const ReviewCategoryItem({
+    super.key,
+    required this.title,
+    required this.image,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(6, 4, 6, 4),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: ColorSystem.chip,
+      ),
+      child: Row(
+        children: [
+          Image.asset(
+            image,
+            width: 16,
+          ),
+          const SizedBox(width: 2),
+          Text(title, style: FontSystem.caption.copyWith(color: Colors.black)),
+        ],
       ),
     );
   }
@@ -92,72 +128,6 @@ class ReviewButton extends StatelessWidget {
             const SizedBox(width: 2),
             Text(title,
                 style: FontSystem.caption.copyWith(color: Colors.black)),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class MyPageButton extends StatelessWidget {
-  final String Title;
-  final String Count;
-  final VoidCallback onTap;
-
-  const MyPageButton({
-    required this.Title,
-    required this.Count,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        children: [
-          Text(
-            Title,
-            style: FontSystem.caption.copyWith(),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          Text(
-            Count,
-            style: FontSystem.subtitleSemiBold.copyWith(
-              color: ColorSystem.primary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class MyPageInformationButton extends StatelessWidget {
-  final String title;
-  final VoidCallback onTap;
-
-  const MyPageInformationButton({
-    required this.title,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        height: 50,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              title,
-              style: FontSystem.body2.copyWith(),
-            ),
-            const Icon(Icons.chevron_right),
           ],
         ),
       ),
