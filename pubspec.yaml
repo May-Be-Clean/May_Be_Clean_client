@@ -28,6 +28,7 @@ dependencies:
   readmore: ^2.2.0
   cached_network_image: ^3.2.3
   kakao_flutter_sdk: ^1.4.3
+  sign_in_with_apple: ^4.3.0
 
 dev_dependencies:
   flutter_test:
@@ -47,6 +48,7 @@ flutter:
     - assets/icons/review/
     - assets/icons/map/
     - assets/icons/badge/
+    - assets/icons/login/
 
 fonts:
   - family: pretendard
