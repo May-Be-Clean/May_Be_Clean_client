@@ -15,137 +15,200 @@ class MyPage extends StatefulWidget {
 
 class _MyPageState extends State<MyPage> {
   final _globalState = Get.find<GlobalState>();
+  bool _isProcess = false;
+
+  void loginStart() {
+    setState(() {
+      _isProcess = true;
+    });
+  }
+
+  void loginEnd() {
+    setState(() {
+      _isProcess = false;
+    });
+  }
+
+  Widget _requestLogin() {
+    return Column(
+      children: [
+        const CustomTooltip(
+          message: "깨끗해질지도의 그린 컨슈머가 되어주세요!",
+        ),
+        SvgPicture.asset(
+          'assets/icons/badge/level0.svg',
+          width: 100,
+          height: 100,
+        ),
+        const Text("로그인이 필요한 서비스입니다.", style: FontSystem.subtitleSemiBold),
+        const SizedBox(height: 30),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            GestureDetector(
+              onTap: () {
+                if (_isProcess) return;
+                kakaoLogin(loginStart, loginEnd);
+              },
+              child: Column(
+                children: [
+                  SvgPicture.asset('assets/icons/login/kakao_small.svg'),
+                  const Text("카카오 로그인", style: FontSystem.caption)
+                ],
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                if (_isProcess) return;
+                appleLogin(loginStart, loginEnd);
+              },
+              child: Column(
+                children: [
+                  SvgPicture.asset('assets/icons/login/apple_small.svg'),
+                  const Text("애플 로그인", style: FontSystem.caption)
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _myPage() {
+    return Column(
+      children: [
+        const CustomTooltip(
+          message: "다음 레벨까지 얼마 안남았어요!",
+        ),
+        SvgPicture.asset(
+          expToBadge(_globalState.user?.exp ?? 20),
+          width: 100,
+          height: 100,
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Text(
+          expToBadgeTitle(_globalState.user?.exp ?? 20),
+          style: FontSystem.body1.copyWith(
+            color: ColorSystem.primary,
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(
+              width: 25,
+            ),
+            Text(
+              _globalState.user?.name ?? "익명의 유저",
+              style: FontSystem.subtitleSemiBold.copyWith(),
+            ),
+            GestureDetector(
+              onTap: () {
+                //TODO 프로필 수정 API 연결
+              },
+              child:
+                  SvgPicture.asset('assets/icons/category/edit.svg', width: 25),
+            )
+          ],
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              expToBadgeTitle(_globalState.user?.exp ?? 0),
+              style: FontSystem.caption.copyWith(
+                color: ColorSystem.gray1,
+              ),
+            ),
+            Text(
+              expNextTitle(_globalState.user?.exp ?? 0),
+              style: FontSystem.caption.copyWith(
+                color: ColorSystem.gray1,
+              ),
+            ),
+          ],
+        ),
+        Container(
+          padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+          child: ProgressBar(
+            expPercent(_globalState.user?.exp ?? 0),
+            barHeight: 10,
+            color: ColorSystem.primary,
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              expPrevious(_globalState.user?.exp ?? 0),
+              style: FontSystem.caption.copyWith(
+                color: ColorSystem.gray1,
+              ),
+            ),
+            Text(
+              expNext(_globalState.user?.exp ?? 0),
+              style: FontSystem.caption.copyWith(
+                color: ColorSystem.gray1,
+              ),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            MyPageButton(
+              title: "내가 작성한 후기",
+              count: "8",
+              onTap: () {},
+            ),
+            Container(
+              color: ColorSystem.gray2,
+              width: 1,
+              height: 50,
+            ),
+            MyPageButton(
+              title: "내가 등록한 가게",
+              count: "8",
+              onTap: () {},
+            ),
+            Container(
+              color: ColorSystem.gray2,
+              width: 1,
+              height: 50,
+            ),
+            MyPageButton(
+              title: "내가 인증한 가게",
+              count: "8",
+              onTap: () {},
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(top: 30, right: 30, left: 30),
+    return SafeArea(
       child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(30, 15, 30, 0),
         child: Column(
           children: [
-            const SizedBox(
-              height: 40,
-            ),
+            if (_globalState.user == null) _requestLogin() else _myPage(),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const CustomTooltip(
-                  message: "다음 레벨까지 얼마 안남았어요!",
-                ),
-                SvgPicture.asset(
-                  expToBadge(_globalState.user?.exp ?? 20),
-                  width: 100,
-                  height: 100,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  expToBadgeTitle(_globalState.user?.exp ?? 20),
-                  style: FontSystem.body1.copyWith(
-                    color: ColorSystem.primary,
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(
-                      width: 25,
-                    ),
-                    Text(
-                      _globalState.user?.name ?? "익명의 유저",
-                      style: FontSystem.subtitleSemiBold.copyWith(),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        //TODO 프로필 수정 API 연결
-                      },
-                      child: SvgPicture.asset('assets/icons/category/edit.svg',
-                          width: 25),
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "BRONZE",
-                      style: FontSystem.caption.copyWith(
-                        color: ColorSystem.gray1,
-                      ),
-                    ),
-                    Text(
-                      "SILVER",
-                      style: FontSystem.caption.copyWith(
-                        color: ColorSystem.gray1,
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                  child: const ProgressBar(
-                    60, // 남은 경험치 / 현재레벨 경험치
-                    barHeight: 10,
-                    color: ColorSystem.primary,
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "0",
-                      style: FontSystem.caption.copyWith(
-                        color: ColorSystem.gray1,
-                      ),
-                    ),
-                    Text(
-                      "N",
-                      style: FontSystem.caption.copyWith(
-                        color: ColorSystem.gray1,
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    MyPageButton(
-                      title: "내가 작성한 후기",
-                      count: "8",
-                      onTap: () {},
-                    ),
-                    Container(
-                      color: ColorSystem.gray2,
-                      width: 1,
-                      height: 50,
-                    ),
-                    MyPageButton(
-                      title: "내가 등록한 가게",
-                      count: "8",
-                      onTap: () {},
-                    ),
-                    Container(
-                      color: ColorSystem.gray2,
-                      width: 1,
-                      height: 50,
-                    ),
-                    MyPageButton(
-                      title: "내가 인증한 가게",
-                      count: "8",
-                      onTap: () {},
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
+                const SizedBox(height: 20),
+                const Divider(height: 30),
                 Container(
                   alignment: Alignment.centerLeft,
                   child: const Text("앱 정보", style: FontSystem.body1),
