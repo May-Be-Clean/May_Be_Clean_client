@@ -21,6 +21,7 @@ class MapState extends GetxController {
   }
 
   Future<void> init() async {
+    currentLocation = const LatLng(37.49599990284907, 126.95783113055364);
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.deniedForever ||
         permission == LocationPermission.denied ||
