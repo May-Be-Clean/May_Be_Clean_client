@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:may_be_clean/states/states.dart';
 import 'package:may_be_clean/consts/consts.dart';
 import 'package:may_be_clean/screens.dart';
+import 'package:may_be_clean/utils/utils.dart';
 import 'package:may_be_clean/widgets/widgets.dart';
 
 class MapScreen extends StatefulWidget {
@@ -15,18 +16,32 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
+  final _globalStates = Get.find<GlobalState>();
   final _mapStates = Get.find<MapState>();
   final _storeStates = Get.find<StoreState>();
-  final _reviewStates = Get.find<ReviewState>();
   final List<String> _selectedCategories = [];
   bool _isBottomsheetShow = false;
 
   final _categoryScrollController = ScrollController();
 
-  void bottomsheetDismiss() {
+  void _bottomsheetDismiss() {
     setState(() {
       _isBottomsheetShow = false;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> loadMarkers() async {
+    await _storeStates.loadMarker(
+        _mapStates.currentLocation.latitude - 0.001,
+        _mapStates.currentLocation.longitude - 0.001,
+        _mapStates.currentLocation.latitude + 0.001,
+        _mapStates.currentLocation.longitude + 0.001,
+        _selectedCategories);
   }
 
   @override
@@ -49,10 +64,10 @@ class _MapScreenState extends State<MapScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               RichText(
-                text: const TextSpan(
-                  text: "심상현",
+                text: TextSpan(
+                  text: _globalStates.user?.nickname ?? "익명",
                   style: FontSystem.subtitleSemiBold,
-                  children: [
+                  children: const [
                     TextSpan(
                         text: "님 근처에 있는", style: FontSystem.subtitleRegular),
                   ],
@@ -69,20 +84,20 @@ class _MapScreenState extends State<MapScreen> {
 
   Widget _categoryListView() {
     return Container(
-      margin: (_selectedCategories.isNotEmpty)
+      margin: (_selectedCategories.isNotEmpty || _globalStates.user == null)
           ? EdgeInsets.only(
               top: MediaQuery.of(context).viewPadding.top,
             )
           : null,
       height: 40,
       child: ListView.builder(
-        itemCount: storeCategories.length,
+        itemCount: storeCategoryMapping.length,
         scrollDirection: Axis.horizontal,
         controller: _categoryScrollController,
         shrinkWrap: true,
         itemBuilder: (context, index) {
-          final category = storeCategories.values.toList()[index];
-          final categoryName = storeCategories.keys.toList()[index];
+          final category = storeCategoryMapping.values.toList()[index];
+          final categoryName = storeCategoryMapping.keys.toList()[index];
           bool isSelected = false;
           if (_selectedCategories.contains(categoryName)) {
             isSelected = true;
@@ -116,11 +131,11 @@ class _MapScreenState extends State<MapScreen> {
           GoogleMap(
             onMapCreated: (controller) {
               _mapStates.mapController = controller;
+              loadMarkers();
             },
             initialCameraPosition: CameraPosition(
               target: _mapStates.currentLocation,
-              // target: LatLng(37.5665, 126.9780),
-              zoom: 14.4746,
+              zoom: 16,
             ),
             myLocationButtonEnabled: false,
             myLocationEnabled: true,
@@ -128,7 +143,8 @@ class _MapScreenState extends State<MapScreen> {
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              if (_selectedCategories.isEmpty) _header(),
+              if (_selectedCategories.isEmpty && _globalStates.user != null)
+                _header(),
               _categoryListView(),
             ],
           ),
@@ -137,7 +153,11 @@ class _MapScreenState extends State<MapScreen> {
             right: 10,
             child: GestureDetector(
               onTap: () {
-                Get.dialog(const StoreAddDialog());
+                if (_globalStates.user == null) {
+                  loginRequest(context);
+                } else {
+                  Get.dialog(const StoreAddDialog());
+                }
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -178,10 +198,8 @@ class _MapScreenState extends State<MapScreen> {
             ),
           ),
           if (_selectedCategories.isNotEmpty && _isBottomsheetShow)
-            StoreBottomSheet(
-              _storeStates.stores[0],
-              dismiss: bottomsheetDismiss,
-              isBottomSheet: false,
+            StoreListBottomSheet(
+              dismiss: _bottomsheetDismiss,
             ),
         ],
       ),
