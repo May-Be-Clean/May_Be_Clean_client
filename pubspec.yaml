@@ -45,8 +45,8 @@ flutter:
     - assets/images/
     - assets/icons/clover/
     - assets/icons/review/
-
-
+    - assets/icons/map/
+    - assets/icons/badge/
 
 fonts:
   - family: pretendard
