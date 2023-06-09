@@ -30,6 +30,70 @@ String expToBadgeTitle(int exp) {
   return "열매";
 }
 
+String expNextTitle(int exp) {
+  if (exp < 8) {
+    return "새싹";
+  }
+  if (exp < 16) {
+    return "숲";
+  }
+  if (exp < 24) {
+    return "꽃";
+  }
+  if (exp < 32) {
+    return "열매";
+  }
+  return "열매";
+}
+
+String expPrevious(int exp) {
+  if (exp < 8) {
+    return '0';
+  }
+  if (exp < 16) {
+    return '8';
+  }
+  if (exp < 24) {
+    return '16';
+  }
+  if (exp < 32) {
+    return '24';
+  }
+  return '32';
+}
+
+String expNext(int exp) {
+  if (exp < 8) {
+    return '8';
+  }
+  if (exp < 16) {
+    return '16';
+  }
+  if (exp < 24) {
+    return '24';
+  }
+  if (exp < 32) {
+    return '32';
+  }
+  return 'INF';
+}
+
+double expPercent(int exp) {
+  if (exp < 8) {
+    return exp / 8;
+  }
+  if (exp < 16) {
+    return (exp - 8) / 8;
+  }
+  if (exp < 24) {
+    return (exp - 16) / 8;
+  }
+  if (exp < 32) {
+    return (exp - 24) / 8;
+  }
+  return 1;
+}
+
 String countToClover(int count) {
   if (count <= 0) {
     return "assets/icons/clover/clover_0.svg";
