@@ -89,7 +89,7 @@ class _MyPageState extends State<MyPage> {
           message: "다음 레벨까지 얼마 안남았어요!",
         ),
         SvgPicture.asset(
-          expToBadge(_globalState.user?.point ?? 20),
+          expToBadge(_globalState.userData?.user.point ?? 20),
           width: 100,
           height: 100,
         ),
@@ -97,7 +97,7 @@ class _MyPageState extends State<MyPage> {
           height: 10,
         ),
         Text(
-          expToBadgeTitle(_globalState.user?.point ?? 20),
+          expToBadgeTitle(_globalState.userData?.user.point ?? 20),
           style: FontSystem.body1.copyWith(
             color: ColorSystem.primary,
           ),
@@ -112,7 +112,7 @@ class _MyPageState extends State<MyPage> {
               width: 25,
             ),
             Text(
-              _globalState.user?.nickname ?? "익명의 유저",
+              _globalState.userData?.user.nickname ?? "익명의 유저",
               style: FontSystem.subtitleSemiBold.copyWith(),
             ),
             GestureDetector(
@@ -131,13 +131,13 @@ class _MyPageState extends State<MyPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              expToBadgeTitle(_globalState.user?.point ?? 0),
+              expToBadgeTitle(_globalState.userData?.user.point ?? 0),
               style: FontSystem.caption.copyWith(
                 color: ColorSystem.gray1,
               ),
             ),
             Text(
-              expNextTitle(_globalState.user?.point ?? 0),
+              expNextTitle(_globalState.userData?.user.point ?? 0),
               style: FontSystem.caption.copyWith(
                 color: ColorSystem.gray1,
               ),
@@ -147,7 +147,7 @@ class _MyPageState extends State<MyPage> {
         Container(
           padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
           child: ProgressBar(
-            expPercent(_globalState.user?.point ?? 0),
+            expPercent(_globalState.userData?.user.point ?? 0),
             barHeight: 10,
             color: ColorSystem.primary,
           ),
@@ -156,13 +156,13 @@ class _MyPageState extends State<MyPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              expPrevious(_globalState.user?.point ?? 0),
+              expPrevious(_globalState.userData?.user.point ?? 0),
               style: FontSystem.caption.copyWith(
                 color: ColorSystem.gray1,
               ),
             ),
             Text(
-              expNext(_globalState.user?.point ?? 0),
+              expNext(_globalState.userData?.user.point ?? 0),
               style: FontSystem.caption.copyWith(
                 color: ColorSystem.gray1,
               ),
@@ -210,7 +210,7 @@ class _MyPageState extends State<MyPage> {
         padding: const EdgeInsets.fromLTRB(30, 15, 30, 0),
         child: Column(
           children: [
-            if (_globalState.user == null) _requestLogin() else _myPage(),
+            if (_globalState.userData == null) _requestLogin() else _myPage(),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [

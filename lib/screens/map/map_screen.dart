@@ -65,7 +65,7 @@ class _MapScreenState extends State<MapScreen> {
             children: [
               RichText(
                 text: TextSpan(
-                  text: _globalStates.user?.nickname ?? "익명",
+                  text: _globalStates.userData?.user.nickname ?? "익명",
                   style: FontSystem.subtitleSemiBold,
                   children: const [
                     TextSpan(
@@ -84,7 +84,7 @@ class _MapScreenState extends State<MapScreen> {
 
   Widget _categoryListView() {
     return Container(
-      margin: (_selectedCategories.isNotEmpty || _globalStates.user == null)
+      margin: (_selectedCategories.isNotEmpty || _globalStates.userData == null)
           ? EdgeInsets.only(
               top: MediaQuery.of(context).viewPadding.top,
             )
@@ -143,7 +143,7 @@ class _MapScreenState extends State<MapScreen> {
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              if (_selectedCategories.isEmpty && _globalStates.user != null)
+              if (_selectedCategories.isEmpty && _globalStates.userData != null)
                 _header(),
               _categoryListView(),
             ],
@@ -153,7 +153,7 @@ class _MapScreenState extends State<MapScreen> {
             right: 10,
             child: GestureDetector(
               onTap: () {
-                if (_globalStates.user == null) {
+                if (_globalStates.userData == null) {
                   loginRequest(context);
                 } else {
                   Get.dialog(const StoreAddDialog());
