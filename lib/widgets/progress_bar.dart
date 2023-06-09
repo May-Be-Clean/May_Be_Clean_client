@@ -120,7 +120,7 @@ class ReviewProgressBar extends StatelessWidget {
             Container(
               height: 28,
               alignment: Alignment.centerLeft,
-              child: Text(
+              child: const Text(
                 "제품이 다양해요", //항목
                 style: TextStyle(
                   fontSize: 12,
