@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ProgressBar extends StatefulWidget {
   final double percentage;
@@ -75,17 +76,69 @@ class _ProgressBarState extends State<ProgressBar> {
               ),
             ),
           ),
-          // const SizedBox(width: 10),
-          // Text(
-          //   "${_percentage.toString()}%",
-          //   style: TextStyle(
-          //     fontSize: widget.fontSize,
-          //     color: widget.color,
-          //     fontWeight: FontWeight.bold,
-          //   ),
-          // ),
         ],
       ),
+    );
+  }
+}
+
+class ReviewProgressBar extends StatelessWidget {
+  final double percentage;
+  final Color color;
+  final String category;
+  final double barOpacity;
+
+  const ReviewProgressBar(
+      {required this.percentage,
+      required this.color,
+      required this.category,
+      required this.barOpacity,
+      super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        ProgressBar(
+          percentage,
+          barHeight: 28,
+          barOpacity: barOpacity,
+        ),
+        Row(
+          children: [
+            const SizedBox(
+              width: 5,
+            ),
+            SvgPicture.asset(
+              "assets/icons/category/cafe.svg",
+              width: 20,
+              height: 20,
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            Container(
+              height: 28,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "제품이 다양해요", //항목
+                style: TextStyle(
+                  fontSize: 12,
+                ),
+              ),
+            ),
+            Flexible(
+              fit: FlexFit.tight,
+              child: Container(
+                height: 28,
+                padding: const EdgeInsets.only(right: 10),
+                alignment: Alignment.centerRight,
+                child: const Text("26"), //항목 개수
+              ),
+            )
+          ],
+        ),
+      ],
     );
   }
 }
