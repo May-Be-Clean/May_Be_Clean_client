@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:may_be_clean/consts/consts.dart';
 import 'package:may_be_clean/states/global.dart';
 import 'package:flutter/services.dart';
 import 'package:may_be_clean/utils/utils.dart';
@@ -29,6 +30,15 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
     _globalStates.tabController = TabController(
         length: 4, initialIndex: widget.initScreenIndex, vsync: this);
     _index = widget.initScreenIndex;
+  }
+
+  Widget _bottomNavigatorWidget(String imageUrl, String title, Color color) {
+    return Column(
+      children: [
+        SvgPicture.asset(imageUrl),
+        Text(title, style: FontSystem.caption.copyWith(color: color)),
+      ],
+    );
   }
 
   void _onTapNavigator(int index) async {
@@ -71,6 +81,7 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
             return true;
           }),
           child: SafeArea(
+            top: false,
             child: TabBarView(
               controller: _globalStates.tabController,
               physics: const NeverScrollableScrollPhysics(),
@@ -92,9 +103,9 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.3),
+                color: Colors.grey.withOpacity(0.2),
                 blurRadius: 1,
-                spreadRadius: 2,
+                spreadRadius: 1,
               ),
             ],
           ),
@@ -104,33 +115,53 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
             onTap: _onTapNavigator,
             tabs: [
               Tab(
-                  height: 60,
-                  child: (_index == 0)
-                      ? SvgPicture.asset(
-                          'assets/icons/navigation/map_selected.svg')
-                      : SvgPicture.asset(
-                          'assets/icons/navigation/map_unselected.svg')),
+                height: 60,
+                child: (_index == 0)
+                    ? _bottomNavigatorWidget(
+                        'assets/icons/navigation/map_selected.svg',
+                        '지도',
+                        ColorSystem.black)
+                    : _bottomNavigatorWidget(
+                        'assets/icons/navigation/map_unselected.svg',
+                        '지도',
+                        ColorSystem.gray2),
+              ),
               Tab(
-                  height: 60,
-                  child: (_index == 1)
-                      ? SvgPicture.asset(
-                          'assets/icons/navigation/review_selected.svg')
-                      : SvgPicture.asset(
-                          'assets/icons/navigation/review_unselected.svg')),
+                height: 60,
+                child: (_index == 1)
+                    ? _bottomNavigatorWidget(
+                        'assets/icons/navigation/review_selected.svg',
+                        '후기',
+                        ColorSystem.black)
+                    : _bottomNavigatorWidget(
+                        'assets/icons/navigation/review_unselected.svg',
+                        '후기',
+                        ColorSystem.gray2),
+              ),
               Tab(
-                  height: 60,
-                  child: (_index == 2)
-                      ? SvgPicture.asset(
-                          'assets/icons/navigation/like_selected.svg')
-                      : SvgPicture.asset(
-                          'assets/icons/navigation/like_unselected.svg')),
+                height: 60,
+                child: (_index == 2)
+                    ? _bottomNavigatorWidget(
+                        'assets/icons/navigation/like_selected.svg',
+                        '찜',
+                        ColorSystem.black)
+                    : _bottomNavigatorWidget(
+                        'assets/icons/navigation/like_unselected.svg',
+                        '찜',
+                        ColorSystem.gray2),
+              ),
               Tab(
-                  height: 60,
-                  child: (_index == 3)
-                      ? SvgPicture.asset(
-                          'assets/icons/navigation/mypage_selected.svg')
-                      : SvgPicture.asset(
-                          'assets/icons/navigation/mypage_unselected.svg')),
+                height: 60,
+                child: (_index == 3)
+                    ? _bottomNavigatorWidget(
+                        'assets/icons/navigation/mypage_selected.svg',
+                        'MY',
+                        ColorSystem.black)
+                    : _bottomNavigatorWidget(
+                        'assets/icons/navigation/mypage_unselected.svg',
+                        'MY',
+                        ColorSystem.gray2),
+              ),
             ],
           ),
         ),
