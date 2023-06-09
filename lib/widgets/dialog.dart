@@ -128,7 +128,7 @@ class _ReviewUploadDialogState extends State<ReviewUploadDialog> {
               height: 40,
               child: Row(
                 children: [
-                  SvgPicture.asset(countToClover(widget.store.cloverCount)),
+                  SvgPicture.asset(countToClover(widget.store.clover)),
                   Text(widget.store.name, style: FontSystem.subtitleSemiBold),
                 ],
               ),
@@ -141,14 +141,15 @@ class _ReviewUploadDialogState extends State<ReviewUploadDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(3, (index) {
                 int innerIndex = index;
-                final category = reviewCategories.keys.toList()[innerIndex];
+                final category =
+                    reviewCategoryMapping.keys.toList()[innerIndex];
                 bool isSelected = false;
                 if (_selectedCategories.contains(category)) {
                   isSelected = true;
                 }
                 return ReviewButton(
-                    title: reviewCategories.values.toList()[innerIndex][0],
-                    image: reviewCategories.values.toList()[innerIndex][1],
+                    title: reviewCategoryMapping.values.toList()[innerIndex][0],
+                    image: reviewCategoryMapping.values.toList()[innerIndex][1],
                     isSelected: isSelected,
                     action: () {
                       if (isSelected) {
@@ -165,14 +166,15 @@ class _ReviewUploadDialogState extends State<ReviewUploadDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(3, (index) {
                 int innerIndex = index + 3;
-                final category = reviewCategories.keys.toList()[innerIndex];
+                final category =
+                    reviewCategoryMapping.keys.toList()[innerIndex];
                 bool isSelected = false;
                 if (_selectedCategories.contains(category)) {
                   isSelected = true;
                 }
                 return ReviewButton(
-                    title: reviewCategories.values.toList()[innerIndex][0],
-                    image: reviewCategories.values.toList()[innerIndex][1],
+                    title: reviewCategoryMapping.values.toList()[innerIndex][0],
+                    image: reviewCategoryMapping.values.toList()[innerIndex][1],
                     isSelected: isSelected,
                     action: () {
                       if (isSelected) {
@@ -189,14 +191,15 @@ class _ReviewUploadDialogState extends State<ReviewUploadDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(3, (index) {
                 int innerIndex = index + 6;
-                final category = reviewCategories.keys.toList()[innerIndex];
+                final category =
+                    reviewCategoryMapping.keys.toList()[innerIndex];
                 bool isSelected = false;
                 if (_selectedCategories.contains(category)) {
                   isSelected = true;
                 }
                 return ReviewButton(
-                    title: reviewCategories.values.toList()[innerIndex][0],
-                    image: reviewCategories.values.toList()[innerIndex][1],
+                    title: reviewCategoryMapping.values.toList()[innerIndex][0],
+                    image: reviewCategoryMapping.values.toList()[innerIndex][1],
                     isSelected: isSelected,
                     action: () {
                       if (isSelected) {
