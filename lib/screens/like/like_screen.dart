@@ -8,10 +8,10 @@ import 'package:may_be_clean/utils/utils.dart';
 import 'package:may_be_clean/states/states.dart';
 import 'package:get/get.dart';
 
-class _StoreCard extends StatelessWidget {
-  final Review review;
+class StoreCard extends StatelessWidget {
+  final Store store;
 
-  const _StoreCard(this.review, {super.key});
+  const StoreCard(this.store, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +33,10 @@ class _StoreCard extends StatelessWidget {
             },
             child: Row(
               children: [
-                SvgPicture.asset(countToClover(review.cloverCount)),
+                SvgPicture.asset(
+                    countToClover(Get.find<StoreState>().stores[0].clover)),
                 Text(
-                  review.storeName,
+                  store.name,
                   style: FontSystem.subtitleSemiBold
                       .copyWith(color: ColorSystem.primary),
                 ),
@@ -46,13 +47,13 @@ class _StoreCard extends StatelessWidget {
             height: 15,
             margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
             child: ListView.separated(
-              itemCount: review.storeCategory.length,
+              itemCount: store.category.length,
               scrollDirection: Axis.horizontal,
               shrinkWrap: true,
               itemBuilder: (context, index) {
-                final category = review.storeCategory[index];
+                final category = store.category[index];
                 return Text(
-                  "#${storeCategories[category]?[0] ?? '기타'}",
+                  "#${storeCategoryMapping[category]?[0] ?? '기타'}",
                   style: FontSystem.caption.copyWith(color: ColorSystem.gray1),
                 );
               },
@@ -65,11 +66,11 @@ class _StoreCard extends StatelessWidget {
             child: ListView.separated(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
-              itemCount: review.reviewCategory.length,
+              itemCount: store.category.length,
               separatorBuilder: (context, index) => const SizedBox(width: 4),
               itemBuilder: (context, index) {
                 final reviewCategoryData =
-                    reviewCategories[review.reviewCategory[index]];
+                    reviewCategoryMapping[store.category[index]];
                 final String title = reviewCategoryData?[0] ?? "기타";
                 final String image =
                     reviewCategoryData?[1] ?? "assets/icons/review/clean.png";
@@ -93,7 +94,7 @@ class LikeScreen extends StatefulWidget {
 
 class _LikeScreenState extends State<LikeScreen> {
   final List<String> _selectedCategories = [];
-  final _reviewStates = Get.find<ReviewState>();
+  final _storeStates = Get.find<StoreState>();
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +103,7 @@ class _LikeScreenState extends State<LikeScreen> {
         toolbarHeight: 40,
         backgroundColor: Colors.white,
         shadowColor: Colors.transparent,
+        leadingWidth: 0,
         title: Container(
           padding: const EdgeInsets.all(10),
           child: const Text("찜한 가게", style: FontSystem.subtitleSemiBold),
@@ -118,14 +120,16 @@ class _LikeScreenState extends State<LikeScreen> {
               title: SizedBox(
                 height: 40,
                 child: ListView.separated(
-                  itemCount: storeCategories.length,
+                  itemCount: storeCategoryMapping.length,
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.fromLTRB(20, 0, 10, 0),
                   separatorBuilder: (context, index) =>
                       const SizedBox(width: 5),
                   itemBuilder: (context, index) {
-                    final category = storeCategories.values.toList()[index];
-                    final categoryName = storeCategories.keys.toList()[index];
+                    final category =
+                        storeCategoryMapping.values.toList()[index];
+                    final categoryName =
+                        storeCategoryMapping.keys.toList()[index];
                     bool isSelected = false;
                     if (_selectedCategories.contains(categoryName)) {
                       isSelected = true;
@@ -151,9 +155,9 @@ class _LikeScreenState extends State<LikeScreen> {
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate((context, index) {
-              final review = _reviewStates.myReviews[index];
-              return _StoreCard(review);
-            }, childCount: _reviewStates.myReviews.length),
+              final store = _storeStates.stores[index];
+              return StoreCard(store);
+            }, childCount: _storeStates.stores.length),
           ),
         ],
       ),
