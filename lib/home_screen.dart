@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:may_be_clean/consts/consts.dart';
@@ -53,6 +54,11 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
     HapticFeedback.lightImpact();
 
     if (index == _index) return;
+
+    if (index == 2) {
+      loginRequest(context);
+      return;
+    }
 
     setState(() {
       _globalStates.tabController.animateTo(index);
