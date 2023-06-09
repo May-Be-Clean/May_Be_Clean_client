@@ -50,6 +50,10 @@
 	<string>"깨끗해질지도" 앱을 원활하게 사용하려면 위치 권한을 허용해야합니다.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>"깨끗해질지도"이 사용자의 후기 사진들을 등록하기 위해 사진 라이브러리에 접근하도록 허용합니다.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>"깨끗해질지도"이 사용자의 후기 사진들을 등록하기 위해 사진 라이브러리에 접근하도록 허용합니다.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>"깨끗해질지도"이 사용자의 후기 사진들을 등록하기 위해 사진 라이브러리에 접근하도록 허용합니다.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
