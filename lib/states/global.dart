@@ -11,7 +11,7 @@ class GlobalState extends GetxController {
   RxMap<String, Marker> markers = RxMap<String, Marker>({});
   String token = "test";
   late TabController tabController;
-  User? user;
+  UserData? userData;
 
   Future<void> load() async {
     Timer(const Duration(milliseconds: 1000), () async {
@@ -39,15 +39,15 @@ class GlobalState extends GetxController {
     // }
   }
 
-  void login(User user) {
-    this.user = user;
+  void login(UserData user) {
+    userData = user;
     SharedPreferences.getInstance().then((prefs) {
-      prefs.setString('accessToken', user.accessToken ?? '');
+      prefs.setString('accessToken', userData?.user.accessToken ?? '');
     });
   }
 
   void logout() {
-    user = null;
+    userData = null;
     SharedPreferences.getInstance().then((prefs) {
       prefs.remove('accessToken');
     });
