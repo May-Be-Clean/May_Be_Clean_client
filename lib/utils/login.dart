@@ -1,24 +1,26 @@
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'dart:developer';
 import 'package:may_be_clean/utils/utils.dart';
+import 'package:may_be_clean/states/states.dart';
+import 'package:get/get.dart';
+import 'package:may_be_clean/models/model.dart' as model;
 
 Future<void> kakaoLogin(Function() loginStart, Function() loginEnd) async {
+  final globalStates = Get.find<GlobalState>();
   try {
     OAuthToken oauth;
 
     final isInstalled = await isKakaoTalkInstalled();
-
+    loginStart();
     if (isInstalled) {
       oauth = await UserApi.instance.loginWithKakaoTalk();
     } else {
       oauth = await UserApi.instance.loginWithKakaoAccount();
     }
+    final model.User user = await model.User.authKakao(oauth.accessToken);
+    globalStates.login(user);
+    log('KAKAO SUCESS : ${user.email}');
 
-    loginStart();
-
-    oauth.toJson().forEach((key, value) {
-      log("$key: $value");
-    });
     loginEnd();
   } catch (e, s) {
     loginEnd();
