@@ -11,7 +11,7 @@ class MyReviewScreen extends StatefulWidget {
 class _MyReviewScreenState extends State<MyReviewScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       appBar: CustomAppBar(title: '내가 작성한 후기'),
     );
   }
