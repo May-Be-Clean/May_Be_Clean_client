@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:may_be_clean/consts/consts.dart';
+import 'package:may_be_clean/screens.dart';
 import 'package:may_be_clean/widgets/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:may_be_clean/models/model.dart';
@@ -19,15 +20,27 @@ class _StoreCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              SvgPicture.asset(countToClover(review.cloverCount)),
-              Text(
-                review.storeName,
-                style: FontSystem.subtitleSemiBold
-                    .copyWith(color: ColorSystem.primary),
-              ),
-            ],
+          GestureDetector(
+            onTap: () {
+              Get.bottomSheet(
+                StoreBottomSheet(
+                  Get.find<StoreState>().stores[0],
+                  isBottomSheet: true,
+                  dismiss: () => Get.back(),
+                ),
+                isScrollControlled: true,
+              );
+            },
+            child: Row(
+              children: [
+                SvgPicture.asset(countToClover(review.cloverCount)),
+                Text(
+                  review.storeName,
+                  style: FontSystem.subtitleSemiBold
+                      .copyWith(color: ColorSystem.primary),
+                ),
+              ],
+            ),
           ),
           Container(
             height: 15,
