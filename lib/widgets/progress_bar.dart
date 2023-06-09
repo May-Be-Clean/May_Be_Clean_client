@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class WeecanProgressBar extends StatefulWidget {
+class ProgressBar extends StatefulWidget {
   final double percentage;
   final Color color;
   final Color backgroundColor;
@@ -9,7 +9,7 @@ class WeecanProgressBar extends StatefulWidget {
   final double barOpacity;
   final double barRadius;
 
-  const WeecanProgressBar(
+  const ProgressBar(
     this.percentage, {
     this.barOpacity = -1,
     this.color = const Color.fromRGBO(164, 221, 137, 1),
@@ -21,10 +21,10 @@ class WeecanProgressBar extends StatefulWidget {
   });
 
   @override
-  State<WeecanProgressBar> createState() => _WeecanProgressBarState();
+  State<ProgressBar> createState() => _ProgressBarState();
 }
 
-class _WeecanProgressBarState extends State<WeecanProgressBar> {
+class _ProgressBarState extends State<ProgressBar> {
   int _percentage = 0;
 
   @override
