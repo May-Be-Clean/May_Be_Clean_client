@@ -9,13 +9,16 @@ class StoreState extends GetxController {
     for (int i = 0; i < 7; i++) {
       stores.add(Store(
         id: 4,
-        name: '매장 이름',
-        address: '매장 주소',
-        phone: '매장 전화번호',
+        name: '덕분애 제로웨이스트샵',
+        address1: '서울 서초구 서운로26길 11 2층',
+        address2: '서울 서초구 서초동 1337-1',
+        latitude: 37.486,
+        longitude: 127.019,
+        phone: '02-6959-4479',
         category: ['vegan', 'cafe'],
-        openTime: '매장 오픈 시간',
+        openTime: '1200',
         cloverCount: 2,
-        closeTime: '매장 마감 시간',
+        closeTime: '2000',
         updatedAt: DateTime.now(),
       ));
     }
