@@ -55,7 +55,7 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
 
     if (index == _index) return;
 
-    if (index == 2 && _globalStates.user == null) {
+    if (index == 2 && _globalStates.userData == null) {
       loginRequest(context);
       return;
     }
