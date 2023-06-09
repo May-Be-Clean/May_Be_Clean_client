@@ -2,55 +2,71 @@ import 'package:flutter/material.dart';
 import 'package:may_be_clean/consts/consts.dart';
 import 'package:may_be_clean/widgets/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:may_be_clean/models/model.dart';
+import 'package:may_be_clean/utils/utils.dart';
+import 'package:may_be_clean/states/states.dart';
+import 'package:get/get.dart';
 
 class _StoreCard extends StatelessWidget {
-  final String title;
-  final int cloverCount;
+  final Review review;
 
-  const _StoreCard({required this.title, required this.cloverCount});
+  const _StoreCard(this.review, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            SvgPicture.asset("assets/icons/clover/clover_$cloverCount.svg"),
-            Text(
-              title,
-              style: FontSystem.subtitleSemiBold
-                  .copyWith(color: ColorSystem.primary),
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              SvgPicture.asset(countToClover(review.cloverCount)),
+              Text(
+                review.storeName,
+                style: FontSystem.subtitleSemiBold
+                    .copyWith(color: ColorSystem.primary),
+              ),
+            ],
+          ),
+          Container(
+            height: 15,
+            margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+            child: ListView.separated(
+              itemCount: review.storeCategory.length,
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                final category = review.storeCategory[index];
+                return Text(
+                  "#${storeCategories[category]?[0] ?? '기타'}",
+                  style: FontSystem.caption.copyWith(color: ColorSystem.gray1),
+                );
+              },
+              separatorBuilder: (context, index) => const SizedBox(width: 3),
             ),
-          ],
-        ),
-        SizedBox(
-          height: 20,
-          child: ListView.builder(
-            itemCount: 3,
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) {
-              return Text("#해시태그",
-                  style: FontSystem.caption.copyWith(color: ColorSystem.gray1));
-            },
           ),
-        ),
-        SizedBox(
-          height: 40,
-          child: ListView.builder(
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemCount: 4,
-            itemBuilder: (context, index) {
-              final reviewCategory = reviewCategories.values.toList()[index];
-              return ReviewButton(
-                  title: reviewCategory[0],
-                  image: reviewCategory[1],
-                  action: () {});
-            },
+          Container(
+            height: 24,
+            margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+            child: ListView.separated(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemCount: review.reviewCategory.length,
+              separatorBuilder: (context, index) => const SizedBox(width: 4),
+              itemBuilder: (context, index) {
+                final reviewCategoryData =
+                    reviewCategories[review.reviewCategory[index]];
+                final String title = reviewCategoryData?[0] ?? "기타";
+                final String image =
+                    reviewCategoryData?[1] ?? "assets/icons/review/clean.png";
+                return ReviewCategoryItem(title: title, image: image);
+              },
+            ),
           ),
-        ),
-      ],
+          const Divider(height: 10),
+        ],
+      ),
     );
   }
 }
@@ -64,59 +80,13 @@ class LikeScreen extends StatefulWidget {
 
 class _LikeScreenState extends State<LikeScreen> {
   final List<String> _selectedCategories = [];
-
-  Widget _storeCard(String title, int cloverCount) {
-    return Container(
-      padding: const EdgeInsets.all(5),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              SvgPicture.asset("assets/icons/clover/clover_$cloverCount.svg"),
-              Text(
-                title,
-                style: FontSystem.subtitleSemiBold
-                    .copyWith(color: ColorSystem.primary),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 20,
-            child: ListView.builder(
-              itemCount: 3,
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                return Text("#해시태그",
-                    style:
-                        FontSystem.caption.copyWith(color: ColorSystem.gray1));
-              },
-            ),
-          ),
-          SizedBox(
-            height: 40,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 4,
-              itemBuilder: (context, index) {
-                final reviewCategory = reviewCategories.values.toList()[index];
-                return ReviewButton(
-                    title: reviewCategory[0],
-                    image: reviewCategory[1],
-                    action: () {});
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  final _reviewStates = Get.find<ReviewState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 40,
         backgroundColor: Colors.white,
         shadowColor: Colors.transparent,
         title: Container(
@@ -137,7 +107,7 @@ class _LikeScreenState extends State<LikeScreen> {
                 child: ListView.separated(
                   itemCount: storeCategories.length,
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  padding: const EdgeInsets.fromLTRB(20, 0, 10, 0),
                   separatorBuilder: (context, index) =>
                       const SizedBox(width: 5),
                   itemBuilder: (context, index) {
@@ -168,16 +138,10 @@ class _LikeScreenState extends State<LikeScreen> {
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate((context, index) {
-              return _storeCard("두둥탁", 3);
-            }, childCount: 20),
+              final review = _reviewStates.myReviews[index];
+              return _StoreCard(review);
+            }, childCount: _reviewStates.myReviews.length),
           ),
-          // SliverList(
-          //     delegate: SliverChildBuilderDelegate(
-          //   (context, index) {
-          //     return _storeCard("두둥학", 2);
-          //   },
-          //   childCount: 20,
-          // )),
         ],
       ),
     );
