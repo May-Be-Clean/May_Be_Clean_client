@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:may_be_clean/screens.dart';
 import 'package:geolocator/geolocator.dart';
 
 class MapState extends GetxController {
@@ -22,19 +21,15 @@ class MapState extends GetxController {
   }
 
   Future<void> init() async {
-    Timer(const Duration(milliseconds: 500), () async {
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.deniedForever ||
-          permission == LocationPermission.denied ||
-          permission == LocationPermission.unableToDetermine) {
-        await Geolocator.requestPermission();
-      }
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.deniedForever ||
+        permission == LocationPermission.denied ||
+        permission == LocationPermission.unableToDetermine) {
+      await Geolocator.requestPermission();
+    }
 
-      await Geolocator.getCurrentPosition().then((location) {
-        currentLocation = LatLng(location.latitude, location.longitude);
-
-        Get.offAll(() => const HomeScreen());
-      });
+    await Geolocator.getCurrentPosition().then((location) {
+      currentLocation = LatLng(location.latitude, location.longitude);
     });
   }
 
