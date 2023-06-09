@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:may_be_clean/consts/consts.dart';
 
 class CustomBottomSheet extends StatelessWidget {
   final double initialChildSize;
@@ -34,7 +35,6 @@ class CustomBottomSheet extends StatelessWidget {
         onTap: () {},
         child: DraggableScrollableSheet(
           expand: false,
-
           controller: controller,
           initialChildSize: initialChildSize,
           maxChildSize: maxChildSize,
@@ -66,14 +66,13 @@ class CustomBottomSheet extends StatelessWidget {
                         height: 6,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          color: Colors.grey.withOpacity(0.35),
-                        ),
+                            borderRadius: BorderRadius.circular(30),
+                            color: ColorSystem.gray1),
                       ),
                       const SizedBox(height: 12),
                     ],
                   ),
-                header ?? Container(),
+                header ?? const SizedBox.shrink(),
                 Expanded(
                   child: ListView(
                     controller: controller2,
@@ -83,13 +82,6 @@ class CustomBottomSheet extends StatelessWidget {
                     ],
                   ),
                 ),
-                // SafeArea(
-                //     child: TextButton(
-                //         onPressed: () {
-                //           print(controller.position.pixels);
-                //           // print(controller.initialScrollOffset);
-                //         },
-                //         child: Text('오늘로가기'))),
               ],
             ),
           ),
