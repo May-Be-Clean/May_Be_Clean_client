@@ -5,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:may_be_clean/utils/utils.dart';
 import 'package:may_be_clean/consts/consts.dart';
 import 'package:get/get.dart';
-import 'package:may_be_clean/networks/network.dart';
 
 class StoreComfirmDialog extends StatelessWidget {
   final Store store;
@@ -28,7 +27,7 @@ class StoreComfirmDialog extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SvgPicture.asset(
-                    countToClover(store.cloverCount),
+                    countToClover(store.clover),
                     width: 30,
                   ),
                   const SizedBox(width: 10),
@@ -63,13 +62,14 @@ class StoreComfirmDialog extends StatelessWidget {
                 (index) {
                   bool isSelected = false;
                   if (store.category
-                      .contains(storeCategories.keys.toList()[index])) {
+                      .contains(storeCategoryMapping.keys.toList()[index])) {
                     isSelected = true;
                   }
-                  final title = storeCategories.values.toList()[index][0];
+                  final title = storeCategoryMapping.values.toList()[index][0];
                   final unselectedSvg =
-                      storeCategories.values.toList()[index][1];
-                  final selectedSvg = storeCategories.values.toList()[index][2];
+                      storeCategoryMapping.values.toList()[index][1];
+                  final selectedSvg =
+                      storeCategoryMapping.values.toList()[index][2];
 
                   return SizedBox(
                     child: CategoryButton(
@@ -91,15 +91,16 @@ class StoreComfirmDialog extends StatelessWidget {
                 (index) {
                   final innerIndex = index + 2;
                   bool isSelected = false;
-                  if (store.category
-                      .contains(storeCategories.keys.toList()[innerIndex])) {
+                  if (store.category.contains(
+                      storeCategoryMapping.keys.toList()[innerIndex])) {
                     isSelected = true;
                   }
-                  final title = storeCategories.values.toList()[innerIndex][0];
+                  final title =
+                      storeCategoryMapping.values.toList()[innerIndex][0];
                   final unselectedSvg =
-                      storeCategories.values.toList()[innerIndex][1];
+                      storeCategoryMapping.values.toList()[innerIndex][1];
                   final selectedSvg =
-                      storeCategories.values.toList()[innerIndex][2];
+                      storeCategoryMapping.values.toList()[innerIndex][2];
 
                   return SizedBox(
                     child: CategoryButton(
@@ -121,15 +122,16 @@ class StoreComfirmDialog extends StatelessWidget {
                 (index) {
                   final innerIndex = index + 4;
                   bool isSelected = false;
-                  if (store.category
-                      .contains(storeCategories.keys.toList()[innerIndex])) {
+                  if (store.category.contains(
+                      storeCategoryMapping.keys.toList()[innerIndex])) {
                     isSelected = true;
                   }
-                  final title = storeCategories.values.toList()[innerIndex][0];
+                  final title =
+                      storeCategoryMapping.values.toList()[innerIndex][0];
                   final unselectedSvg =
-                      storeCategories.values.toList()[innerIndex][1];
+                      storeCategoryMapping.values.toList()[innerIndex][1];
                   final selectedSvg =
-                      storeCategories.values.toList()[innerIndex][2];
+                      storeCategoryMapping.values.toList()[innerIndex][2];
 
                   return SizedBox(
                     child: CategoryButton(
@@ -156,8 +158,8 @@ class StoreComfirmDialog extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    Text(store.address1, style: FontSystem.body2),
-                    Text(store.address2,
+                    Text(store.newAddress, style: FontSystem.body2),
+                    Text(store.oldAddress,
                         style: FontSystem.body2
                             .copyWith(color: ColorSystem.gray1)),
                   ],
@@ -171,7 +173,7 @@ class StoreComfirmDialog extends StatelessWidget {
                 const SizedBox(
                   width: 10,
                 ),
-                Text(store.phone, style: FontSystem.body2)
+                Text(store.phoneNumber ?? "번호 없음", style: FontSystem.body2)
               ],
             ),
             Row(
@@ -180,7 +182,7 @@ class StoreComfirmDialog extends StatelessWidget {
                 const SizedBox(
                   width: 10,
                 ),
-                Text(store.openTime ?? "영업 시간 미지정", style: FontSystem.body2),
+                Text(store.startAt ?? "영업 시간 미지정", style: FontSystem.body2),
               ],
             ),
             const SizedBox(height: 40),
@@ -313,7 +315,7 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                         3,
                         (index) {
                           final category =
-                              storeCategories.values.toList()[index];
+                              storeCategoryMapping.values.toList()[index];
                           bool isSelected = false;
                           if (_selectedCategories.contains(category[0])) {
                             isSelected = true;
@@ -341,10 +343,10 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                     ),
                     Row(
                       children: List<Widget>.generate(
-                        storeCategories.length - 3,
+                        storeCategoryMapping.length - 3,
                         (index) {
                           final category =
-                              storeCategories.values.toList()[index + 3];
+                              storeCategoryMapping.values.toList()[index + 3];
                           bool isSelected = false;
                           if (_selectedCategories.contains(category[0])) {
                             isSelected = true;
@@ -521,7 +523,7 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                     _location == '') {
                   showToast('필수입력요소를 다 입력해주세요');
                 } else {
-                  StoreNetwork.postNewStore(_name, _location, _phoneNumber,
+                  Store.postNewStore(_name, _location, _phoneNumber,
                       _selectedCategories, _opentime, _opentime);
                   //TODO 가게 등록 API 연결 및 마커 추가
                   Get.back();
