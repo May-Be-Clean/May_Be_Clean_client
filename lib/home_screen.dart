@@ -30,6 +30,14 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
     _globalStates.tabController = TabController(
         length: 4, initialIndex: widget.initScreenIndex, vsync: this);
     _index = widget.initScreenIndex;
+
+    _globalStates.tabController.addListener(() {
+      if (_globalStates.tabController.indexIsChanging) {
+        setState(() {
+          _index = _globalStates.tabController.index;
+        });
+      }
+    });
   }
 
   Widget _bottomNavigatorWidget(String imageUrl, String title, Color color) {
@@ -45,13 +53,6 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
     HapticFeedback.lightImpact();
 
     if (index == _index) return;
-
-    if (_index == 1) {
-      // final bounds = await _globalStates.mapController.getVisibleRegion();
-      // _globalStates.changeLocation(LatLng(
-      //     (bounds.northeast.latitude + bounds.southwest.latitude) / 2,
-      //     (bounds.northeast.longitude + bounds.southwest.longitude) / 2));
-    }
 
     setState(() {
       _globalStates.tabController.animateTo(index);
