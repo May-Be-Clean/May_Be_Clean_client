@@ -7,21 +7,15 @@ class User {
   final String email;
   final String nickname;
   final String? accessToken;
-  final String? role;
-  final int point;
-  final int? reviewCount;
-  final int? registerCount;
-  final int? verifiedCount;
+  final String? userRole;
+  final int? point;
 
   User({
     required this.email,
     required this.nickname,
     this.accessToken,
-    required this.point,
-    this.role,
-    this.reviewCount,
-    this.registerCount,
-    this.verifiedCount,
+    this.userRole,
+    this.point,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -29,11 +23,8 @@ class User {
       nickname: json['nickname'],
       email: json['email'],
       point: json['point'],
+      userRole: json['userRole'],
       accessToken: json['accessToken'],
-      role: json['role'],
-      reviewCount: json['reviewCount'],
-      registerCount: json['registerCount'],
-      verifiedCount: json['verifiedCount'],
     );
   }
 
@@ -42,25 +33,10 @@ class User {
 
     final response = await http.post(
       Uri.parse(api),
-      headers: {'Authorization': token},
-    );
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      return User.fromJson(json.decode(response.body)['user']);
-    } else {
-      throw newHTTPException(response.statusCode, response.body);
-    }
-  }
-
-  static Future<User> getUser(String token) async {
-    const api = '${ENV.apiEndpoint}/user';
-
-    final response = await http.get(
-      Uri.parse(api),
       headers: {'Authorization': "Bearer $token"},
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return User.fromJson(json.decode(response.body));
     } else {
       throw newHTTPException(response.statusCode, response.body);
@@ -77,6 +53,44 @@ class User {
 
     if (response.statusCode == 200) {
       return User.fromJson(json.decode(response.body));
+    } else {
+      throw newHTTPException(response.statusCode, response.body);
+    }
+  }
+}
+
+class UserData {
+  final int reviewCount;
+  final int registeredCount;
+  final int verifiedCount;
+  final User user;
+
+  UserData({
+    required this.reviewCount,
+    required this.registeredCount,
+    required this.verifiedCount,
+    required this.user,
+  });
+
+  factory UserData.fromJson(Map<String, dynamic> json) {
+    return UserData(
+      user: User.fromJson(json['user']),
+      reviewCount: json['reviewCount'],
+      registeredCount: json['registeredCount'],
+      verifiedCount: json['verifiedCount'],
+    );
+  }
+
+  static Future<UserData> getUserData(String token) async {
+    const api = '${ENV.apiEndpoint}/user';
+
+    final response = await http.get(
+      Uri.parse(api),
+      headers: {'Authorization': "Bearer $token"},
+    );
+
+    if (response.statusCode == 200) {
+      return UserData.fromJson(json.decode(response.body));
     } else {
       throw newHTTPException(response.statusCode, response.body);
     }
