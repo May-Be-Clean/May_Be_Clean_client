@@ -42,6 +42,8 @@ class MyBeClean extends StatelessWidget {
       initialBinding: BindingsBuilder(() {
         Get.put(GlobalState());
         Get.put(StoreState());
+        Get.put(MapState());
+        Get.put(ReviewState());
       }),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
