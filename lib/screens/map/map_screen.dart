@@ -21,8 +21,15 @@ class _MapScreenState extends State<MapScreen> {
   final _mapStates = Get.find<MapState>();
   final _storeStates = Get.find<StoreState>();
   final List<String> _selectedCategories = [];
+  bool _isBottomsheetShow = false;
 
   final _categoryScrollController = ScrollController();
+
+  void bottomsheetDismiss() {
+    setState(() {
+      _isBottomsheetShow = false;
+    });
+  }
 
   @override
   void dispose() {
@@ -92,6 +99,7 @@ class _MapScreenState extends State<MapScreen> {
                   _selectedCategories.remove(categoryName);
                 } else {
                   _selectedCategories.add(categoryName);
+                  _isBottomsheetShow = true;
                 }
                 isSelected = !isSelected;
                 setState(() {});
@@ -105,6 +113,7 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
+        alignment: Alignment.bottomCenter,
         children: [
           GoogleMap(
             onMapCreated: (controller) {
@@ -118,6 +127,7 @@ class _MapScreenState extends State<MapScreen> {
             myLocationButtonEnabled: false,
           ),
           Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               if (_selectedCategories.isEmpty) _header(),
               _categoryListView(),
@@ -169,11 +179,12 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ),
           ),
-          // if (_selectedCategories.isNotEmpty)
-          //   Positioned(
-          //     bottom: 20,
-          //     child: StoreBottomSheet(_storeStates.stores[0]),
-          //   ),
+          if (_selectedCategories.isNotEmpty && _isBottomsheetShow)
+            StoreBottomSheet(
+              _storeStates.stores[0],
+              dismiss: bottomsheetDismiss,
+              isBottomSheet: false,
+            ),
         ],
       ),
     );
@@ -329,8 +340,8 @@ class StoreComfirmDialog extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    Text(store.address, style: FontSystem.body2),
-                    Text(store.address,
+                    Text(store.address1, style: FontSystem.body2),
+                    Text(store.address2,
                         style: FontSystem.body2
                             .copyWith(color: ColorSystem.gray1)),
                   ],
@@ -629,7 +640,7 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                             style: FontSystem.body1.copyWith(),
                             children: [
                               TextSpan(
-                                text: " ex) 9:00 - 17:00",
+                                text: " ex) 09:00 - 17:00",
                                 style: FontSystem.caption
                                     .copyWith(color: ColorSystem.primary),
                               )
