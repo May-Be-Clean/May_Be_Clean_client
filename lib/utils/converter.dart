@@ -75,23 +75,23 @@ String expNext(int exp) {
   if (exp < 32) {
     return '32';
   }
-  return 'INF';
+  return '';
 }
 
 double expPercent(int exp) {
   if (exp < 8) {
-    return exp / 8;
+    return exp / 8 * 100;
   }
   if (exp < 16) {
-    return (exp - 8) / 8;
+    return (exp - 8) / 8 * 100;
   }
   if (exp < 24) {
-    return (exp - 16) / 8;
+    return (exp - 16) / 8 * 100;
   }
   if (exp < 32) {
-    return (exp - 24) / 8;
+    return (exp - 24) / 8 * 100;
   }
-  return 1;
+  return 100;
 }
 
 String countToClover(int count) {
