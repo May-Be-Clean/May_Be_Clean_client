@@ -9,7 +9,14 @@ import 'package:may_be_clean/screens.dart';
 
 import '../../widgets/widgets.dart';
 
+/*
+ * StoreBottomSheet
+* store : 해당 가게 정보
+* dismiss : 해당 바텀시트를 닫고 싶을 때 사용하는 함수
+* isBottomSheet : 해당 바텀시트가 바텀시트인지 아닌지
+*/
 class StoreBottomSheet extends StatefulWidget {
+  /// 해당 바텀시트를 닫고 싶을 때 사용하는 함수
   final Function() dismiss;
   final Store store;
   final bool isBottomSheet;
@@ -237,8 +244,12 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                                   child: Container(
                                     alignment: Alignment.centerRight,
                                     child: GestureDetector(
+                                      onTap: () {
+                                        Get.dialog(ReviewUploadDialog(
+                                            store: widget.store));
+                                      },
                                       child: const Text(
-                                        "후기 등록하기", //후기 등록하기 스크린으로 연결
+                                        "후기 등록하기",
                                         style: TextStyle(
                                           color: Colors.green,
                                           fontSize: 12,
