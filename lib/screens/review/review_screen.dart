@@ -17,7 +17,7 @@ class ReviewScreen extends StatefulWidget {
 }
 
 class _ReviewScreenState extends State<ReviewScreen> {
-  final _reviewStates = Get.find<ReviewState>();
+  final _globalStates = Get.find<GlobalState>();
 
   @override
   Widget build(BuildContext context) {
@@ -50,10 +50,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
         children: [
           Expanded(
             child: ListView.separated(
-              itemCount: _reviewStates.reviews.length,
+              itemCount: _globalStates.reviews.length,
               padding: const EdgeInsets.all(10),
               itemBuilder: (context, index) {
-                final review = _reviewStates.reviews[index];
+                final review = _globalStates.reviews[index];
                 return ReviewCard(review);
               },
               separatorBuilder: (context, index) => const Divider(),
@@ -66,7 +66,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
 }
 
 class ReviewCard extends StatelessWidget {
-  final _storeStates = Get.find<StoreState>();
+  final _globalStates = Get.find<GlobalState>();
   final Review review;
   ReviewCard(this.review, {super.key});
 
@@ -82,7 +82,7 @@ class ReviewCard extends StatelessWidget {
             onTap: () {
               Get.bottomSheet(
                 StoreBottomSheet(
-                  _storeStates.stores[0],
+                  _globalStates.stores.values.toList()[0],
                   dismiss: () {
                     Get.back();
                   },
@@ -140,6 +140,7 @@ class ReviewCard extends StatelessWidget {
                   final image = review.imageUrls[index];
                   return RoundedImage(
                     imageUrl: image,
+                    disableMargin: true,
                     onTap: () => Get.to(
                         () => ExpandImageScreen(imageUrls: review.imageUrls)),
                   );
