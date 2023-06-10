@@ -113,24 +113,9 @@ class _MyPageState extends State<MyPage> {
         const SizedBox(
           height: 10,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(
-              width: 25,
-            ),
-            Text(
-              _globalState.userData?.user.nickname ?? "익명의 유저",
-              style: FontSystem.subtitleSemiBold.copyWith(),
-            ),
-            GestureDetector(
-              onTap: () {
-                //TODO 프로필 수정 API 연결
-              },
-              child:
-                  SvgPicture.asset('assets/icons/category/edit.svg', width: 25),
-            )
-          ],
+        Text(
+          _globalState.userData?.user.nickname ?? "익명의 유저",
+          style: FontSystem.subtitleSemiBold.copyWith(),
         ),
         const SizedBox(
           height: 10,
@@ -182,8 +167,10 @@ class _MyPageState extends State<MyPage> {
           children: [
             MyPageButton(
               title: "내가 작성한 후기",
-              count: "8",
-              onTap: () {},
+              count: _globalState.userData?.reviewCount ?? 0,
+              onTap: () {
+                Get.to(() => const MyReviewScreen());
+              },
             ),
             Container(
               color: ColorSystem.gray2,
@@ -192,8 +179,10 @@ class _MyPageState extends State<MyPage> {
             ),
             MyPageButton(
               title: "내가 등록한 가게",
-              count: "8",
-              onTap: () {},
+              count: _globalState.userData?.registeredCount ?? 0,
+              onTap: () {
+                Get.to(() => const MyRegisterScreen());
+              },
             ),
             Container(
               color: ColorSystem.gray2,
@@ -202,8 +191,10 @@ class _MyPageState extends State<MyPage> {
             ),
             MyPageButton(
               title: "내가 인증한 가게",
-              count: "8",
-              onTap: () {},
+              count: _globalState.userData?.verifiedCount ?? 0,
+              onTap: () {
+                Get.to(() => const MyVerifyScreen());
+              },
             ),
           ],
         ),
@@ -233,29 +224,70 @@ class _MyPageState extends State<MyPage> {
                     ),
                     actions: [
                       CupertinoDialogAction(
-                        child: const Text('취소'),
+                        child: const Text('취소',
+                            style: TextStyle(color: Colors.blue)),
                         onPressed: () {
                           Get.back();
                         },
                       ),
                       CupertinoDialogAction(
-                        child: const Text('확인'),
                         onPressed: () {
-                          _globalState.logout();
-                          setState(() {});
                           Get.back();
+                          _globalState.innerLogout().then((_) {
+                            setState(() {});
+                          });
                         },
                         isDestructiveAction: true,
+                        child: const Text(
+                          '확인',
+                          style: TextStyle(
+                              color: Colors.blue, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   );
                 },
               );
             }),
-        MyPageInformationButton(title: "이용규칙", onTap: () {}),
-        const SizedBox(
-          height: 40,
-        ),
+        MyPageInformationButton(
+            title: "회원 탈퇴",
+            onTap: () {
+              showCupertinoDialog(
+                context: context,
+                builder: (context) {
+                  return CupertinoAlertDialog(
+                    title: const Text(
+                      '정말 탈퇴하시겠어요?',
+                    ),
+                    content: const Text(
+                      '이 동작은 취소할 수 없어요',
+                    ),
+                    actions: [
+                      CupertinoDialogAction(
+                        child: const Text('취소',
+                            style: TextStyle(color: Colors.blue)),
+                        onPressed: () {
+                          Get.back();
+                        },
+                      ),
+                      CupertinoDialogAction(
+                        onPressed: () {
+                          _globalState.innerLogout();
+                          setState(() {});
+                        },
+                        isDestructiveAction: true,
+                        child: const Text(
+                          '탈퇴하기',
+                          style: TextStyle(
+                              color: ColorSystem.red,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }),
       ],
     );
   }
@@ -342,7 +374,7 @@ class TrianglePainter extends CustomPainter {
 
 class MyPageButton extends StatelessWidget {
   final String title;
-  final String count;
+  final int count;
   final Function() onTap;
 
   const MyPageButton({
@@ -356,6 +388,7 @@ class MyPageButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
+      behavior: HitTestBehavior.translucent,
       child: Column(
         children: [
           Text(title, style: FontSystem.caption),
@@ -363,7 +396,7 @@ class MyPageButton extends StatelessWidget {
             height: 5,
           ),
           Text(
-            count,
+            count.toString(),
             style: FontSystem.subtitleSemiBold.copyWith(
               color: ColorSystem.primary,
             ),
@@ -388,6 +421,7 @@ class MyPageInformationButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
+      behavior: HitTestBehavior.translucent,
       child: SizedBox(
         height: 50,
         child: Row(
