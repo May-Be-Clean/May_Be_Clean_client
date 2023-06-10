@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 import 'dart:developer';
 
 import 'package:may_be_clean/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:may_be_clean/screens.dart';
+import 'package:image_picker/image_picker.dart';
 
 void dismissKeyboard(BuildContext context) {
   FocusScope.of(context).requestFocus(FocusNode());
