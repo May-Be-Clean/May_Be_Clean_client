@@ -5,13 +5,13 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
 class MapState extends GetxController {
-  late LatLng currentLocation;
+  LatLng? currentLocation;
 
-  late GoogleMapController mapController;
+  GoogleMapController? mapController;
 
   Future<void> moveToCurrentLocation() async {
     final location = await getCurrentLocation();
-    await mapController.animateCamera(CameraUpdate.newCameraPosition(
+    await mapController?.animateCamera(CameraUpdate.newCameraPosition(
         CameraPosition(target: location, zoom: 16)));
   }
 
