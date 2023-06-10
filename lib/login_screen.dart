@@ -42,39 +42,50 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              GestureDetector(
-                onTap: () {
-                  if (_isProcess) return;
-                  kakaoLogin(() {
-                    setState(() {
-                      _isProcess = true;
-                    });
-                  }, () {
-                    setState(() {
-                      _isProcess = false;
-                      Get.off(() => const HomeScreen());
-                    });
-                  });
-                },
-                child: Image.asset('assets/icons/login/kakao_login.png'),
-              ),
-              const SizedBox(height: 20),
-              GestureDetector(
-                onTap: () {
-                  if (_isProcess) return;
-                  appleLogin(() {
-                    setState(() {
-                      _isProcess = true;
-                    });
-                  }, () {
-                    setState(() {
-                      _isProcess = false;
-                    });
-                  });
-                },
-                child: Image.asset('assets/icons/login/apple_login.png'),
-              ),
-              const SizedBox(height: 20),
+              () {
+                if (_isProcess) {
+                  return Container(
+                      padding: const EdgeInsets.all(10),
+                      child: const CircularProgressIndicator());
+                } else {
+                  return Column(children: [
+                    GestureDetector(
+                      onTap: () {
+                        if (_isProcess) return;
+                        kakaoLogin(() {
+                          setState(() {
+                            _isProcess = true;
+                          });
+                        }, () {
+                          setState(() {
+                            _isProcess = false;
+                          });
+                        }).then((value) {
+                          Get.off(() => const HomeScreen());
+                        });
+                      },
+                      child: Image.asset('assets/icons/login/kakao_login.png'),
+                    ),
+                    const SizedBox(height: 20),
+                    GestureDetector(
+                      onTap: () {
+                        if (_isProcess) return;
+                        appleLogin(() {
+                          setState(() {
+                            _isProcess = true;
+                          });
+                        }, () {
+                          setState(() {
+                            _isProcess = false;
+                          });
+                        });
+                      },
+                      child: Image.asset('assets/icons/login/apple_login.png'),
+                    ),
+                    const SizedBox(height: 20)
+                  ]);
+                }
+              }(),
               GestureDetector(
                 onTap: () {
                   SharedPreferences.getInstance().then((prefs) {
