@@ -35,23 +35,8 @@ class User {
       Uri.parse(api),
       headers: {'Authorization': "Bearer $token"},
     );
-
+    print(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return User.fromJson(json.decode(response.body));
-    } else {
-      throw newHTTPException(response.statusCode, response.body);
-    }
-  }
-
-  Future<User> getMypageData(String token) async {
-    const api = '${ENV.apiEndpoint}/user/mypage';
-
-    final response = await http.get(
-      Uri.parse(api),
-      headers: {'Authorization': "Bearer $token"},
-    );
-
-    if (response.statusCode == 200) {
       return User.fromJson(json.decode(response.body));
     } else {
       throw newHTTPException(response.statusCode, response.body);
@@ -82,7 +67,7 @@ class UserData {
   }
 
   static Future<UserData> getUserData(String token) async {
-    const api = '${ENV.apiEndpoint}/user';
+    const api = '${ENV.apiEndpoint}/user/mypage';
 
     final response = await http.get(
       Uri.parse(api),

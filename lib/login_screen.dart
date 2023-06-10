@@ -52,6 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   }, () {
                     setState(() {
                       _isProcess = false;
+                      Get.off(() => const HomeScreen());
                     });
                   });
                 },

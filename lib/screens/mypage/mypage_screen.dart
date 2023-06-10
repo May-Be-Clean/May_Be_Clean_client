@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -203,6 +204,55 @@ class _MyPageState extends State<MyPage> {
     );
   }
 
+  Widget _myAccountSetting() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const Divider(height: 30),
+        Container(
+          alignment: Alignment.centerLeft,
+          child: const Text("계정 관리", style: FontSystem.body1),
+        ),
+        MyPageInformationButton(
+            title: "로그아웃",
+            onTap: () {
+              showCupertinoDialog(
+                context: context,
+                builder: (context) {
+                  return CupertinoAlertDialog(
+                    content: const Text(
+                      '로그아웃하시겠어요?',
+                      style: FontSystem.body1,
+                    ),
+                    actions: [
+                      CupertinoDialogAction(
+                        child: const Text('취소'),
+                        onPressed: () {
+                          Get.back();
+                        },
+                      ),
+                      CupertinoDialogAction(
+                        child: const Text('확인'),
+                        onPressed: () {
+                          _globalState.logout();
+                          setState(() {});
+                          Get.back();
+                        },
+                        isDestructiveAction: true,
+                      ),
+                    ],
+                  );
+                },
+              );
+            }),
+        MyPageInformationButton(title: "이용규칙", onTap: () {}),
+        const SizedBox(
+          height: 40,
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -226,6 +276,10 @@ class _MyPageState extends State<MyPage> {
                 MyPageInformationButton(title: "오픈소스 사용정보", onTap: () {}),
               ],
             ),
+            if (_globalState.userData == null)
+              const SizedBox()
+            else
+              _myAccountSetting(),
           ],
         ),
       ),
@@ -332,7 +386,9 @@ class MyPageInformationButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(title, style: FontSystem.body2),
+            Expanded(
+              child: Text(title, style: FontSystem.body2),
+            ),
             const Icon(Icons.chevron_right),
           ],
         ),
