@@ -30,6 +30,7 @@ dependencies:
   kakao_flutter_sdk: ^1.4.3
   sign_in_with_apple: ^4.3.0
   image_picker: ^0.8.7+5
+  mime: ^1.0.4
 
 dev_dependencies:
   flutter_test:
@@ -50,6 +51,7 @@ flutter:
     - assets/icons/map/
     - assets/icons/badge/
     - assets/icons/login/
+    - assets/icons/marker/
 
 fonts:
   - family: pretendard
