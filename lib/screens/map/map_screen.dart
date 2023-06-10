@@ -18,7 +18,6 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   final _globalStates = Get.find<GlobalState>();
   final _mapStates = Get.find<MapState>();
-  final _storeStates = Get.find<StoreState>();
   final List<String> _selectedCategories = [];
   bool _isBottomsheetShow = false;
 
@@ -36,11 +35,11 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> loadMarkers() async {
-    await _storeStates.loadMarker(
-        _mapStates.currentLocation.latitude - 0.001,
-        _mapStates.currentLocation.longitude - 0.001,
-        _mapStates.currentLocation.latitude + 0.001,
-        _mapStates.currentLocation.longitude + 0.001,
+    await _globalStates.loadMarker(
+        _mapStates.currentLocation!.latitude - 0.001,
+        _mapStates.currentLocation!.longitude - 0.001,
+        _mapStates.currentLocation!.latitude + 0.001,
+        _mapStates.currentLocation!.longitude + 0.001,
         _selectedCategories);
   }
 
@@ -134,11 +133,12 @@ class _MapScreenState extends State<MapScreen> {
               loadMarkers();
             },
             initialCameraPosition: CameraPosition(
-              target: _mapStates.currentLocation,
+              target: _mapStates.currentLocation!,
               zoom: 16,
             ),
             myLocationButtonEnabled: false,
             myLocationEnabled: true,
+            mapType: MapType.terrain,
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
