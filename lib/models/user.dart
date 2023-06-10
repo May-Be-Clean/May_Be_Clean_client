@@ -35,7 +35,7 @@ class User {
       Uri.parse(api),
       headers: {'Authorization': "Bearer $token"},
     );
-    print(response.body);
+
     if (response.statusCode == 200 || response.statusCode == 201) {
       return User.fromJson(json.decode(response.body));
     } else {
