@@ -7,11 +7,13 @@ import 'dart:io';
 class RoundedImage extends StatelessWidget {
   final String imageUrl;
   final double diameter;
+  final bool disableMargin;
   final Function()? onTap;
   final Function()? dismissFunction;
 
   const RoundedImage(
       {required this.imageUrl,
+      this.disableMargin = false,
       this.diameter = 100,
       this.onTap,
       this.dismissFunction,
@@ -25,7 +27,7 @@ class RoundedImage extends StatelessWidget {
         child: Container(
           width: diameter,
           height: diameter,
-          margin: const EdgeInsets.all(10),
+          margin: (disableMargin) ? null : const EdgeInsets.all(10),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: ColorSystem.gray3),
@@ -34,74 +36,80 @@ class RoundedImage extends StatelessWidget {
       );
     }
     if (imageUrl.startsWith('http')) {
-      return CachedNetworkImage(
-        imageUrl: imageUrl,
-        cacheKey: imageUrl,
-        width: diameter,
-        memCacheWidth: diameter.toInt(),
-        maxWidthDiskCache: diameter.toInt(),
-        imageBuilder: (context, imageProvider) => Container(
+      return GestureDetector(
+        onTap: onTap,
+        child: CachedNetworkImage(
+          imageUrl: imageUrl,
+          cacheKey: imageUrl,
           width: diameter,
-          height: diameter,
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+          memCacheWidth: diameter.toInt(),
+          maxWidthDiskCache: diameter.toInt(),
+          imageBuilder: (context, imageProvider) => Container(
+            width: diameter,
+            height: diameter,
+            margin: (disableMargin) ? null : const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+            ),
           ),
-        ),
-        placeholder: (context, url) => Container(
-          width: diameter,
-          height: diameter,
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.grey,
+          placeholder: (context, url) => Container(
+            width: diameter,
+            height: diameter,
+            margin: (disableMargin) ? null : const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.grey,
+            ),
           ),
-        ),
-        errorWidget: (context, url, error) => Container(
-          width: diameter,
-          height: diameter,
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: ColorSystem.gray2,
-            borderRadius: BorderRadius.circular(10),
+          errorWidget: (context, url, error) => Container(
+            width: diameter,
+            height: diameter,
+            margin: (disableMargin) ? null : const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: ColorSystem.gray2,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Icon(Icons.error),
           ),
-          child: const Icon(Icons.error),
         ),
       );
     }
-    return Stack(
-      children: [
-        Container(
-          width: diameter,
-          height: diameter,
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            image: DecorationImage(
-              image: FileImage(File(imageUrl)),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        if (dismissFunction != null)
-          Positioned(
-            right: 0,
-            child: GestureDetector(
-              onTap: dismissFunction,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  color: ColorSystem.primary,
-                ),
-                child: const Icon(
-                  Icons.close,
-                  color: Colors.white,
-                ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Stack(
+        children: [
+          Container(
+            width: diameter,
+            height: diameter,
+            margin: (disableMargin) ? null : const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              image: DecorationImage(
+                image: FileImage(File(imageUrl)),
+                fit: BoxFit.cover,
               ),
             ),
-          )
-      ],
+          ),
+          if (dismissFunction != null)
+            Positioned(
+              right: 0,
+              child: GestureDetector(
+                onTap: dismissFunction,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: ColorSystem.primary,
+                  ),
+                  child: const Icon(
+                    Icons.close,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            )
+        ],
+      ),
     );
   }
 }
