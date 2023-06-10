@@ -15,11 +15,6 @@ Map<String, List<String>> storeCategoryMapping = {
     'assets/icons/category/nodisposable.svg',
     'assets/icons/category/nodisposable.svg',
   ],
-  'VEGAN': [
-    '비건',
-    'assets/icons/category/vegan.svg',
-    'assets/icons/category/vegan.svg',
-  ],
   'RESTAURANT': [
     '식당',
     'assets/icons/category/restaurant.svg',
