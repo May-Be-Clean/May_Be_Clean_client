@@ -24,7 +24,7 @@ class StoreCard extends StatelessWidget {
             onTap: () {
               Get.bottomSheet(
                 StoreBottomSheet(
-                  Get.find<StoreState>().stores[0],
+                  Get.find<GlobalState>().stores.values.toList()[0],
                   isBottomSheet: true,
                   dismiss: () => Get.back(),
                 ),
@@ -33,8 +33,8 @@ class StoreCard extends StatelessWidget {
             },
             child: Row(
               children: [
-                SvgPicture.asset(
-                    countToClover(Get.find<StoreState>().stores[0].clover)),
+                SvgPicture.asset(countToClover(
+                    Get.find<GlobalState>().stores.values.toList()[0].clover)),
                 Text(
                   store.name,
                   style: FontSystem.subtitleSemiBold
@@ -94,7 +94,7 @@ class LikeScreen extends StatefulWidget {
 
 class _LikeScreenState extends State<LikeScreen> {
   final List<String> _selectedCategories = [];
-  final _storeStates = Get.find<StoreState>();
+  final _globalStates = Get.find<GlobalState>();
 
   @override
   Widget build(BuildContext context) {
@@ -155,9 +155,9 @@ class _LikeScreenState extends State<LikeScreen> {
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate((context, index) {
-              final store = _storeStates.stores[index];
+              final store = _globalStates.stores.values.toList()[index];
               return StoreCard(store);
-            }, childCount: _storeStates.stores.length),
+            }, childCount: _globalStates.stores.length),
           ),
         ],
       ),
