@@ -1,3 +1,9 @@
+import 'package:may_be_clean/env/env.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:may_be_clean/utils/utils.dart';
+import 'package:dio/dio.dart';
+
 class Review {
   final int reviewId;
   final int userId;
@@ -12,6 +18,7 @@ class Review {
   final List<String> reviewCategories;
   final ReviewFilterCount reviewFilterCount;
   final DateTime createdAt;
+  final DateTime updatedAt = DateTime.now();
 
   Review({
     required this.reviewId,
@@ -45,6 +52,81 @@ class Review {
       createdAt: DateTime.parse(json['createdAt']),
       reviewFilterCount: ReviewFilterCount.fromJson(json['reviewFilterCount']),
     );
+  }
+
+  String toKeyString() {
+    return "REVIEW_$reviewId#${updatedAt.toIso8601String()}";
+  }
+
+  static Future<List<Review>> loadReviews(
+      String token, int page, int size) async {
+    final api = "${ENV.apiEndpoint}/review?page=$page&size=$size";
+
+    final response = await http.get(
+      Uri.parse(api),
+      headers: {'Authorization': "Bearer $token"},
+    );
+
+    if (response.statusCode == 200) {
+      final result = json.decode(response.body);
+      return result
+          .map((data) => Review.fromJson(data as Map<String, dynamic>))
+          .toList();
+    } else {
+      throw newHTTPException(response.statusCode, response.body);
+    }
+  }
+
+  static Future<List<Review>> loadMyReviews(
+      String token, int page, int size) async {
+    final api = "${ENV.apiEndpoint}/review/myReview?page=$page&size=$size";
+
+    final response = await http.get(
+      Uri.parse(api),
+      headers: {'Authorization': "Bearer $token"},
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> result = json.decode(response.body)["reviews"];
+
+      return result
+          .map((data) => Review.fromJson(data as Map<String, dynamic>))
+          .toList();
+    } else {
+      throw newHTTPException(response.statusCode, response.body);
+    }
+  }
+
+  static Future<Review> postReview(String token, int storeId,
+      List<String> categories, String content, List<String> images) async {
+    Dio dio = Dio();
+
+    FormData formData = FormData.fromMap({
+      "storeId": storeId,
+      "categories": categories,
+      "content": content,
+      "images": images.map((image) async {
+        return await MultipartFile.fromFile(image, filename: "image.jpeg");
+      }).toList(),
+    });
+
+    final response = await dio.post(
+      '${ENV.apiEndpoint}/garbage',
+      options: Options(
+        headers: {
+          "Content-Type": 'multipart/form-data',
+          'Authorization': "Bearer $token"
+        },
+      ),
+      data: formData,
+    );
+
+    if (response.statusCode == 200) {
+      final result = json.decode(response.data);
+      return Review.fromJson(result);
+    } else {
+      throw newHTTPException(response.statusCode ?? 500, response.data);
+    }
   }
 }
 
