@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:may_be_clean/consts/consts.dart';
+import 'package:may_be_clean/screens.dart';
 import 'package:may_be_clean/utils/utils.dart';
 import 'package:may_be_clean/widgets/widgets.dart';
 import 'package:may_be_clean/states/states.dart';
@@ -48,37 +49,43 @@ class _MyPageState extends State<MyPage> {
         ),
         const Text("로그인이 필요한 서비스입니다.", style: FontSystem.subtitleSemiBold),
         const SizedBox(height: 30),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            GestureDetector(
-              onTap: () {
-                if (_isProcess) return;
-                setState(() {
-                  kakaoLogin(loginStart, loginEnd);
-                });
-              },
-              child: Column(
-                children: [
-                  SvgPicture.asset('assets/icons/login/kakao_small.svg'),
-                  const Text("카카오 로그인", style: FontSystem.caption)
-                ],
+        if (_isProcess)
+          Container(
+              height: 80,
+              alignment: Alignment.center,
+              child: const CircularProgressIndicator())
+        else
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  if (_isProcess) return;
+                  setState(() {
+                    kakaoLogin(loginStart, loginEnd);
+                  });
+                },
+                child: Column(
+                  children: [
+                    SvgPicture.asset('assets/icons/login/kakao_small.svg'),
+                    const Text("카카오 로그인", style: FontSystem.caption)
+                  ],
+                ),
               ),
-            ),
-            GestureDetector(
-              onTap: () {
-                if (_isProcess) return;
-                appleLogin(loginStart, loginEnd);
-              },
-              child: Column(
-                children: [
-                  SvgPicture.asset('assets/icons/login/apple_small.svg'),
-                  const Text("애플 로그인", style: FontSystem.caption)
-                ],
+              GestureDetector(
+                onTap: () {
+                  if (_isProcess) return;
+                  appleLogin(loginStart, loginEnd);
+                },
+                child: Column(
+                  children: [
+                    SvgPicture.asset('assets/icons/login/apple_small.svg'),
+                    const Text("애플 로그인", style: FontSystem.caption)
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
       ],
     );
   }
