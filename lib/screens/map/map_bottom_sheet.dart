@@ -551,7 +551,7 @@ class _StoreListBottomSheetState extends State<StoreListBottomSheet> {
   bool _isFullscreen = false;
   // bool _isDisabled = false;
   final List<String> _selectedCategories = [];
-  final _storeStates = Get.find<StoreState>();
+  final _globalStates = Get.find<GlobalState>();
 
   @override
   void dispose() {
@@ -690,9 +690,10 @@ class _StoreListBottomSheetState extends State<StoreListBottomSheet> {
                           SliverList(
                             delegate:
                                 SliverChildBuilderDelegate((context, index) {
-                              final store = _storeStates.stores[0];
+                              final store =
+                                  _globalStates.stores.values.toList()[0];
                               return StoreCard(store);
-                            }, childCount: _storeStates.stores.length),
+                            }, childCount: _globalStates.stores.length),
                           ),
                         ],
                       ),
