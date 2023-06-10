@@ -20,9 +20,10 @@ Future<void> kakaoLogin(Function() loginStart, Function() loginEnd) async {
     }
 
     final model.User user = await model.User.authKakao(oauth.accessToken);
+    globalStates.setAutoLogin(user.accessToken ?? "");
     final model.UserData userData =
         await model.UserData.getUserData(user.accessToken!);
-    globalStates.login(userData);
+    globalStates.innerLogin(userData);
 
     loginEnd();
   } catch (e, s) {
@@ -39,6 +40,7 @@ Future<void> kakaoLogin(Function() loginStart, Function() loginEnd) async {
 
 Future<void> appleLogin(Function() loginStart, Function() loginEnd) async {
   try {
+    loginStart();
     final appleCredential = await SignInWithApple.getAppleIDCredential(
       scopes: [
         AppleIDAuthorizationScopes.email,
@@ -51,7 +53,7 @@ Future<void> appleLogin(Function() loginStart, Function() loginEnd) async {
         ),
       ),
     );
-    loginStart();
+
     log(appleCredential.toString());
     log(appleCredential.authorizationCode.toString());
     loginEnd();
