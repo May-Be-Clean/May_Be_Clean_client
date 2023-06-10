@@ -40,10 +40,8 @@ class MyBeClean extends StatelessWidget {
       ],
       supportedLocales: const [Locale('ko', 'KR')],
       initialBinding: BindingsBuilder(() {
-        Get.put(GlobalState());
-        Get.put(StoreState());
         Get.put(MapState());
-        Get.put(ReviewState());
+        Get.put(GlobalState());
       }),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
