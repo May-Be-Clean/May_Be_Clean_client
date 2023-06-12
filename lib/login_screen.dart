@@ -26,16 +26,17 @@ class _LoginScreenState extends State<LoginScreen> {
           'assets/splash/login_background.png',
           fit: BoxFit.cover,
         ),
-        Positioned(
-          left: 20,
-          top: MediaQuery.of(context).viewPadding.top,
-          child: GestureDetector(
-            onTap: () {
-              Get.back();
-            },
-            child: SvgPicture.asset('assets/icons/navigation/left.svg'),
+        if (widget.isBackbuttonAllow)
+          Positioned(
+            left: 20,
+            top: MediaQuery.of(context).viewPadding.top,
+            child: GestureDetector(
+              onTap: () {
+                Get.back();
+              },
+              child: SvgPicture.asset('assets/icons/navigation/left.svg'),
+            ),
           ),
-        ),
         SizedBox(
           width: Get.width * 0.7,
           child: Column(
