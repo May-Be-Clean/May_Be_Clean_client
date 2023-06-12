@@ -2,7 +2,7 @@ name: may_be_clean
 description: A new Flutter project.
 publish_to: "none"
 
-version: 1.0.0+1
+version: 1.0.0+7
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -17,8 +17,8 @@ dependencies:
   google_maps_flutter: ^2.2.3
   flutter_svg: ^2.0.0+1
   fluttertoast: ^8.1.2
-  path_provider: ^2.0.12
-  path: ^1.8.2
+  path_provider: ^2.0.15
+  path: ^1.8.3
   carousel_slider: ^4.2.1
   http: ^0.13.5
   dio: ^5.0.1
@@ -41,6 +41,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/
     - assets/splash/
     - assets/icons/
     - assets/icons/navigation/
