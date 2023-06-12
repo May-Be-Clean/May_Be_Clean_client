@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:may_be_clean/models/model.dart';
@@ -11,18 +12,38 @@ import 'package:may_be_clean/states/states.dart';
 import 'package:may_be_clean/utils/utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class ReviewUploadDialog extends StatefulWidget {
+class EditReviewDialog extends StatefulWidget {
   final Store store;
-  const ReviewUploadDialog({required this.store, super.key});
+  final Review? review;
+  const EditReviewDialog({required this.store, this.review, super.key});
 
   @override
-  State<ReviewUploadDialog> createState() => _ReviewUploadDialogState();
+  State<EditReviewDialog> createState() => _EditReviewDialogState();
 }
 
-class _ReviewUploadDialogState extends State<ReviewUploadDialog> {
+class _EditReviewDialogState extends State<EditReviewDialog> {
   final List<String> _selectedCategories = [];
   final List<String> _currentImages = [""];
   final _textController = TextEditingController();
+  final _globalStates = Get.find<GlobalState>();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.review != null) {
+      _loadReviewData();
+    }
+  }
+
+  void _loadReviewData() async {
+    _textController.text = widget.review!.content;
+    _selectedCategories.addAll(widget.review!.reviewCategories);
+    for (final image in widget.review!.imageUrls) {
+      final imageConverted = await getImage(image);
+      _currentImages.add(imageConverted.path);
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -238,26 +259,43 @@ class _ReviewUploadDialogState extends State<ReviewUploadDialog> {
         )),
       ),
       actions: [
-        Container(
-          alignment: Alignment.center,
-          child: Container(
-            margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-            padding: const EdgeInsets.all(15),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: ColorSystem.primary,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: GestureDetector(
-              onTap: () async {
-                if (_selectedCategories.isEmpty ||
-                    _textController.text.trim() == "") {
-                  showToast("후기 카테고리와 내용을 모두 작성해주세요.");
-                  return;
-                }
+        GestureDetector(
+          onTap: () async {
+            dismissKeyboard(context);
+            if (_selectedCategories.isEmpty ||
+                _textController.text.trim() == "") {
+              showToast("후기 카테고리와 내용을 모두 작성해주세요.");
+              return;
+            }
+            try {
+              // 0번은 선택 이미지
+              final _selectedImages = _currentImages.removeAt(0);
+              final result = await Review.postReview(
+                  _globalStates.token,
+                  widget.store.id,
+                  _selectedCategories,
+                  _textController.text,
+                  _currentImages);
+
+              if (result) {
                 Get.back();
                 Get.dialog(const ReviewCheckDialog());
-              },
+              }
+            } catch (e, s) {
+              log(e.toString(), stackTrace: s);
+              showToast("후기 작성에 실패했습니다.");
+            }
+          },
+          child: Container(
+            alignment: Alignment.center,
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+              padding: const EdgeInsets.all(15),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: ColorSystem.primary,
+                borderRadius: BorderRadius.circular(10),
+              ),
               child: const Text(
                 '작성 완료',
                 style: TextStyle(
