@@ -93,8 +93,8 @@ class _MyPageState extends State<MyPage> {
   Widget _myPage() {
     return Column(
       children: [
-        const CustomTooltip(
-          message: "다음 레벨까지 얼마 안남았어요!",
+        CustomTooltip(
+          message: expToTooltip(_globalState.userData?.user.point ?? 0),
         ),
         SvgPicture.asset(
           expToBadge(_globalState.userData?.user.point ?? 20),
