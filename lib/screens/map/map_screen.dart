@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -21,8 +23,6 @@ class _MapScreenState extends State<MapScreen> {
   final List<String> _selectedCategories = [];
   bool _isBottomsheetShow = false;
 
-  final _categoryScrollController = ScrollController();
-
   void _bottomsheetDismiss() {
     setState(() {
       _isBottomsheetShow = false;
@@ -34,91 +34,18 @@ class _MapScreenState extends State<MapScreen> {
     super.initState();
   }
 
-  Future<void> loadMarkers() async {
-    await _globalStates.loadMarker(
-        _mapStates.currentLocation!.latitude - 0.001,
-        _mapStates.currentLocation!.longitude - 0.001,
-        _mapStates.currentLocation!.latitude + 0.001,
-        _mapStates.currentLocation!.longitude + 0.001,
-        _selectedCategories);
-  }
+  Future<void> loadMarkers(GoogleMapController controller) async {
+    await controller.getVisibleRegion().then((bounds) async {
+      await _globalStates.loadMarker(
+        bounds.northeast.latitude - 0.001,
+        bounds.southwest.longitude - 0.001,
+        bounds.southwest.latitude + 0.001,
+        bounds.northeast.longitude + 0.001,
+        _selectedCategories,
+      );
 
-  @override
-  void dispose() {
-    _categoryScrollController.dispose();
-    super.dispose();
-  }
-
-  Widget _header() {
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.only(
-        top: MediaQuery.of(context).viewPadding.top,
-      ),
-      width: Get.width,
-      child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: const BoxDecoration(color: Colors.white),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              RichText(
-                text: TextSpan(
-                  text: _globalStates.userData?.user.nickname ?? "익명",
-                  style: FontSystem.subtitleSemiBold,
-                  children: const [
-                    TextSpan(
-                        text: "님 근처에 있는", style: FontSystem.subtitleRegular),
-                  ],
-                ),
-              ),
-              const Text(
-                "친환경 가게들을 찾아봤어요",
-                style: FontSystem.subtitleRegular,
-              ),
-            ],
-          )),
-    );
-  }
-
-  Widget _categoryListView() {
-    return Container(
-      margin: (_selectedCategories.isNotEmpty || _globalStates.userData == null)
-          ? EdgeInsets.only(
-              top: MediaQuery.of(context).viewPadding.top,
-            )
-          : null,
-      height: 40,
-      child: ListView.builder(
-        itemCount: storeCategoryMapping.length,
-        scrollDirection: Axis.horizontal,
-        controller: _categoryScrollController,
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          final category = storeCategoryMapping.values.toList()[index];
-          final categoryName = storeCategoryMapping.keys.toList()[index];
-          bool isSelected = false;
-          if (_selectedCategories.contains(categoryName)) {
-            isSelected = true;
-          }
-          return CategoryButton(
-              title: category[0],
-              unselectedSvg: category[1],
-              selectedSvg: category[2],
-              isSelected: isSelected,
-              action: () {
-                if (isSelected) {
-                  _selectedCategories.remove(categoryName);
-                } else {
-                  _selectedCategories.add(categoryName);
-                  _isBottomsheetShow = true;
-                }
-                isSelected = !isSelected;
-                setState(() {});
-              });
-        },
-      ),
-    );
+      setState(() {});
+    });
   }
 
   @override
@@ -130,7 +57,11 @@ class _MapScreenState extends State<MapScreen> {
           GoogleMap(
             onMapCreated: (controller) {
               _mapStates.mapController = controller;
-              loadMarkers();
+              // 설정 변경
+              changeMapMode(_mapStates.mapController!);
+              Timer(const Duration(milliseconds: 100), () async {
+                await loadMarkers(controller);
+              });
             },
             initialCameraPosition: CameraPosition(
               target: _mapStates.currentLocation!,
@@ -138,14 +69,17 @@ class _MapScreenState extends State<MapScreen> {
             ),
             myLocationButtonEnabled: false,
             myLocationEnabled: true,
-            mapType: MapType.terrain,
+            markers: _globalStates.markerSet,
+            tiltGesturesEnabled: false,
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               if (_selectedCategories.isEmpty && _globalStates.userData != null)
                 _header(),
               _categoryListView(),
+              _refreshButton(),
             ],
           ),
           Positioned(
@@ -202,6 +136,90 @@ class _MapScreenState extends State<MapScreen> {
               dismiss: _bottomsheetDismiss,
             ),
         ],
+      ),
+    );
+  }
+
+  Widget _refreshButton() {
+    return GestureDetector(
+      onTap: () {
+        loadMarkers(_mapStates.mapController!);
+      },
+      child: Container(
+        margin: const EdgeInsets.only(right: 5),
+        child: SvgPicture.asset('assets/icons/map/refresh.svg'),
+      ),
+    );
+  }
+
+  Widget _header() {
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).viewPadding.top,
+      ),
+      width: Get.width,
+      child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: const BoxDecoration(color: Colors.white),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              RichText(
+                text: TextSpan(
+                  text: _globalStates.userData?.user.nickname ?? "익명",
+                  style: FontSystem.subtitleSemiBold,
+                  children: const [
+                    TextSpan(
+                        text: "님 근처에 있는", style: FontSystem.subtitleRegular),
+                  ],
+                ),
+              ),
+              const Text(
+                "친환경 가게들을 찾아봤어요",
+                style: FontSystem.subtitleRegular,
+              ),
+            ],
+          )),
+    );
+  }
+
+  Widget _categoryListView() {
+    return Container(
+      margin: (_selectedCategories.isNotEmpty || _globalStates.userData == null)
+          ? EdgeInsets.only(
+              top: MediaQuery.of(context).viewPadding.top,
+            )
+          : null,
+      height: 40,
+      child: ListView.builder(
+        itemCount: storeCategoryMapping.length,
+        scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
+        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+        itemBuilder: (context, index) {
+          final category = storeCategoryMapping.values.toList()[index];
+          final categoryName = storeCategoryMapping.keys.toList()[index];
+          bool isSelected = false;
+          if (_selectedCategories.contains(categoryName)) {
+            isSelected = true;
+          }
+          return CategoryButton(
+              title: category[0],
+              unselectedSvg: category[1],
+              selectedSvg: category[2],
+              isSelected: isSelected,
+              action: () {
+                if (isSelected) {
+                  _selectedCategories.remove(categoryName);
+                } else {
+                  _selectedCategories.add(categoryName);
+                  _isBottomsheetShow = true;
+                }
+                isSelected = !isSelected;
+                setState(() {});
+              });
+        },
       ),
     );
   }
