@@ -8,19 +8,24 @@ import 'package:may_be_clean/models/model.dart';
 import 'package:may_be_clean/screens.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:may_be_clean/utils/utils.dart';
+import 'states.dart';
 
 class GlobalState extends GetxController {
-  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-  RxMap<String, Marker> markers = RxMap<String, Marker>({});
   String token = "";
   late TabController tabController;
   UserData? userData;
-  int _currentPage = 0;
-  int _myCurrentPage = 0;
+  final _mapStates = Get.find<MapState>();
+
+  RxMap<String, Marker> markers = RxMap<String, Marker>({});
+  RxMap<String, Marker> filteredMarkers = RxMap<String, Marker>({});
+
   RxMap<int, Store> stores = RxMap<int, Store>({});
-  RxMap<int, Store> myStores = RxMap<int, Store>({});
   RxMap<int, Store> likeStores = RxMap<int, Store>({});
-  int currentPage = 0;
+
+  Set<Marker> get markerSet => markers.values.toSet();
+
+  List<Store> get storeList => stores.values.toList();
 
   Future<void> loadStores() async {
     // final result = await Store.getStores(_globalStates.token);
@@ -42,54 +47,84 @@ class GlobalState extends GetxController {
 
   Future loadMarker(double upperLat, double upperLon, double lowerLat,
       double lowerLon, List<String> categories) async {
+    stores.clear();
+    markers.clear();
+
     final result = await Store.getNearbyStore(
         token, upperLat, upperLon, lowerLat, lowerLon, categories);
-    result.addAll(result);
+    for (final store in result) {
+      final marker = await _storeToMarker(store);
+      markers[store.id.toString()] = marker;
+    }
   }
 
-  List<Review> reviews = [];
-  List<Review> myReviews = [];
+  Future<Marker> _storeToMarker(Store store) async {
+    final markerIcon = await markerImageTransform(store.storeCategories);
 
-  Future<void> loadReviews() async {
-    final result = await Review.loadReviews(token, _currentPage, 10);
+    return Marker(
+        markerId: MarkerId(store.toKeyString()),
+        position: LatLng(store.latitude, store.longitude),
+        icon: BitmapDescriptor.fromBytes(markerIcon),
+        onTap: () {
+          final storeData = stores[store.id] ?? store;
 
-    if (result.isEmpty) {
-      return;
-    }
-    reviews.addAll(result);
-    _currentPage++;
+          _mapStates.mapController!.animateCamera(
+              CameraUpdate.newCameraPosition(CameraPosition(
+                  target:
+                      LatLng(storeData.latitude - 0.0001, storeData.longitude),
+                  zoom: 16)));
+
+          Get.bottomSheet(
+            StoreBottomSheet(
+              storeData,
+              dismiss: Get.back,
+              isBottomSheet: true,
+              key: Key(store.toKeyString()),
+            ),
+            isScrollControlled: true,
+            barrierColor: Colors.transparent,
+          );
+        });
   }
 
-  Future<void> loadMyReviews() async {
-    final result = await Review.loadMyReviews(token, _myCurrentPage, 10);
+  void likeStore(Store store) async {
+    return;
+  }
 
-    if (result.isEmpty) {
-      return;
-    }
-    myReviews.addAll(result);
-    _myCurrentPage++;
+  void updateStore(Store store) async {
+    final response = await store.getStoreData(token, store.id);
+
+    likeStores[response.id] = store;
+    stores[response.id] = store;
+    final marker = await _storeToMarker(store);
+    markers[store.id.toString()] = marker;
   }
 
   Future<void> init() async {
     try {
-      await SharedPreferences.getInstance().then((prefs) async {
-        final token = prefs.getString('accessToken');
-        // 1회도 사용하지 않은 유저인 경우
-        if (token == null) {
-          Get.to(() => const LoginScreen());
-          return;
-        }
-        // 1회 이상 사용한 유저인 경우
-        if (token == "") {
+      Timer(const Duration(milliseconds: 500), () async {
+        SharedPreferences.getInstance().then((prefs) async {
+          final token = prefs.getString('accessToken');
+          // 1회도 사용하지 않은 유저인 경우
+          if (token == null) {
+            Get.off(() => const LoginScreen());
+            return;
+          }
+          // 1회 이상 사용한 유저인 경우
+          if (token == "") {
+            Get.off(() => const HomeScreen());
+            return;
+          }
+          // 자동 로그인
+          await UserData.getUserData(token).then((autoLoginUser) async {
+            innerLogin(autoLoginUser);
+            this.token = token;
+            if (Get.currentRoute != "/HomeScreen") {
+              Get.to(() => const HomeScreen());
+            }
+          });
           Get.to(() => const HomeScreen());
-          return;
-        }
-        // 자동 로그인
-        await UserData.getUserData(token).then((autoLoginUser) async {
-          innerLogin(autoLoginUser);
-          loadLikeStores();
         });
-        Get.to(() => const HomeScreen());
       });
     } catch (e, s) {
       log(e.toString(), stackTrace: s);
