@@ -63,7 +63,7 @@ class StoreComfirmDialog extends StatelessWidget {
                 2,
                 (index) {
                   bool isSelected = false;
-                  if (store.category
+                  if (store.storeCategories
                       .contains(storeCategoryMapping.keys.toList()[index])) {
                     isSelected = true;
                   }
@@ -93,7 +93,7 @@ class StoreComfirmDialog extends StatelessWidget {
                 (index) {
                   final innerIndex = index + 2;
                   bool isSelected = false;
-                  if (store.category.contains(
+                  if (store.storeCategories.contains(
                       storeCategoryMapping.keys.toList()[innerIndex])) {
                     isSelected = true;
                   }
@@ -124,7 +124,7 @@ class StoreComfirmDialog extends StatelessWidget {
                 (index) {
                   final innerIndex = index + 4;
                   bool isSelected = false;
-                  if (store.category.contains(
+                  if (store.storeCategories.contains(
                       storeCategoryMapping.keys.toList()[innerIndex])) {
                     isSelected = true;
                   }
@@ -160,8 +160,8 @@ class StoreComfirmDialog extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    Text(store.newAddress, style: FontSystem.body2),
-                    Text(store.oldAddress,
+                    Text(store.newAddress ?? "", style: FontSystem.body2),
+                    Text(store.oldAddress ?? "",
                         style: FontSystem.body2
                             .copyWith(color: ColorSystem.gray1)),
                   ],
