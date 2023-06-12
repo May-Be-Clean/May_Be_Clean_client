@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:may_be_clean/consts/consts.dart';
@@ -18,6 +19,25 @@ class ReviewScreen extends StatefulWidget {
 
 class _ReviewScreenState extends State<ReviewScreen> {
   final _globalStates = Get.find<GlobalState>();
+  final List<Review> _reviews = [];
+  int _page = 0;
+
+  void loadMore() {
+    _page++;
+    Review.getReviews(_globalStates.token, _page, 10).then((value) {
+      _reviews.addAll(value);
+      setState(() {});
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Review.getReviews(_globalStates.token, _page, 10).then((value) {
+      _reviews.addAll(value);
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,17 +68,20 @@ class _ReviewScreenState extends State<ReviewScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: ListView.separated(
-              itemCount: _globalStates.reviews.length,
-              padding: const EdgeInsets.all(10),
-              itemBuilder: (context, index) {
-                final review = _globalStates.reviews[index];
-                return ReviewCard(review);
-              },
-              separatorBuilder: (context, index) => const Divider(),
+          if (_reviews.isEmpty)
+            const Center(child: CircularProgressIndicator())
+          else
+            Expanded(
+              child: ListView.separated(
+                itemCount: _reviews.length,
+                padding: const EdgeInsets.all(10),
+                itemBuilder: (context, index) {
+                  final review = _reviews[index];
+                  return ReviewCard(review, key: Key(review.toKeyString()));
+                },
+                separatorBuilder: (context, index) => const Divider(),
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -67,8 +90,9 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
 class ReviewCard extends StatelessWidget {
   final _globalStates = Get.find<GlobalState>();
+  final bool isEdit;
   final Review review;
-  ReviewCard(this.review, {super.key});
+  ReviewCard(this.review, {this.isEdit = false, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -78,47 +102,133 @@ class ReviewCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GestureDetector(
-            onTap: () {
-              Get.bottomSheet(
-                StoreBottomSheet(
-                  _globalStates.stores.values.toList()[0],
-                  dismiss: () {
-                    Get.back();
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Get.bottomSheet(
+                        StoreBottomSheet(
+                          review.store,
+                          dismiss: () {
+                            Get.back();
+                          },
+                          isBottomSheet: true,
+                        ),
+                        isScrollControlled: true,
+                      );
+                    },
+                    behavior: HitTestBehavior.translucent,
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(countToClover(review.store.clover)),
+                        const SizedBox(width: 5),
+                        Text(
+                          review.store.name,
+                          style: FontSystem.body1
+                              .copyWith(color: ColorSystem.primary),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                    child: ListView.separated(
+                      itemCount: review.storeCategories.length,
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        final category = review.storeCategories[index];
+                        return Text(
+                          "#${storeCategoryMapping[category]?[0] ?? '기타'}",
+                          style: FontSystem.caption
+                              .copyWith(color: ColorSystem.gray1),
+                        );
+                      },
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(width: 3),
+                    ),
+                  ),
+                ],
+              ),
+              if (isEdit)
+                GestureDetector(
+                  onTap: () {
+                    showCupertinoModalPopup(
+                      context: context,
+                      builder: (context) {
+                        return CupertinoActionSheet(
+                          actions: [
+                            CupertinoActionSheetAction(
+                              onPressed: () {
+                                Get.back();
+                                // Get.dialog(EditReviewDialog(store: store))
+                              },
+                              child: const Text(
+                                "수정하기",
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ),
+                            CupertinoActionSheetAction(
+                              onPressed: () {
+                                Get.back();
+                                showCupertinoDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return CupertinoAlertDialog(
+                                      title: const Text("후기를 정말 삭제할까요?"),
+                                      content: const Text("이 동작은 취소할 수 없어요."),
+                                      actions: [
+                                        CupertinoDialogAction(
+                                          onPressed: () {
+                                            Get.back();
+                                          },
+                                          child: const Text(
+                                            "취소",
+                                            style:
+                                                TextStyle(color: Colors.blue),
+                                          ),
+                                        ),
+                                        CupertinoDialogAction(
+                                          onPressed: () {
+                                            Get.back();
+                                          },
+                                          child: const Text("삭제",
+                                              style: TextStyle(
+                                                  color: ColorSystem.red)),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: const Text(
+                                "삭제하기",
+                                style: TextStyle(color: ColorSystem.red),
+                              ),
+                            ),
+                          ],
+                          cancelButton: CupertinoActionSheetAction(
+                            onPressed: () {
+                              Get.back();
+                            },
+                            child: const Text(
+                              "닫기",
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                          ),
+                        );
+                      },
+                    );
                   },
-                  isBottomSheet: true,
-                ),
-                isScrollControlled: true,
-              );
-            },
-            behavior: HitTestBehavior.translucent,
-            child: Row(
-              children: [
-                SvgPicture.asset(countToClover(review.clover)),
-                const SizedBox(width: 5),
-                Text(
-                  review.storeName,
-                  style: FontSystem.body1.copyWith(color: ColorSystem.primary),
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                    child: const Icon(Icons.more_vert),
+                  ),
                 )
-              ],
-            ),
-          ),
-          Container(
-            height: 15,
-            margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-            child: ListView.separated(
-              itemCount: review.storeCategories.length,
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                final category = review.storeCategories[index];
-                return Text(
-                  "#${storeCategoryMapping[category]?[0] ?? '기타'}",
-                  style: FontSystem.caption.copyWith(color: ColorSystem.gray1),
-                );
-              },
-              separatorBuilder: (context, index) => const SizedBox(width: 3),
-            ),
+            ],
           ),
           ReadMoreText(
             review.content,
@@ -130,23 +240,25 @@ class ReviewCard extends StatelessWidget {
             moreStyle: FontSystem.body2.copyWith(color: ColorSystem.primary),
             lessStyle: FontSystem.body2.copyWith(color: ColorSystem.primary),
           ),
-          Container(
-            height: 100,
-            margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-            child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                separatorBuilder: (context, index) => const SizedBox(width: 5),
-                itemBuilder: (context, index) {
-                  final image = review.imageUrls[index];
-                  return RoundedImage(
-                    imageUrl: image,
-                    disableMargin: true,
-                    onTap: () => Get.to(
-                        () => ExpandImageScreen(imageUrls: review.imageUrls)),
-                  );
-                },
-                itemCount: review.imageUrls.length),
-          ),
+          if (review.imageUrls.isNotEmpty)
+            Container(
+              height: 100,
+              margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+              child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(width: 5),
+                  itemBuilder: (context, index) {
+                    final image = review.imageUrls[index];
+                    return RoundedImage(
+                      imageUrl: image,
+                      disableMargin: true,
+                      onTap: () => Get.to(
+                          () => ExpandImageScreen(imageUrls: review.imageUrls)),
+                    );
+                  },
+                  itemCount: review.imageUrls.length),
+            ),
           Container(
             height: 24,
             margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
@@ -171,7 +283,6 @@ class ReviewCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  // TODO 경험치 뱃지 연결
                   SvgPicture.asset(expToBadge(4), width: 16),
                   Text(
                     "${review.nickname}이 작성했어요",
