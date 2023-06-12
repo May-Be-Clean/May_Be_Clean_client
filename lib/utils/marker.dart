@@ -1,12 +1,34 @@
 import 'dart:ui';
 import 'package:flutter/services.dart';
 
-Future<Uint8List> markerImageTransform(String type1, String type2) async {
-  String marker = 'assets/icons/marker/${type1.toLowerCase()}';
-  if (type2 != '') {
-    marker += '_${type2.toLowerCase()}';
+Future<Uint8List> markerImageTransform(List<String> categories) async {
+  String marker = "assets/icons/marker/";
+  if (categories.isEmpty ||
+      (!categories.contains("REFILL") &&
+          !categories.contains("NO_DISPOSABLE") &&
+          !categories.contains("UPCYCLE"))) {
+    marker += "default";
+  } else {
+    if (categories.contains("REFILL")) {
+      marker += "refill";
+    } else if (categories.contains("NO_DISPOSABLE")) {
+      marker += "nodisposable";
+    } else if (categories.contains("UPCYCLE")) {
+      marker += "upcycle";
+    }
   }
-  marker += '.png';
+  if (categories.contains("REFILL") &&
+      categories.contains("NO_DISPOSABLE") &&
+      categories.contains("UPCYCLE")) {
+    if (categories.contains("RESTAURANT")) {
+      marker += "_restaurant";
+    } else if (categories.contains("CAFE")) {
+      marker += "_cafe";
+    } else if (categories.contains("ACCESSORY")) {
+      marker += "_accessory";
+    }
+  }
+  marker += ".png";
 
   ByteData data = await rootBundle.load(marker);
 
