@@ -109,3 +109,14 @@ String countToClover(int count) {
   }
   return "assets/icons/clover/clover_4.svg";
 }
+
+String expToTooltip(int exp) {
+  final remainExp = exp % 8;
+  if (remainExp == 0) {
+    return "레벨 달성!";
+  }
+  if (remainExp < 4) {
+    return "다음 레벨까지 얼마 안남았어요!";
+  }
+  return "다음 레벨을 향해 차근차근 가볼까요?";
+}
