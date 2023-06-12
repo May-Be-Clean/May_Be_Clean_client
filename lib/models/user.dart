@@ -42,6 +42,21 @@ class User {
       throw newHTTPException(response.statusCode, response.body);
     }
   }
+
+  static Future<User> authApple(String token) async {
+    const api = '${ENV.apiEndpoint}/auth/apple';
+
+    final response = await http.post(
+      Uri.parse(api),
+      headers: {'Authorization': "Bearer $token"},
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return User.fromJson(json.decode(response.body));
+    } else {
+      throw newHTTPException(response.statusCode, response.body);
+    }
+  }
 }
 
 class UserData {
