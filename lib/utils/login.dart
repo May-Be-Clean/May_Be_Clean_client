@@ -39,6 +39,7 @@ Future<void> kakaoLogin(Function() loginStart, Function() loginEnd) async {
 }
 
 Future<void> appleLogin(Function() loginStart, Function() loginEnd) async {
+  final globalStates = Get.find<GlobalState>();
   try {
     loginStart();
     final appleCredential = await SignInWithApple.getAppleIDCredential(
@@ -54,8 +55,12 @@ Future<void> appleLogin(Function() loginStart, Function() loginEnd) async {
       ),
     );
 
-    log(appleCredential.toString());
-    log(appleCredential.authorizationCode.toString());
+    final model.User user =
+        await model.User.authApple(appleCredential.authorizationCode);
+    final model.UserData userData =
+        await model.UserData.getUserData(user.accessToken!);
+    globalStates.innerLogin(userData);
+
     loginEnd();
   } catch (e, s) {
     loginEnd();
