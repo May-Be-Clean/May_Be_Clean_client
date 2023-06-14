@@ -13,9 +13,10 @@ class MyVerifyScreen extends StatefulWidget {
 }
 
 class _MyVerifyScreenState extends State<MyVerifyScreen> {
-  final _myVerifyStores = <Store>[];
+  final List<Store> _myVerifyStores = <Store>[];
   int _page = 0;
   final _globalStates = Get.find<GlobalState>();
+  final _controller = ScrollController();
 
   void loadMore() async {
     final stores = await Store.getVerifiedStores(
@@ -26,12 +27,27 @@ class _MyVerifyScreenState extends State<MyVerifyScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    _controller.addListener(() {
+      if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+        loadMore();
+      }
+    });
+    loadMore();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: "내가 인증한 가게"),
       backgroundColor: Colors.white,
       body: ListView.separated(
         itemCount: _myVerifyStores.length,
+        shrinkWrap: true,
+        controller: _controller,
+        padding: const EdgeInsets.all(20),
         itemBuilder: (context, index) {
           final store = _myVerifyStores[index];
           return StoreCard(store);
