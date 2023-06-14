@@ -309,9 +309,24 @@ class _MyPageState extends State<MyPage> {
                   alignment: Alignment.centerLeft,
                   child: const Text("앱 정보", style: FontSystem.body1),
                 ),
-                MyPageInformationButton(title: "서비스 이용약관", onTap: () {}),
-                MyPageInformationButton(title: "이용규칙", onTap: () {}),
-                MyPageInformationButton(title: "개인정보 처리 방침", onTap: () {}),
+                MyPageInformationButton(
+                    title: "서비스 이용약관",
+                    onTap: () {
+                      urlLauncher(
+                          "https://archive-halfmoon-mind.s3.ap-northeast-2.amazonaws.com/%E1%84%81%E1%85%A2%E1%84%81%E1%85%B3%E1%86%BA%E1%84%92%E1%85%A2%E1%84%8C%E1%85%B5%E1%86%AF%E1%84%8C%E1%85%B5%E1%84%83%E1%85%A9+%E1%84%8B%E1%85%B5%E1%84%8B%E1%85%AD%E1%86%BC+%E1%84%8B%E1%85%A3%E1%86%A8%E1%84%80%E1%85%AA%E1%86%AB.html");
+                    }),
+                MyPageInformationButton(
+                    title: "위치정보 이용약관",
+                    onTap: () {
+                      urlLauncher(
+                          "https://archive-halfmoon-mind.s3.ap-northeast-2.amazonaws.com/%E1%84%81%E1%85%A2%E1%84%81%E1%85%B3%E1%86%BA%E1%84%92%E1%85%A2%E1%84%8C%E1%85%B5%E1%86%AF%E1%84%8C%E1%85%B5%E1%84%83%E1%85%A9+%E1%84%8B%E1%85%B1%E1%84%8E%E1%85%B5+%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%87%E1%85%A9+%E1%84%8B%E1%85%B5%E1%84%8B%E1%85%AD%E1%86%BC%E1%84%8B%E1%85%A3%E1%86%A8%E1%84%80%E1%85%AA%E1%86%AB.html");
+                    }),
+                MyPageInformationButton(
+                    title: "개인정보 처리 방침",
+                    onTap: () {
+                      urlLauncher(
+                          "https://archive-halfmoon-mind.s3.ap-northeast-2.amazonaws.com/MayBeClean+Privacy.html");
+                    }),
                 MyPageInformationButton(title: "오픈소스 사용정보", onTap: () {}),
               ],
             ),
