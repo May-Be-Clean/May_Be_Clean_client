@@ -115,6 +115,9 @@ class GlobalState extends GetxController {
             Get.off(() => const HomeScreen());
             return;
           }
+          Timer(const Duration(milliseconds: 500), () async {
+            Get.to(() => const HomeScreen());
+          });
           // 자동 로그인
           await UserData.getUserData(token).then((autoLoginUser) async {
             innerLogin(autoLoginUser);
