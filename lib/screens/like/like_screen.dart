@@ -28,7 +28,8 @@ class _LikeScreenState extends State<LikeScreen> {
   }
 
   Future<void> loadMore() async {
-    final stores = await Store.getLikedStores(_globalStates.token, _page, 10);
+    final stores = await Store.getLikedStores(
+        _globalStates.token, _page, _globalStates.pageSize);
     _likeStores.addAll(stores);
     _page++;
     setState(() {});

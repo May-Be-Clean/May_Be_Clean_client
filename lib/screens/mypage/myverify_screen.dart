@@ -18,8 +18,8 @@ class _MyVerifyScreenState extends State<MyVerifyScreen> {
   final _globalStates = Get.find<GlobalState>();
 
   void loadMore() async {
-    final stores =
-        await Store.getVerifiedStores(_globalStates.token, _page, 10);
+    final stores = await Store.getVerifiedStores(
+        _globalStates.token, _page, _globalStates.pageSize);
     _myVerifyStores.addAll(stores);
     _page++;
     setState(() {});

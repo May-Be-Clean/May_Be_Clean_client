@@ -25,7 +25,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
   void loadMore() {
     _page++;
-    Review.getReviews(_globalStates.token, _page, 10).then((value) {
+    Review.getReviews(_globalStates.token, _page, _globalStates.pageSize)
+        .then((value) {
       _reviews.addAll(value);
       setState(() {});
     });
