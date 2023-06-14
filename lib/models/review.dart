@@ -5,7 +5,6 @@ import 'package:may_be_clean/utils/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:may_be_clean/models/model.dart';
 import 'dart:developer';
-import 'package:http_parser/http_parser.dart';
 
 class Review {
   final int id;

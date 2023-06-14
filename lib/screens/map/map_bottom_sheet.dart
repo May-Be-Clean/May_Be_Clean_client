@@ -288,7 +288,7 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                                         style: const TextStyle(
                                             color: Colors.green),
                                       ),
-                                      TextSpan(text: "건"), //후기 총 개수
+                                      const TextSpan(text: "건"), //후기 총 개수
                                     ]),
                                   ),
                                 ),
