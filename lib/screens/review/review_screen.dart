@@ -84,7 +84,12 @@ class _ReviewScreenState extends State<ReviewScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (_reviews.isEmpty)
-            const Center(child: CircularProgressIndicator())
+            const Center(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [CircularProgressIndicator()],
+            ))
           else
             Expanded(
               child: ListView.separated(
@@ -107,7 +112,9 @@ class _ReviewScreenState extends State<ReviewScreen> {
 class ReviewCard extends StatelessWidget {
   final bool isEdit;
   final Review review;
-  const ReviewCard(this.review, {this.isEdit = false, super.key});
+  final bool isTouchable;
+  const ReviewCard(this.review,
+      {this.isEdit = false, this.isTouchable = true, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -124,16 +131,18 @@ class ReviewCard extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Get.bottomSheet(
-                        StoreBottomSheet(
-                          review.store.id,
-                          dismiss: () {
-                            Get.back();
-                          },
-                          isBottomSheet: true,
-                        ),
-                        isScrollControlled: true,
-                      );
+                      if (isTouchable) {
+                        Get.bottomSheet(
+                          StoreBottomSheet(
+                            review.store.id,
+                            dismiss: () {
+                              Get.back();
+                            },
+                            isBottomSheet: true,
+                          ),
+                          isScrollControlled: true,
+                        );
+                      }
                     },
                     behavior: HitTestBehavior.translucent,
                     child: Row(
