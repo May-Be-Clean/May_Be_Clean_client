@@ -268,19 +268,15 @@ class _EditReviewDialogState extends State<EditReviewDialog> {
               return;
             }
             try {
-              // 0번은 선택 이미지
-              final _selectedImages = _currentImages.removeAt(0);
-              final result = await Review.postReview(
+              await Review.postReview(
                   _globalStates.token,
                   widget.store.id,
                   _selectedCategories,
                   _textController.text,
-                  _currentImages);
+                  _currentImages.sublist(1));
 
-              if (result) {
-                Get.back();
-                Get.dialog(const ReviewCheckDialog());
-              }
+              Get.back();
+              Get.dialog(const ReviewCheckDialog());
             } catch (e, s) {
               log(e.toString(), stackTrace: s);
               showToast("후기 작성에 실패했습니다.");
