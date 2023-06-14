@@ -21,6 +21,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   final _globalStates = Get.find<GlobalState>();
   final List<Review> _reviews = [];
   int _page = 0;
+  ScrollController _scrollController = ScrollController();
 
   void loadMore() {
     _page++;
@@ -33,6 +34,12 @@ class _ReviewScreenState extends State<ReviewScreen> {
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        loadMore();
+      }
+    });
     Review.getReviews(_globalStates.token, _page, 10).then((value) {
       _reviews.addAll(value);
       setState(() {});
@@ -75,6 +82,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
               child: ListView.separated(
                 itemCount: _reviews.length,
                 padding: const EdgeInsets.all(10),
+                controller: _scrollController,
                 itemBuilder: (context, index) {
                   final review = _reviews[index];
                   return ReviewCard(review);
@@ -89,10 +97,9 @@ class _ReviewScreenState extends State<ReviewScreen> {
 }
 
 class ReviewCard extends StatelessWidget {
-  final _globalStates = Get.find<GlobalState>();
   final bool isEdit;
   final Review review;
-  ReviewCard(this.review, {this.isEdit = false, super.key});
+  const ReviewCard(this.review, {this.isEdit = false, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +118,7 @@ class ReviewCard extends StatelessWidget {
                     onTap: () {
                       Get.bottomSheet(
                         StoreBottomSheet(
-                          review.store,
+                          review.store.id,
                           dismiss: () {
                             Get.back();
                           },
