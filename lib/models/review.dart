@@ -5,6 +5,7 @@ import 'package:may_be_clean/utils/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:may_be_clean/models/model.dart';
 import 'dart:developer';
+import 'package:tuple/tuple.dart';
 
 class Review {
   final int id;
@@ -16,7 +17,7 @@ class Review {
   final List<String> storeCategories;
   final String content;
   final List<String> imageUrls;
-  final ReviewFilterCount reviewFilterCount;
+  final ReviewCategoryCount reviewFilterCount;
   final DateTime createdAt;
   final DateTime updatedAt = DateTime.now();
 
@@ -45,8 +46,8 @@ class Review {
       storeCategories: List<String>.from(json['storeCategories'] ?? []),
       content: json['content'],
       imageUrls: List<String>.from(json['imageUrls']),
-      reviewFilterCount: ReviewFilterCount.fromJson(
-          json['reviewFilterCount'] ?? emptyReviewFilterCount.toJson()),
+      reviewFilterCount: ReviewCategoryCount.fromJson(
+          json['reviewCategoryCount'] ?? emptyReviewCategoryCount.toJson()),
       createdAt: DateTime.parse(json['createdAt']),
     );
   }
@@ -79,17 +80,19 @@ class Review {
     final response = await http
         .get(Uri.parse(api), headers: {"Authorization": "Bearer $token"});
 
+    log(response.body);
+
     if (response.statusCode == 200) {
       final result = json.decode(response.body)["reviews"];
       return result
-          .map((data) => Review.fromJson(data as Map<String, dynamic>))
+          .map<Review>((data) => Review.fromJson(data as Map<String, dynamic>))
           .toList();
     } else {
       throw newHTTPException(response.statusCode, response.body);
     }
   }
 
-  static Future<List<Review>> loadMyReviews(
+  static Future<List<Review>> getMyReviews(
       String token, int page, int size) async {
     final api = "${ENV.apiEndpoint}/review/myReview?page=$page&size=$size";
 
@@ -161,7 +164,7 @@ class Review {
   }
 }
 
-final emptyReviewFilterCount = ReviewFilterCount(
+final emptyReviewCategoryCount = ReviewCategoryCount(
   clean: 0,
   large: 0,
   parking: 0,
@@ -173,7 +176,7 @@ final emptyReviewFilterCount = ReviewFilterCount(
   kind: 0,
 );
 
-class ReviewFilterCount {
+class ReviewCategoryCount {
   final int clean;
   final int large;
   final int parking;
@@ -184,7 +187,7 @@ class ReviewFilterCount {
   final int effective;
   final int kind;
 
-  ReviewFilterCount({
+  ReviewCategoryCount({
     required this.clean,
     required this.large,
     required this.parking,
@@ -196,8 +199,8 @@ class ReviewFilterCount {
     required this.kind,
   });
 
-  factory ReviewFilterCount.fromJson(Map<String, dynamic> json) {
-    return ReviewFilterCount(
+  factory ReviewCategoryCount.fromJson(Map<String, dynamic> json) {
+    return ReviewCategoryCount(
       clean: json['countOfCleanStore'],
       large: json['countOfLargeStore'],
       parking: json['countOfParking'],
@@ -223,7 +226,7 @@ class ReviewFilterCount {
         'countOfKindness': kind,
       };
 
-  int countReviews() {
+  int get countReviews {
     return clean +
         large +
         parking +
@@ -233,6 +236,24 @@ class ReviewFilterCount {
         quality +
         effective +
         kind;
+  }
+
+  List<Tuple2<String, int>> get getSortedList {
+    final tupleList = [
+      Tuple2("CLEAN", clean),
+      Tuple2("LARGE", large),
+      Tuple2("PARKING", parking),
+      Tuple2("MOOD", mood),
+      Tuple2("VARIANT", variant),
+      Tuple2("VALUABLE", valuable),
+      Tuple2("QUALITY", quality),
+      Tuple2("EFFECTIVE", effective),
+      Tuple2("KIND", kind),
+    ];
+    tupleList.sort((a, b) => b.item2.compareTo(a.item2));
+    final sortedList = tupleList.map((e) => Tuple2(e.item1, e.item2)).toList();
+
+    return sortedList;
   }
 }
 
@@ -246,7 +267,7 @@ final emptyReviewData = Review(
   storeCategories: [],
   content: '',
   imageUrls: [],
-  reviewFilterCount: ReviewFilterCount(
+  reviewFilterCount: ReviewCategoryCount(
     clean: 0,
     large: 0,
     parking: 0,
