@@ -27,14 +27,6 @@ class GlobalState extends GetxController {
 
   List<Store> get storeList => stores.values.toList();
 
-  Future<void> loadStores() async {
-    // final result = await Store.getStores(_globalStates.token);
-    // if (result.isEmpty) {
-    //   return;
-    // }
-    // stores.addAll(result);
-  }
-
   Future<void> loadLikeStores() async {
     final result = await Store.loadLikeStore(token);
     if (result.isEmpty) {
@@ -62,7 +54,7 @@ class GlobalState extends GetxController {
     final markerIcon = await markerImageTransform(store.storeCategories);
 
     return Marker(
-        markerId: MarkerId(store.toKeyString()),
+        markerId: MarkerId(store.id.toString()),
         position: LatLng(store.latitude, store.longitude),
         icon: BitmapDescriptor.fromBytes(markerIcon),
         onTap: () {
@@ -76,19 +68,14 @@ class GlobalState extends GetxController {
 
           Get.bottomSheet(
             StoreBottomSheet(
-              storeData,
+              storeData.id,
               dismiss: Get.back,
               isBottomSheet: true,
-              key: Key(store.toKeyString()),
             ),
             isScrollControlled: true,
             barrierColor: Colors.transparent,
           );
         });
-  }
-
-  void likeStore(Store store) async {
-    return;
   }
 
   void updateStore(Store store) async {
@@ -126,7 +113,6 @@ class GlobalState extends GetxController {
               Get.to(() => const HomeScreen());
             }
           });
-          Get.to(() => const HomeScreen());
         });
       });
     } catch (e, s) {

@@ -51,10 +51,6 @@ class Review {
     );
   }
 
-  String toKeyString() {
-    return "REVIEW_$id#${updatedAt.toIso8601String()}";
-  }
-
   static Future<List<Review>> getReviews(
       String token, int page, int size) async {
     final api = "${ENV.apiEndpoint}/review?page=$page&size=$size";

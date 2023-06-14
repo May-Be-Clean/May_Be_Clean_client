@@ -37,10 +37,6 @@ class Store {
     required this.isLiked,
   });
 
-  String toKeyString() {
-    return "STORE_$id#${updatedAt.toIso8601String()}";
-  }
-
   factory Store.fromJson(Map<String, dynamic> json) {
     return Store(
       id: json['id'],

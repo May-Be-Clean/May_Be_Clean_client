@@ -77,7 +77,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 padding: const EdgeInsets.all(10),
                 itemBuilder: (context, index) {
                   final review = _reviews[index];
-                  return ReviewCard(review, key: Key(review.toKeyString()));
+                  return ReviewCard(review);
                 },
                 separatorBuilder: (context, index) => const Divider(),
               ),

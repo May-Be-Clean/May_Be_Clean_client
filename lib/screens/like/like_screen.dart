@@ -98,7 +98,7 @@ class _LikeScreenState extends State<LikeScreen> {
             SliverList(
               delegate: SliverChildBuilderDelegate((context, index) {
                 final store = likeStores[index];
-                return StoreCard(store, key: Key(store.toKeyString()));
+                return StoreCard(store);
               }, childCount: likeStores.length),
             ),
           ],
@@ -127,7 +127,6 @@ class StoreCard extends StatelessWidget {
                   Get.find<GlobalState>().stores.values.toList()[0],
                   isBottomSheet: true,
                   dismiss: () => Get.back(),
-                  key: Key(store.toKeyString()),
                 ),
                 isScrollControlled: true,
               );
