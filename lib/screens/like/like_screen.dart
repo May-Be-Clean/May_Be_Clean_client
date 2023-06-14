@@ -124,7 +124,7 @@ class StoreCard extends StatelessWidget {
             onTap: () {
               Get.bottomSheet(
                 StoreBottomSheet(
-                  Get.find<GlobalState>().stores.values.toList()[0],
+                  store.id,
                   isBottomSheet: true,
                   dismiss: () => Get.back(),
                 ),

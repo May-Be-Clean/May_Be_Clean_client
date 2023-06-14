@@ -7,10 +7,12 @@ import 'package:may_be_clean/utils/utils.dart';
 import 'package:may_be_clean/consts/consts.dart';
 import 'package:get/get.dart';
 import 'package:may_be_clean/states/states.dart';
+import 'dart:developer';
 
 class StoreComfirmDialog extends StatelessWidget {
+  final _globalStates = Get.find<GlobalState>();
   final Store store;
-  const StoreComfirmDialog(this.store, {super.key});
+  StoreComfirmDialog(this.store, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,7 @@ class StoreComfirmDialog extends StatelessWidget {
             Row(children: [
               Text.rich(
                 TextSpan(
-                    text: "유저",
+                    text: store.user?.nickname ?? "유저",
                     style:
                         FontSystem.caption.copyWith(color: ColorSystem.primary),
                     children: const [
@@ -60,7 +62,7 @@ class StoreComfirmDialog extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
-                2,
+                3,
                 (index) {
                   bool isSelected = false;
                   if (store.storeCategories
@@ -79,39 +81,8 @@ class StoreComfirmDialog extends StatelessWidget {
                       unselectedSvg: unselectedSvg,
                       selectedSvg: selectedSvg,
                       isSelected: isSelected,
-                      fontSize: 14,
-                      imageSize: 12,
-                    ),
-                  );
-                },
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                2,
-                (index) {
-                  final innerIndex = index + 2;
-                  bool isSelected = false;
-                  if (store.storeCategories.contains(
-                      storeCategoryMapping.keys.toList()[innerIndex])) {
-                    isSelected = true;
-                  }
-                  final title =
-                      storeCategoryMapping.values.toList()[innerIndex][0];
-                  final unselectedSvg =
-                      storeCategoryMapping.values.toList()[innerIndex][1];
-                  final selectedSvg =
-                      storeCategoryMapping.values.toList()[innerIndex][2];
-
-                  return SizedBox(
-                    child: CategoryButton(
-                      title: title,
-                      unselectedSvg: unselectedSvg,
-                      selectedSvg: selectedSvg,
-                      isSelected: isSelected,
-                      fontSize: 14,
-                      imageSize: 12,
+                      fontSize: 12,
+                      imageSize: 10,
                     ),
                   );
                 },
@@ -122,7 +93,7 @@ class StoreComfirmDialog extends StatelessWidget {
               children: List.generate(
                 3,
                 (index) {
-                  final innerIndex = index + 4;
+                  final innerIndex = index + 3;
                   bool isSelected = false;
                   if (store.storeCategories.contains(
                       storeCategoryMapping.keys.toList()[innerIndex])) {
@@ -141,8 +112,8 @@ class StoreComfirmDialog extends StatelessWidget {
                       unselectedSvg: unselectedSvg,
                       selectedSvg: selectedSvg,
                       isSelected: isSelected,
-                      fontSize: 14,
-                      imageSize: 12,
+                      fontSize: 12,
+                      imageSize: 10,
                     ),
                   );
                 },
@@ -168,6 +139,7 @@ class StoreComfirmDialog extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -175,16 +147,24 @@ class StoreComfirmDialog extends StatelessWidget {
                 const SizedBox(
                   width: 10,
                 ),
-                Text(store.phoneNumber ?? "번호 없음", style: FontSystem.body2)
+                if (store.phoneNumber == "" || store.phoneNumber == null)
+                  const Text("번호 없음", style: FontSystem.body2)
+                else
+                  Text(store.phoneNumber!, style: FontSystem.body2)
               ],
             ),
+            const SizedBox(height: 10),
             Row(
               children: [
                 SvgPicture.asset("assets/icons/category/time.svg"),
                 const SizedBox(
                   width: 10,
                 ),
-                Text(store.startAt ?? "영업 시간 미지정", style: FontSystem.body2),
+                if (store.startAt == null || store.endAt == null)
+                  const Text("영업 시간 미지정", style: FontSystem.body2)
+                else
+                  Text("${store.startAt} - ${store.endAt}",
+                      style: FontSystem.body2),
               ],
             ),
             const SizedBox(height: 40),
@@ -228,7 +208,13 @@ class StoreComfirmDialog extends StatelessWidget {
                 ),
               ),
               onTap: () async {
-                Get.back();
+                try {
+                  Store.verifyStore(_globalStates.token, store.id)
+                      .then((value) => Get.back);
+                } catch (e, s) {
+                  log(e.toString(), stackTrace: s);
+                  showToast("친환경 가게 등록에 실패했습니다.");
+                }
               },
             ),
           ),

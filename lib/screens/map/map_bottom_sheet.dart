@@ -11,17 +11,21 @@ import 'package:may_be_clean/states/states.dart';
 
 /*
  * StoreBottomSheet
- * store : 해당 가게 정보
+ * storeID : 해당 가게 id값
  * dismiss : 해당 바텀시트를 닫고 싶을 때 사용하는 함수
  * isBottomSheet : 해당 바텀시트가 바텀시트인지 아닌지
  */
 class StoreBottomSheet extends StatefulWidget {
-  /// 해당 바텀시트를 닫고 싶을 때 사용하는 함수
   final Function() dismiss;
-  final Store store;
+  final int storeId;
   final bool isBottomSheet;
-  const StoreBottomSheet(this.store,
-      {required this.dismiss, required this.isBottomSheet, super.key});
+
+  const StoreBottomSheet(
+    this.storeId, {
+    required this.dismiss,
+    required this.isBottomSheet,
+    super.key,
+  });
 
   @override
   State<StoreBottomSheet> createState() => _StoreBottomSheetState();
@@ -33,7 +37,35 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
   late ScrollController _innerController = ScrollController();
   bool _isFullscreen = false;
   final _globalStates = Get.find<GlobalState>();
-  // bool _isDisabled = false;
+  Store? store;
+  bool _isProcess = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Store.getStore(_globalStates.token, widget.storeId).then((value) {
+      store = value;
+      _isProcess = false;
+      setState(() {});
+    });
+  }
+
+  void onTapLike() {
+    if (_globalStates.userData == null) {
+      loginRequest(context);
+      return;
+    }
+    //TODO 좋아요 버튼 구현
+    // if (store.isLiked) {
+    //   store.unlike(_globalStates.token);
+    // } else {
+    //   store.like(_globalStates.token);
+    // }
+
+    setState(() {
+      store!.isLiked = !store!.isLiked;
+    });
+  }
 
   @override
   void dispose() {
@@ -94,111 +126,107 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      Store store = _globalStates.stores[widget.store.id] ?? widget.store;
-
+    if (_isProcess) {
       return GestureDetector(
-        behavior: (widget.isBottomSheet) ? HitTestBehavior.opaque : null,
-        onTap: (widget.isBottomSheet) ? widget.dismiss : null,
-        child: GestureDetector(
-          onTap: () {},
-          child: NotificationListener<DraggableScrollableNotification>(
-            onNotification: (notification) {
-              _onDrag(notification.extent);
-              return true;
-            },
-            child: DraggableScrollableSheet(
-              minChildSize: 0.3,
-              maxChildSize: 0.8,
-              initialChildSize: 0.3,
-              controller: _controller,
-              builder: (context, scrollController) {
-                _innerController = scrollController;
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(15)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.7),
-                        spreadRadius: 0,
-                        blurRadius: 5.0,
-                        offset: const Offset(0, 0),
+          onTap: widget.dismiss,
+          child: const Center(child: CircularProgressIndicator()));
+    }
+    return GestureDetector(
+      behavior: (widget.isBottomSheet) ? HitTestBehavior.opaque : null,
+      onTap: (widget.isBottomSheet) ? widget.dismiss : null,
+      child: GestureDetector(
+        onTap: () {},
+        child: NotificationListener<DraggableScrollableNotification>(
+          onNotification: (notification) {
+            _onDrag(notification.extent);
+            return true;
+          },
+          child: DraggableScrollableSheet(
+            minChildSize: 0.3,
+            maxChildSize: 0.8,
+            initialChildSize: 0.3,
+            controller: _controller,
+            builder: (context, scrollController) {
+              _innerController = scrollController;
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(15)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.7),
+                      spreadRadius: 0,
+                      blurRadius: 5.0,
+                      offset: const Offset(0, 0),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.only(top: 15),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: ColorSystem.gray1,
                       ),
-                    ],
-                  ),
-                  padding: const EdgeInsets.only(top: 15),
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 48,
-                        height: 5,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: ColorSystem.gray1,
-                        ),
-                        margin: const EdgeInsets.only(bottom: 10),
-                      ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
-                          controller: scrollController,
-                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(store.name,
-                                      softWrap: true, style: FontSystem.title),
-                                  GestureDetector(
-                                    onTap: () async {
-                                      if (_globalStates.userData == null) {
-                                        loginRequest(context);
-                                        return;
-                                      }
-                                      _globalStates.likeStore(store);
-
-                                      setState(() {});
-                                    },
-                                    child: Container(
-                                        alignment: Alignment.centerRight,
-                                        margin:
-                                            const EdgeInsets.only(right: 15),
-                                        child: SvgPicture.asset(
-                                          (store.isLiked)
-                                              ? 'assets/icons/map/heart_selected.svg'
-                                              : 'assets/icons/map/heart_unselected.svg',
-                                        )),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                width: Get.width - 40,
-                                child: Wrap(
-                                  alignment: WrapAlignment.start,
-                                  children: store.storeCategories
-                                      .map(
-                                        (item) => Padding(
-                                          padding:
-                                              const EdgeInsets.only(right: 10),
-                                          child: Text(
-                                            '#${storeCategoryMapping[item]?[0] ?? "알 수 없음"}',
-                                            style: FontSystem.body2.copyWith(
-                                                color: ColorSystem.gray1),
-                                          ),
-                                        ),
-                                      )
-                                      .toList(),
+                      margin: const EdgeInsets.only(bottom: 10),
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        controller: scrollController,
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(store?.name ?? "",
+                                    softWrap: true, style: FontSystem.title),
+                                GestureDetector(
+                                  onTap: onTapLike,
+                                  child: Container(
+                                      alignment: Alignment.centerRight,
+                                      margin: const EdgeInsets.only(right: 15),
+                                      child: SvgPicture.asset(
+                                        (store?.isLiked ?? false)
+                                            ? 'assets/icons/map/heart_selected.svg'
+                                            : 'assets/icons/map/heart_unselected.svg',
+                                      )),
                                 ),
+                              ],
+                            ),
+                            SizedBox(
+                              width: Get.width - 40,
+                              child: Wrap(
+                                alignment: WrapAlignment.start,
+                                children: (store?.storeCategories ?? [])
+                                    .map(
+                                      (item) => Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 10),
+                                        child: Text(
+                                          '#${storeCategoryMapping[item]?[0] ?? "알 수 없음"}',
+                                          style: FontSystem.body2.copyWith(
+                                              color: ColorSystem.gray1),
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
                               ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                              if (store.clover < 4)
-                                Container(
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            if ((store?.clover ?? 0) < 4)
+                              GestureDetector(
+                                onTap: () {
+                                  Get.dialog(StoreComfirmDialog(store!));
+                                },
+                                child: Container(
                                   decoration: BoxDecoration(
                                     border:
                                         Border.all(color: ColorSystem.primary),
@@ -212,7 +240,7 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       SvgPicture.asset(
-                                          countToClover(store.clover)),
+                                          countToClover(store?.clover ?? 0)),
                                       Text(
                                         "친환경 가게 인증하기",
                                         style: FontSystem.subtitleSemiBold
@@ -223,329 +251,333 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                                     ],
                                   ),
                                 ),
-                              const SizedBox(
-                                height: 5,
                               ),
-                              Container(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "버튼을 눌러 친환경 가게 인증에 동참해주세요!",
-                                  style: FontSystem.caption.copyWith(
-                                    color: ColorSystem.primary,
-                                  ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                "버튼을 눌러 친환경 가게 인증에 동참해주세요!",
+                                style: FontSystem.caption.copyWith(
+                                  color: ColorSystem.primary,
                                 ),
                               ),
-                              const SizedBox(
-                                height: 15,
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Get.to(() =>
+                                        StoreReviewListScreen(store: store!));
+                                  },
+                                  child: Text.rich(
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    TextSpan(text: "방문자 후기 ", children: [
+                                      TextSpan(
+                                        text: store?.reviewFilterCount
+                                                ?.countReviews()
+                                                .toString() ??
+                                            "0",
+                                        style: const TextStyle(
+                                            color: Colors.green),
+                                      ),
+                                      TextSpan(text: "건"), //후기 총 개수
+                                    ]),
+                                  ),
+                                ),
+                                const Icon(Icons.chevron_right_rounded),
+                                Flexible(
+                                  fit: FlexFit.tight,
+                                  child: Container(
+                                    alignment: Alignment.centerRight,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Get.dialog(
+                                            EditReviewDialog(store: store!));
+                                      },
+                                      child: const Text(
+                                        "후기 등록하기",
+                                        style: TextStyle(
+                                          color: Colors.green,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Stack(
+                              children: [
+                                const ProgressBar(
+                                  67, // 현재 항목 후기 개수 / 전체 후기 개수
+                                  barHeight: 28,
+                                ),
+                                Row(
+                                  children: [
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    SvgPicture.asset(
+                                      "assets/icons/category/cafe.svg",
+                                      width: 20,
+                                      height: 20,
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Container(
+                                      height: 28,
+                                      alignment: Alignment.centerLeft,
+                                      child: const Text(
+                                        "제품이 다양해요", //항목
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      fit: FlexFit.tight,
+                                      child: Container(
+                                        height: 28,
+                                        padding:
+                                            const EdgeInsets.only(right: 10),
+                                        alignment: Alignment.centerRight,
+                                        child: const Text("26"), //항목 개수
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Stack(
+                              children: [
+                                const ProgressBar(
+                                  50, // 현재 항목 후기 개수 / 전체 후기 개수
+                                  barHeight: 28,
+                                  barOpacity: 0.7,
+                                ),
+                                Row(
+                                  children: [
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    SvgPicture.asset(
+                                      "assets/icons/category/cafe.svg",
+                                      width: 20,
+                                      height: 20,
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Container(
+                                      height: 28,
+                                      alignment: Alignment.centerLeft,
+                                      child: const Text(
+                                        "제품이 다양해요", //항목
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      fit: FlexFit.tight,
+                                      child: Container(
+                                        height: 28,
+                                        padding:
+                                            const EdgeInsets.only(right: 10),
+                                        alignment: Alignment.centerRight,
+                                        child: const Text("26"), //항목 개수
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Stack(
+                              children: [
+                                const ProgressBar(
+                                  27, // 현재 항목 후기 개수 / 전체 후기 개수
+                                  barHeight: 28,
+                                  barOpacity: 0.5,
+                                ),
+                                Row(
+                                  children: [
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    SvgPicture.asset(
+                                      "assets/icons/category/cafe.svg",
+                                      width: 20,
+                                      height: 20,
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Container(
+                                      height: 28,
+                                      alignment: Alignment.centerLeft,
+                                      child: const Text(
+                                        "제품이 다양해요", //항목
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      fit: FlexFit.tight,
+                                      child: Container(
+                                        height: 28,
+                                        padding:
+                                            const EdgeInsets.only(right: 10),
+                                        alignment: Alignment.centerRight,
+                                        child: const Text("26"), //항목 개수
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Row(
+                              children: [
+                                SvgPicture.asset(
+                                  "assets/icons/category/location.svg",
+                                  width: 20,
+                                  height: 20,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  store?.newAddress ?? "",
+                                  style: FontSystem.body2,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const SizedBox(width: 30),
+                                Text(
+                                  "지번: ",
+                                  style: FontSystem.body2
+                                      .copyWith(color: ColorSystem.gray1),
+                                ),
+                                Text(
+                                  store?.oldAddress ?? "",
+                                  style: FontSystem.body2
+                                      .copyWith(color: ColorSystem.gray1),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                SvgPicture.asset(
+                                  "assets/icons/category/number.svg",
+                                  width: 20,
+                                  height: 20,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(store?.phoneNumber ?? "",
+                                    style: FontSystem.body2)
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                SvgPicture.asset(
+                                  "assets/icons/category/time.svg",
+                                  width: 20,
+                                  height: 20,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  "${store?.startAt ?? "00:00"} - ${store?.endAt ?? "00:00"}",
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              padding:
+                                  const EdgeInsets.only(top: 15, bottom: 15),
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                  top: BorderSide(
+                                      color: ColorSystem.gray2, width: 0.5),
+                                  bottom: BorderSide(
+                                      color: ColorSystem.gray2, width: 0.5),
+                                ),
                               ),
-                              Row(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      Get.to(() =>
-                                          StoreReviewListScreen(store: store));
-                                    },
-                                    child: const Text.rich(
+                              child: GestureDetector(
+                                onTap: () {
+                                  //TODO 정보 수정 API 연결
+                                },
+                                child: Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      "assets/icons/category/edit.svg",
+                                      width: 20,
+                                      height: 20,
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    const Text(
+                                      "정보수정 제안하기",
                                       style: TextStyle(
                                         fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                      TextSpan(text: "방문자 후기 ", children: [
-                                        TextSpan(
-                                          text: "120",
-                                          style: TextStyle(color: Colors.green),
-                                        ),
-                                        TextSpan(text: "건"), //후기 총 개수
-                                      ]),
-                                    ),
-                                  ),
-                                  const Icon(Icons.chevron_right_rounded),
-                                  Flexible(
-                                    fit: FlexFit.tight,
-                                    child: Container(
-                                      alignment: Alignment.centerRight,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Get.dialog(
-                                              EditReviewDialog(store: store));
-                                        },
-                                        child: const Text(
-                                          "후기 등록하기",
-                                          style: TextStyle(
-                                            color: Colors.green,
-                                            fontSize: 12,
-                                          ),
-                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Stack(
-                                children: [
-                                  const ProgressBar(
-                                    67, // 현재 항목 후기 개수 / 전체 후기 개수
-                                    barHeight: 28,
-                                  ),
-                                  Row(
-                                    children: [
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      SvgPicture.asset(
-                                        "assets/icons/category/cafe.svg",
-                                        width: 20,
-                                        height: 20,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Container(
-                                        height: 28,
-                                        alignment: Alignment.centerLeft,
-                                        child: const Text(
-                                          "제품이 다양해요", //항목
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ),
-                                      Flexible(
-                                        fit: FlexFit.tight,
-                                        child: Container(
-                                          height: 28,
-                                          padding:
-                                              const EdgeInsets.only(right: 10),
-                                          alignment: Alignment.centerRight,
-                                          child: const Text("26"), //항목 개수
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Stack(
-                                children: [
-                                  const ProgressBar(
-                                    50, // 현재 항목 후기 개수 / 전체 후기 개수
-                                    barHeight: 28,
-                                    barOpacity: 0.7,
-                                  ),
-                                  Row(
-                                    children: [
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      SvgPicture.asset(
-                                        "assets/icons/category/cafe.svg",
-                                        width: 20,
-                                        height: 20,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Container(
-                                        height: 28,
-                                        alignment: Alignment.centerLeft,
-                                        child: const Text(
-                                          "제품이 다양해요", //항목
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ),
-                                      Flexible(
-                                        fit: FlexFit.tight,
-                                        child: Container(
-                                          height: 28,
-                                          padding:
-                                              const EdgeInsets.only(right: 10),
-                                          alignment: Alignment.centerRight,
-                                          child: const Text("26"), //항목 개수
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Stack(
-                                children: [
-                                  const ProgressBar(
-                                    27, // 현재 항목 후기 개수 / 전체 후기 개수
-                                    barHeight: 28,
-                                    barOpacity: 0.5,
-                                  ),
-                                  Row(
-                                    children: [
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      SvgPicture.asset(
-                                        "assets/icons/category/cafe.svg",
-                                        width: 20,
-                                        height: 20,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Container(
-                                        height: 28,
-                                        alignment: Alignment.centerLeft,
-                                        child: const Text(
-                                          "제품이 다양해요", //항목
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ),
-                                      Flexible(
-                                        fit: FlexFit.tight,
-                                        child: Container(
-                                          height: 28,
-                                          padding:
-                                              const EdgeInsets.only(right: 10),
-                                          alignment: Alignment.centerRight,
-                                          child: const Text("26"), //항목 개수
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                              Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    "assets/icons/category/location.svg",
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    store.newAddress ?? "",
-                                    style: FontSystem.body2,
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  const SizedBox(width: 30),
-                                  Text(
-                                    "지번: ",
-                                    style: FontSystem.body2
-                                        .copyWith(color: ColorSystem.gray1),
-                                  ),
-                                  Text(
-                                    store.oldAddress ?? "",
-                                    style: FontSystem.body2
-                                        .copyWith(color: ColorSystem.gray1),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    "assets/icons/category/number.svg",
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(store.phoneNumber ?? "번호 없음",
-                                      style: FontSystem.body2)
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    "assets/icons/category/time.svg",
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "${store.startAt} - ${store.endAt}",
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 15,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Container(
-                                padding:
-                                    const EdgeInsets.only(top: 15, bottom: 15),
-                                decoration: const BoxDecoration(
-                                  border: Border(
-                                    top: BorderSide(
-                                        color: ColorSystem.gray2, width: 0.5),
-                                    bottom: BorderSide(
-                                        color: ColorSystem.gray2, width: 0.5),
-                                  ),
-                                ),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    //TODO 정보 수정 API 연결
-                                  },
-                                  child: Row(
-                                    children: [
-                                      SvgPicture.asset(
-                                        "assets/icons/category/edit.svg",
-                                        width: 20,
-                                        height: 20,
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      const Text(
-                                        "정보수정 제안하기",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                );
-              },
-            ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ),
-      );
-    });
+      ),
+    );
   }
 }
 
