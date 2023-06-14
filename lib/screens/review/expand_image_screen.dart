@@ -5,7 +5,9 @@ import 'package:flutter/services.dart';
 
 class ExpandImageScreen extends StatefulWidget {
   final List<String> imageUrls;
-  const ExpandImageScreen({required this.imageUrls, super.key});
+  final int initialIndex;
+  const ExpandImageScreen(
+      {required this.imageUrls, required this.initialIndex, super.key});
 
   @override
   State<ExpandImageScreen> createState() => _ExpandImageScreenState();
@@ -17,6 +19,7 @@ class _ExpandImageScreenState extends State<ExpandImageScreen> {
   @override
   void initState() {
     super.initState();
+    _index = widget.initialIndex;
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarBrightness: Brightness.dark,
@@ -77,11 +80,17 @@ class _ExpandImageScreenState extends State<ExpandImageScreen> {
           ),
           Expanded(
             child: CarouselSlider(
-              items: widget.imageUrls.map((e) => Image.network(e)).toList(),
+              items: widget.imageUrls
+                  .map((e) => Image.network(
+                        e,
+                        fit: BoxFit.cover,
+                      ))
+                  .toList(),
               options: CarouselOptions(
                 viewportFraction: 1.0,
                 enlargeCenterPage: false,
-                initialPage: 0,
+                height: double.infinity,
+                initialPage: widget.initialIndex,
                 enableInfiniteScroll: false,
                 scrollPhysics: const BouncingScrollPhysics(),
                 autoPlay: false,

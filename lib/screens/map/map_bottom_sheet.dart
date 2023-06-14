@@ -8,7 +8,6 @@ import 'dart:async';
 import 'package:may_be_clean/screens.dart';
 import 'package:may_be_clean/widgets/widgets.dart';
 import 'package:may_be_clean/states/states.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 /*
  * StoreBottomSheet
@@ -289,7 +288,7 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                                         style: const TextStyle(
                                             color: Colors.green),
                                       ),
-                                      TextSpan(text: "건"), //후기 총 개수
+                                      const TextSpan(text: "건"), //후기 총 개수
                                     ]),
                                   ),
                                 ),
@@ -534,14 +533,14 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                             ),
                             Container(
                               padding:
-                                    const EdgeInsets.only(top: 15, bottom: 15),
+                                  const EdgeInsets.only(top: 15, bottom: 15),
                               decoration: const BoxDecoration(
                                 border: Border(
-                                top: BorderSide(
-                                        color: ColorSystem.gray2, width: 0.5),
-                                bottom: BorderSide(
-                                        color: ColorSystem.gray2, width: 0.5),
-                                  ),
+                                  top: BorderSide(
+                                      color: ColorSystem.gray2, width: 0.5),
+                                  bottom: BorderSide(
+                                      color: ColorSystem.gray2, width: 0.5),
+                                ),
                               ),
                               child: GestureDetector(
                                 onTap: () {
@@ -564,8 +563,8 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                                         fontSize: 16,
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ],

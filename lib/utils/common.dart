@@ -20,7 +20,7 @@ void dismissKeyboard(BuildContext context) {
 Future<List<File>> pickImage(int count) async {
   try {
     final List<XFile?> images = await ImagePicker().pickMultiImage(
-      maxWidth: 1024,
+      maxHeight: 1024,
       requestFullMetadata: false,
     );
 
