@@ -213,7 +213,7 @@ class StoreComfirmDialog extends StatelessWidget {
                       .then((value) => Get.back);
                 } catch (e, s) {
                   log(e.toString(), stackTrace: s);
-                  showToast("친환경 가게 등록에 실패했습니다.");
+                  showToast("이미 친환경 가계 인증을 완료하였습니다.");
                 }
               },
             ),
