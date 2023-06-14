@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:may_be_clean/consts/consts.dart';
 
 class ProgressBar extends StatefulWidget {
   final double percentage;
@@ -87,12 +87,14 @@ class ReviewProgressBar extends StatelessWidget {
   final Color color;
   final String category;
   final double barOpacity;
+  final int count;
 
   const ReviewProgressBar(
       {required this.percentage,
       required this.color,
       required this.category,
       required this.barOpacity,
+      required this.count,
       super.key});
 
   @override
@@ -109,8 +111,8 @@ class ReviewProgressBar extends StatelessWidget {
             const SizedBox(
               width: 5,
             ),
-            SvgPicture.asset(
-              "assets/icons/category/cafe.svg",
+            Image.asset(
+              reviewCategoryMapping[category]![1],
               width: 20,
               height: 20,
             ),
@@ -120,12 +122,8 @@ class ReviewProgressBar extends StatelessWidget {
             Container(
               height: 28,
               alignment: Alignment.centerLeft,
-              child: const Text(
-                "제품이 다양해요", //항목
-                style: TextStyle(
-                  fontSize: 12,
-                ),
-              ),
+              child: Text(reviewCategoryMapping[category]![0], //항목
+                  style: FontSystem.caption),
             ),
             Flexible(
               fit: FlexFit.tight,
@@ -133,7 +131,7 @@ class ReviewProgressBar extends StatelessWidget {
                 height: 28,
                 padding: const EdgeInsets.only(right: 10),
                 alignment: Alignment.centerRight,
-                child: const Text("26"), //항목 개수
+                child: Text(count.toString()), //항목 개수
               ),
             )
           ],
