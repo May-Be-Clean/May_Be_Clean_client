@@ -8,6 +8,7 @@ import 'dart:async';
 import 'package:may_be_clean/screens.dart';
 import 'package:may_be_clean/widgets/widgets.dart';
 import 'package:may_be_clean/states/states.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /*
  * StoreBottomSheet
@@ -510,8 +511,14 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                                   ),
                                 ),
                                 child: GestureDetector(
-                                  onTap: () {
-                                    //TODO 정보 수정 API 연결
+                                  onTap: () async {
+                                    final url = Uri.parse(
+                                        'http://pf.kakao.com/_Pxgxnxoxj/chat'); //서비스 url
+
+                                    if (await canLaunchUrl(url)) {
+                                      launchUrl(url,
+                                          mode: LaunchMode.externalApplication);
+                                    }
                                   },
                                   child: Row(
                                     children: [
