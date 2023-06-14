@@ -73,8 +73,7 @@ class _MyReviewScreenState extends State<MyReviewScreen> {
               itemCount: _myReviews.length,
               itemBuilder: (context, index) {
                 final review = _myReviews[index];
-                return ReviewCard(review,
-                    isEdit: true, key: Key(review.toKeyString()));
+                return ReviewCard(review, isEdit: true);
               },
               separatorBuilder: (context, index) {
                 return const Divider();

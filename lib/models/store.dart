@@ -4,6 +4,7 @@ import 'package:may_be_clean/env/env.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:may_be_clean/utils/utils.dart';
+import 'package:may_be_clean/models/model.dart';
 
 class Store {
   final int id;
@@ -18,8 +19,10 @@ class Store {
   final String? startAt;
   final String? endAt;
   final int clover;
-  final bool isLiked;
+  bool isLiked;
+  final ReviewFilterCount? reviewFilterCount;
   final DateTime updatedAt = DateTime.now();
+  final User? user;
 
   Store({
     required this.id,
@@ -35,11 +38,9 @@ class Store {
     this.endAt,
     required this.clover,
     required this.isLiked,
+    this.reviewFilterCount,
+    this.user,
   });
-
-  String toKeyString() {
-    return "STORE_$id#${updatedAt.toIso8601String()}";
-  }
 
   factory Store.fromJson(Map<String, dynamic> json) {
     return Store(
@@ -57,7 +58,26 @@ class Store {
       endAt: json['endAt'],
       clover: json['clover'],
       isLiked: json['isLiked'] ?? false,
+      reviewFilterCount: ReviewFilterCount.fromJson(
+          json['reviewFilterCount'] ?? emptyReviewFilterCount.toJson()),
+      user: json['user'] != null ? User.fromJson(json['user']) : null,
     );
+  }
+
+  static Future<Store> getStore(String token, int id) async {
+    final api = "${ENV.apiEndpoint}/store/$id";
+
+    final response = await http.get(Uri.parse(api), headers: {
+      'Authorization': "Bearer $token",
+    });
+
+    log(response.body);
+
+    if (response.statusCode == 200) {
+      return Store.fromJson(json.decode(response.body)['store']);
+    } else {
+      throw newHTTPException(response.statusCode, response.body);
+    }
   }
 
   static Future<List<Store>> getNearbyStore(
@@ -98,7 +118,19 @@ class Store {
     }
   }
 
-  //getVerifiedStores
+  static Future<bool> verifyStore(String token, int storeId) async {
+    final api = "${ENV.apiEndpoint}/store/$storeId/verify";
+
+    final response = await http
+        .post(Uri.parse(api), headers: {"Authorization": "Bearer $token"});
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      throw newHTTPException(response.statusCode, response.body);
+    }
+  }
+
   static Future<List<Store>> getVerifiedStores(
       String token, int page, int size) async {
     final api = "${ENV.apiEndpoint}/store/myVerified?page=$page&size=$size";

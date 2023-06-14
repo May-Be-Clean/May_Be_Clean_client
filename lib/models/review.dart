@@ -5,6 +5,7 @@ import 'package:may_be_clean/utils/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:may_be_clean/models/model.dart';
 import 'dart:developer';
+import 'package:http_parser/http_parser.dart';
 
 class Review {
   final int id;
@@ -49,10 +50,6 @@ class Review {
           json['reviewFilterCount'] ?? emptyReviewFilterCount.toJson()),
       createdAt: DateTime.parse(json['createdAt']),
     );
-  }
-
-  String toKeyString() {
-    return "REVIEW_$id#${updatedAt.toIso8601String()}";
   }
 
   static Future<List<Review>> getReviews(
@@ -114,37 +111,38 @@ class Review {
   }
 
   static Future<bool> postReview(String token, int storeId,
-      List<String> categories, String content, List<String> images) async {
-    FormData formData;
+      List<String> categories, String content, List<String> imagesPath) async {
+    Dio dio = Dio();
+    FormData formData = FormData();
 
-    if (images.isEmpty) {
-      formData = FormData.fromMap({
-        "storeId": storeId,
-        "categories": categories,
-        "content": content,
-      });
-    } else {
-      formData = FormData.fromMap({
-        "storeId": storeId,
-        "categories": categories,
-        "content": content,
-        "images": images.map((image) async {
-          return await MultipartFile.fromFile(image, filename: "image.jpeg");
-        }).toList(),
-      });
+    formData = FormData.fromMap({
+      "storeId": storeId,
+      "categories": categories,
+      "content": content,
+    });
+
+    if (imagesPath.isNotEmpty) {
+      for (final imagePath in imagesPath) {
+        final subPath = imagePath.split('/').last;
+        String subString = "";
+        if (subPath.length <= 15) {
+          subString = subPath;
+        } else {
+          subString = subPath.substring(subPath.length - 15);
+        }
+
+        final file =
+            await MultipartFile.fromFile(imagePath, filename: subString);
+        formData.files.add(MapEntry("images", file));
+      }
     }
 
-    final len = formData.length;
-
-    log('Form data: ${formData.fields}');
-
-    final response = await Dio().post(
+    final response = await dio.post(
       '${ENV.apiEndpoint}/review',
       options: Options(
         headers: {
           "Content-Type": 'multipart/form-data',
           'Authorization': "Bearer $token",
-          "Content-Length": len,
         },
       ),
       data: formData,
@@ -157,6 +155,10 @@ class Review {
     } else {
       throw newHTTPException(response.statusCode ?? 500, response.data);
     }
+  }
+
+  Future<bool> deleteReview(String token) async {
+    return true;
   }
 }
 
@@ -221,46 +223,17 @@ class ReviewFilterCount {
         'countOfPrice': effective,
         'countOfKindness': kind,
       };
-}
 
-class ReviewDTO {
-  final int userId;
-  final String nickname;
-  final int point;
-  final Store store;
-  final List<String> storeCategories;
-  final int id;
-  final String content;
-  final List<String> imageUrls;
-  final List<String> reviewCategories;
-  final DateTime createdAt;
-
-  ReviewDTO({
-    required this.userId,
-    required this.nickname,
-    required this.point,
-    required this.store,
-    required this.storeCategories,
-    required this.id,
-    required this.content,
-    required this.imageUrls,
-    required this.reviewCategories,
-    required this.createdAt,
-  });
-
-  factory ReviewDTO.fromJson(Map<String, dynamic> json) {
-    return ReviewDTO(
-      userId: json['userId'],
-      nickname: json['nickname'],
-      point: json['point'],
-      store: Store.fromJson(json['store']),
-      storeCategories: json['storeCategories'].cast<String>(),
-      id: json['id'],
-      content: json['content'],
-      imageUrls: json['imageUrls'].cast<String>(),
-      reviewCategories: json['reviewCategories'].cast<String>(),
-      createdAt: DateTime.parse(json['createdAt']),
-    );
+  int countReviews() {
+    return clean +
+        large +
+        parking +
+        mood +
+        variant +
+        valuable +
+        quality +
+        effective +
+        kind;
   }
 }
 
