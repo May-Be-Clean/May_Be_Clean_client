@@ -21,7 +21,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   final _globalStates = Get.find<GlobalState>();
   final List<Review> _reviews = [];
   int _page = 0;
-  ScrollController _scrollController = ScrollController();
+  late ScrollController _scrollController;
 
   void loadMore() {
     _page++;
@@ -34,6 +34,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
@@ -44,6 +45,12 @@ class _ReviewScreenState extends State<ReviewScreen> {
       _reviews.addAll(value);
       setState(() {});
     });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -260,8 +267,10 @@ class ReviewCard extends StatelessWidget {
                     return RoundedImage(
                       imageUrl: image,
                       disableMargin: true,
-                      onTap: () => Get.to(
-                          () => ExpandImageScreen(imageUrls: review.imageUrls)),
+                      onTap: () => Get.to(() => ExpandImageScreen(
+                            imageUrls: review.imageUrls,
+                            initialIndex: index,
+                          )),
                     );
                   },
                   itemCount: review.imageUrls.length),
