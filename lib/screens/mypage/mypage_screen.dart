@@ -7,6 +7,7 @@ import 'package:may_be_clean/screens.dart';
 import 'package:may_be_clean/utils/utils.dart';
 import 'package:may_be_clean/widgets/widgets.dart';
 import 'package:may_be_clean/states/states.dart';
+import 'package:may_be_clean/models/model.dart';
 
 class MyPage extends StatefulWidget {
   const MyPage({super.key});
@@ -19,6 +20,15 @@ class _MyPageState extends State<MyPage> {
   final _globalState = Get.find<GlobalState>();
   bool _isProcess = false;
 
+  @override
+  void initState() {
+    super.initState();
+    UserData.getUserData(_globalState.token).then((value) {
+      _globalState.userData = value;
+      setState(() {});
+    });
+  }
+
   void loginStart() {
     setState(() {
       _isProcess = true;
@@ -29,11 +39,6 @@ class _MyPageState extends State<MyPage> {
     setState(() {
       _isProcess = false;
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   Widget _requestLogin() {
@@ -105,7 +110,7 @@ class _MyPageState extends State<MyPage> {
           height: 10,
         ),
         Text(
-          expToBadgeTitle(_globalState.userData?.user.point ?? 20),
+          expToBadgeTitle(_globalState.userData?.user.point ?? 0),
           style: FontSystem.body1.copyWith(
             color: ColorSystem.primary,
           ),
@@ -234,7 +239,7 @@ class _MyPageState extends State<MyPage> {
                         onPressed: () {
                           Get.back();
                           _globalState.innerLogout().then((_) {
-                            setState(() {});
+                            Get.offAll(() => const LoginScreen());
                           });
                         },
                         isDestructiveAction: true,
@@ -272,8 +277,10 @@ class _MyPageState extends State<MyPage> {
                       ),
                       CupertinoDialogAction(
                         onPressed: () {
-                          _globalState.innerLogout();
-                          setState(() {});
+                          Get.back();
+                          _globalState.innerLogout().then((value) {
+                            Get.offAll(() => const LoginScreen());
+                          });
                         },
                         isDestructiveAction: true,
                         child: const Text(
