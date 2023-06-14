@@ -26,7 +26,8 @@ class _MyReviewScreenState extends State<MyReviewScreen> {
   }
 
   Future<void> loadMore() async {
-    final reviews = await Review.loadMyReviews(_globalStates.token, _page, 10);
+    final reviews = await Review.getMyReviews(
+        _globalStates.token, _page, _globalStates.pageSize);
     _myReviews.addAll(reviews);
     _page++;
     setState(() {});

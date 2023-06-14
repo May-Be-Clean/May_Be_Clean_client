@@ -24,8 +24,8 @@ class _MyRegisterScreenState extends State<MyRegisterScreen> {
   }
 
   Future<void> loadMore() async {
-    final stores =
-        await Store.getRegistredStores(_globalStates.token, _page, 10);
+    final stores = await Store.getRegistredStores(
+        _globalStates.token, _page, _globalStates.pageSize);
     _myRegisterStores.addAll(stores);
     _page++;
     setState(() {});
