@@ -20,11 +20,18 @@ class _LikeScreenState extends State<LikeScreen> {
   final _globalStates = Get.find<GlobalState>();
   final _likeStores = <Store>[];
   int _page = 0;
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     loadMore();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        loadMore();
+      }
+    });
   }
 
   Future<void> loadMore() async {
@@ -37,75 +44,72 @@ class _LikeScreenState extends State<LikeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      final likeStores = _globalStates.likeStores.values.toList();
-
-      return Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 40,
-          backgroundColor: Colors.white,
-          shadowColor: Colors.transparent,
-          leadingWidth: 0,
-          title: Container(
-            padding: const EdgeInsets.all(10),
-            child: const Text("찜한 가게", style: FontSystem.subtitleSemiBold),
-          ),
-          centerTitle: false,
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 40,
+        backgroundColor: Colors.white,
+        shadowColor: Colors.transparent,
+        leadingWidth: 0,
+        title: Container(
+          padding: const EdgeInsets.all(10),
+          child: const Text("찜한 가게", style: FontSystem.subtitleSemiBold),
         ),
-        backgroundColor: ColorSystem.white,
-        body: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              backgroundColor: Colors.white,
-              expandedHeight: 20,
-              automaticallyImplyLeading: false,
-              flexibleSpace: FlexibleSpaceBar(
-                title: SizedBox(
-                  height: 40,
-                  child: ListView.separated(
-                    itemCount: storeCategoryMapping.length,
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.fromLTRB(20, 0, 10, 0),
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(width: 5),
-                    itemBuilder: (context, index) {
-                      final category =
-                          storeCategoryMapping.values.toList()[index];
-                      final categoryName =
-                          storeCategoryMapping.keys.toList()[index];
-                      bool isSelected = false;
-                      if (_selectedCategories.contains(categoryName)) {
-                        isSelected = true;
-                      }
-                      return CategoryButton(
-                          title: category[0],
-                          unselectedSvg: category[1],
-                          selectedSvg: category[2],
-                          isSelected: isSelected,
-                          action: () {
-                            if (isSelected) {
-                              _selectedCategories.remove(categoryName);
-                            } else {
-                              _selectedCategories.add(categoryName);
-                            }
-                            isSelected = !isSelected;
-                            setState(() {});
-                          });
-                    },
-                  ),
+        centerTitle: false,
+      ),
+      backgroundColor: ColorSystem.white,
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverAppBar(
+            backgroundColor: Colors.white,
+            expandedHeight: 20,
+            automaticallyImplyLeading: false,
+            flexibleSpace: FlexibleSpaceBar(
+              title: SizedBox(
+                height: 40,
+                child: ListView.separated(
+                  itemCount: storeCategoryMapping.length,
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.fromLTRB(20, 0, 10, 0),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(width: 5),
+                  itemBuilder: (context, index) {
+                    final category =
+                        storeCategoryMapping.values.toList()[index];
+                    final categoryName =
+                        storeCategoryMapping.keys.toList()[index];
+                    bool isSelected = false;
+                    if (_selectedCategories.contains(categoryName)) {
+                      isSelected = true;
+                    }
+                    return CategoryButton(
+                        title: category[0],
+                        unselectedSvg: category[1],
+                        selectedSvg: category[2],
+                        isSelected: isSelected,
+                        action: () {
+                          if (isSelected) {
+                            _selectedCategories.remove(categoryName);
+                          } else {
+                            _selectedCategories.add(categoryName);
+                          }
+                          isSelected = !isSelected;
+                          setState(() {});
+                        });
+                  },
                 ),
               ),
             ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
-                final store = likeStores[index];
-                return StoreCard(store);
-              }, childCount: likeStores.length),
-            ),
-          ],
-        ),
-      );
-    });
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final store = _likeStores[index];
+              return StoreCard(store);
+            }, childCount: _likeStores.length),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -121,28 +125,35 @@ class StoreCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GestureDetector(
-            onTap: () {
-              Get.bottomSheet(
-                StoreBottomSheet(
-                  store.id,
-                  isBottomSheet: true,
-                  dismiss: () => Get.back(),
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Get.bottomSheet(
+                    StoreBottomSheet(
+                      store.id,
+                      isBottomSheet: true,
+                      dismiss: () => Get.back(),
+                    ),
+                    isScrollControlled: true,
+                  );
+                },
+                child: Row(
+                  children: [
+                    SizedBox(
+                      height: 60,
+                      child: SvgPicture.asset(countToClover(store.clover)),
+                    ),
+                    Text(
+                      store.name,
+                      style: FontSystem.subtitleSemiBold
+                          .copyWith(color: ColorSystem.primary),
+                    ),
+                  ],
                 ),
-                isScrollControlled: true,
-              );
-            },
-            child: Row(
-              children: [
-                SvgPicture.asset(countToClover(
-                    Get.find<GlobalState>().stores.values.toList()[0].clover)),
-                Text(
-                  store.name,
-                  style: FontSystem.subtitleSemiBold
-                      .copyWith(color: ColorSystem.primary),
-                ),
-              ],
-            ),
+              ),
+              SvgPicture.asset("assets/icons/like/like.svg")
+            ],
           ),
           Container(
             height: 15,
