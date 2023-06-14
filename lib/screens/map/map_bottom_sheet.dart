@@ -511,14 +511,9 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                                   ),
                                 ),
                                 child: GestureDetector(
-                                  onTap: () async {
-                                    final url = Uri.parse(
-                                        'http://pf.kakao.com/_Pxgxnxoxj/chat'); //서비스 url
-
-                                    if (await canLaunchUrl(url)) {
-                                      launchUrl(url,
-                                          mode: LaunchMode.externalApplication);
-                                    }
+                                  onTap: () {
+                                    urlLauncher(
+                                        "http://pf.kakao.com/_Pxgxnxoxj/chat");
                                   },
                                   child: Row(
                                     children: [
