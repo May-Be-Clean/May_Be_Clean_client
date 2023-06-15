@@ -146,7 +146,7 @@ class StoreImageBottomSheet extends StatefulWidget {
   final double? barWidth;
   final Color? color;
 
-  final bool isBoxShadow;
+  // final bool isBoxShadow;
 
   const StoreImageBottomSheet({
     Key? key,
@@ -157,7 +157,7 @@ class StoreImageBottomSheet extends StatefulWidget {
     this.header,
     this.barWidth,
     this.color = Colors.white,
-    this.isBoxShadow = false,
+    // this.isBoxShadow = false,
     required this.review,
   }) : super(key: key);
 
@@ -168,25 +168,6 @@ class StoreImageBottomSheet extends StatefulWidget {
 class _StoreImageBottomSheetState extends State<StoreImageBottomSheet> {
   final DraggableScrollableController _scrollController =
       DraggableScrollableController();
-  double _scrollPosition = 0.0;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _onScroll() {
-    setState(() {
-      _scrollPosition = _scrollController.pixels;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -202,23 +183,9 @@ class _StoreImageBottomSheetState extends State<StoreImageBottomSheet> {
           maxChildSize: widget.maxChildSize,
           minChildSize: widget.minChildSize,
           builder: (_, controller) => Container(
-            decoration: BoxDecoration(
-              // color: null,
-              color: _scrollPosition > 100
-                  ? const Color.fromRGBO(0, 0, 0, 0.3)
-                  : null,
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(15)),
-              boxShadow: widget.isBoxShadow
-                  ? [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.7),
-                        spreadRadius: 0,
-                        blurRadius: 5.0,
-                        offset: const Offset(0, 0),
-                      ),
-                    ]
-                  : null,
+            decoration: const BoxDecoration(
+              color: Color.fromRGBO(0, 0, 0, 0.3),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
