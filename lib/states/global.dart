@@ -16,12 +16,12 @@ class GlobalState extends GetxController {
   late TabController tabController;
   UserData? userData;
   final _mapStates = Get.find<MapState>();
+  final int pageSize = 20;
 
   RxMap<String, Marker> markers = RxMap<String, Marker>({});
   RxMap<String, Marker> filteredMarkers = RxMap<String, Marker>({});
 
   RxMap<int, Store> stores = RxMap<int, Store>({});
-  RxMap<int, Store> likeStores = RxMap<int, Store>({});
 
   Set<Marker> get markerSet => markers.values.toSet();
 
@@ -34,15 +34,15 @@ class GlobalState extends GetxController {
     isBottomsheetShow = check;
   }
 
-  Future<void> loadLikeStores() async {
-    final result = await Store.loadLikeStore(token);
-    if (result.isEmpty) {
-      return;
-    }
-    for (final store in result) {
-      likeStores[store.id] = store;
-    }
-  }
+  // Future<void> loadLikeStores() async {
+  //   final result = await Store.loadLikeStore(token);
+  //   if (result.isEmpty) {
+  //     return;
+  //   }
+  //   for (final store in result) {
+  //     likeStores[store.id] = store;
+  //   }
+  // }
 
   Future loadMarker(double upperLat, double upperLon, double lowerLat,
       double lowerLon, List<String> categories) async {
@@ -88,7 +88,6 @@ class GlobalState extends GetxController {
   void updateStore(Store store) async {
     final response = await store.getStoreData(token, store.id);
 
-    likeStores[response.id] = store;
     stores[response.id] = store;
     final marker = await _storeToMarker(store);
     markers[store.id.toString()] = marker;

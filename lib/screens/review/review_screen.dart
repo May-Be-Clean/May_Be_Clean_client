@@ -21,11 +21,12 @@ class _ReviewScreenState extends State<ReviewScreen> {
   final _globalStates = Get.find<GlobalState>();
   final List<Review> _reviews = [];
   int _page = 0;
-  late ScrollController _scrollController;
+  final ScrollController _scrollController = ScrollController();
 
   void loadMore() {
     _page++;
-    Review.getReviews(_globalStates.token, _page, 10).then((value) {
+    Review.getReviews(_globalStates.token, _page, _globalStates.pageSize)
+        .then((value) {
       _reviews.addAll(value);
       setState(() {});
     });
@@ -34,17 +35,13 @@ class _ReviewScreenState extends State<ReviewScreen> {
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
         loadMore();
       }
     });
-    Review.getReviews(_globalStates.token, _page, 10).then((value) {
-      _reviews.addAll(value);
-      setState(() {});
-    });
+    loadMore();
   }
 
   @override
@@ -83,7 +80,12 @@ class _ReviewScreenState extends State<ReviewScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (_reviews.isEmpty)
-            const Center(child: CircularProgressIndicator())
+            const Center(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [CircularProgressIndicator()],
+            ))
           else
             Expanded(
               child: ListView.separated(
@@ -106,7 +108,81 @@ class _ReviewScreenState extends State<ReviewScreen> {
 class ReviewCard extends StatelessWidget {
   final bool isEdit;
   final Review review;
-  const ReviewCard(this.review, {this.isEdit = false, super.key});
+  final bool isTouchable;
+  const ReviewCard(this.review,
+      {this.isEdit = false, this.isTouchable = true, super.key});
+
+  void onTapEdit(BuildContext context) {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) {
+        return CupertinoActionSheet(
+          actions: [
+            CupertinoActionSheetAction(
+              onPressed: () {
+                Get.back();
+                Get.dialog(EditReviewDialog(
+                  storeId: review.store.id,
+                  storeName: review.store.name,
+                  clover: review.store.clover,
+                  review: review,
+                ));
+              },
+              child: const Text(
+                "수정하기",
+                style: TextStyle(color: Colors.blue),
+              ),
+            ),
+            CupertinoActionSheetAction(
+              onPressed: () {
+                Get.back();
+                showCupertinoDialog(
+                  context: context,
+                  builder: (context) {
+                    return CupertinoAlertDialog(
+                      title: const Text("후기를 정말 삭제할까요?"),
+                      content: const Text("이 동작은 취소할 수 없어요."),
+                      actions: [
+                        CupertinoDialogAction(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          child: const Text(
+                            "취소",
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                        ),
+                        CupertinoDialogAction(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          child: const Text("삭제",
+                              style: TextStyle(color: ColorSystem.red)),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: const Text(
+                "삭제하기",
+                style: TextStyle(color: ColorSystem.red),
+              ),
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text(
+              "닫기",
+              style: TextStyle(color: Colors.blue),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,16 +199,18 @@ class ReviewCard extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Get.bottomSheet(
-                        StoreBottomSheet(
-                          review.store.id,
-                          dismiss: () {
-                            Get.back();
-                          },
-                          isBottomSheet: true,
-                        ),
-                        isScrollControlled: true,
-                      );
+                      if (isTouchable) {
+                        Get.bottomSheet(
+                          StoreBottomSheet(
+                            review.store.id,
+                            dismiss: () {
+                              Get.back();
+                            },
+                            isBottomSheet: true,
+                          ),
+                          isScrollControlled: true,
+                        );
+                      }
                     },
                     behavior: HitTestBehavior.translucent,
                     child: Row(
@@ -169,74 +247,7 @@ class ReviewCard extends StatelessWidget {
               ),
               if (isEdit)
                 GestureDetector(
-                  onTap: () {
-                    showCupertinoModalPopup(
-                      context: context,
-                      builder: (context) {
-                        return CupertinoActionSheet(
-                          actions: [
-                            CupertinoActionSheetAction(
-                              onPressed: () {
-                                Get.back();
-                                // Get.dialog(EditReviewDialog(store: store))
-                              },
-                              child: const Text(
-                                "수정하기",
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                            ),
-                            CupertinoActionSheetAction(
-                              onPressed: () {
-                                Get.back();
-                                showCupertinoDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return CupertinoAlertDialog(
-                                      title: const Text("후기를 정말 삭제할까요?"),
-                                      content: const Text("이 동작은 취소할 수 없어요."),
-                                      actions: [
-                                        CupertinoDialogAction(
-                                          onPressed: () {
-                                            Get.back();
-                                          },
-                                          child: const Text(
-                                            "취소",
-                                            style:
-                                                TextStyle(color: Colors.blue),
-                                          ),
-                                        ),
-                                        CupertinoDialogAction(
-                                          onPressed: () {
-                                            Get.back();
-                                          },
-                                          child: const Text("삭제",
-                                              style: TextStyle(
-                                                  color: ColorSystem.red)),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                              child: const Text(
-                                "삭제하기",
-                                style: TextStyle(color: ColorSystem.red),
-                              ),
-                            ),
-                          ],
-                          cancelButton: CupertinoActionSheetAction(
-                            onPressed: () {
-                              Get.back();
-                            },
-                            child: const Text(
-                              "닫기",
-                              style: TextStyle(color: Colors.blue),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
+                  onTap: () => onTapEdit(context),
                   child: Container(
                     padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                     child: const Icon(Icons.more_vert),

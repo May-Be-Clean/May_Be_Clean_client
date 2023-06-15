@@ -20,7 +20,7 @@ class Store {
   final String? endAt;
   final int clover;
   bool isLiked;
-  final ReviewFilterCount? reviewFilterCount;
+  final ReviewCategoryCount? reviewCategoryCount;
   final DateTime updatedAt = DateTime.now();
   final User? user;
 
@@ -38,7 +38,7 @@ class Store {
     this.endAt,
     required this.clover,
     required this.isLiked,
-    this.reviewFilterCount,
+    this.reviewCategoryCount,
     this.user,
   });
 
@@ -58,8 +58,8 @@ class Store {
       endAt: json['endAt'],
       clover: json['clover'],
       isLiked: json['isLiked'] ?? false,
-      reviewFilterCount: ReviewFilterCount.fromJson(
-          json['reviewFilterCount'] ?? emptyReviewFilterCount.toJson()),
+      reviewCategoryCount: ReviewCategoryCount.fromJson(
+          json['reviewCategoryCount'] ?? emptyReviewCategoryCount.toJson()),
       user: json['user'] != null ? User.fromJson(json['user']) : null,
     );
   }
@@ -118,14 +118,14 @@ class Store {
     }
   }
 
-  static Future<bool> verifyStore(String token, int storeId) async {
+  static Future verifyStore(String token, int storeId) async {
     final api = "${ENV.apiEndpoint}/store/$storeId/verify";
 
     final response = await http
         .post(Uri.parse(api), headers: {"Authorization": "Bearer $token"});
 
     if (response.statusCode == 200) {
-      return true;
+      return;
     } else {
       throw newHTTPException(response.statusCode, response.body);
     }
@@ -139,9 +139,10 @@ class Store {
         .get(Uri.parse(api), headers: {"Authorization": "Bearer $token"});
 
     if (response.statusCode == 200) {
-      return json
-          .decode(response.body)['stores']
-          .map<Store>((json) => Store.fromJson(json))
+      final List<dynamic> result = json.decode(response.body)["stores"];
+
+      return result
+          .map((data) => Store.fromJson(data as Map<String, dynamic>))
           .toList();
     } else {
       throw newHTTPException(response.statusCode, response.body);
@@ -156,9 +157,10 @@ class Store {
         .get(Uri.parse(api), headers: {"Authorization": "Bearer $token"});
 
     if (response.statusCode == 200) {
-      return json
-          .decode(response.body)['stores']
-          .map<Store>((json) => Store.fromJson(json))
+      final List<dynamic> result = json.decode(response.body)["stores"];
+
+      return result
+          .map((data) => Store.fromJson(data as Map<String, dynamic>))
           .toList();
     } else {
       throw newHTTPException(response.statusCode, response.body);
@@ -197,6 +199,30 @@ class Store {
     }
   }
 
+  Future<void> likeStore(String token, int storeId, bool isLiked) async {
+    http.Response response;
+
+    if (isLiked) {
+      final api = "${ENV.apiEndpoint}/store/$storeId/like";
+      response = await http.post(
+        Uri.parse(api),
+        headers: {"Authorization": "Bearer $token"},
+      );
+    } else {
+      final api = "${ENV.apiEndpoint}/store/$storeId/like/cancel";
+      response = await http
+          .delete(Uri.parse(api), headers: {"Authorization": "Bearer $token"});
+    }
+
+    log(response.body);
+
+    if (response.statusCode == 200) {
+      return;
+    } else {
+      throw newHTTPException(response.statusCode, response.body);
+    }
+  }
+
   static Future<Store> postNewStore(
       String token,
       String name,
@@ -205,9 +231,9 @@ class Store {
       String newAddress,
       String oldAddress,
       String phone,
-      List<String> category,
-      String startAt,
-      String endAt) async {
+      List<String> categories,
+      String? startAt,
+      String? endAt) async {
     const api = '${ENV.apiEndpoint}/store';
 
     final response = await http.post(
@@ -220,7 +246,7 @@ class Store {
         'newAddress': newAddress,
         'oldAddress': oldAddress,
         'phoneNumber': phone,
-        'category': category,
+        'categories': categories,
         'startAt': startAt,
         'endAt': endAt,
       }),
@@ -228,24 +254,6 @@ class Store {
 
     if (response.statusCode == 200) {
       return Store.fromJson(json.decode(response.body)['store']);
-    } else {
-      throw newHTTPException(response.statusCode, response.body);
-    }
-  }
-
-  static Future<List<Store>> loadLikeStore(String token) async {
-    const api = '${ENV.apiEndpoint}/store/like';
-
-    final response = await http.get(
-      Uri.parse(api),
-      headers: {'Authorization': "Bearer $token"},
-    );
-
-    if (response.statusCode == 200) {
-      return json
-          .decode(response.body)['stores']
-          .map<Store>((json) => Store.fromJson(json))
-          .toList();
     } else {
       throw newHTTPException(response.statusCode, response.body);
     }
