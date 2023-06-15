@@ -111,6 +111,9 @@ String countToClover(int count) {
 }
 
 String expToTooltip(int exp) {
+  if (exp >= 32) {
+    return "최대 레벨 달성!";
+  }
   final remainExp = exp % 8;
   if (remainExp == 0) {
     return "레벨 달성!";
