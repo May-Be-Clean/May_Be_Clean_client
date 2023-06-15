@@ -7,6 +7,7 @@ import 'package:may_be_clean/models/model.dart';
 import 'package:may_be_clean/utils/utils.dart';
 import 'package:may_be_clean/states/states.dart';
 import 'package:get/get.dart';
+import 'dart:developer';
 
 class LikeScreen extends StatefulWidget {
   const LikeScreen({super.key});
@@ -113,10 +114,41 @@ class _LikeScreenState extends State<LikeScreen> {
   }
 }
 
-class StoreCard extends StatelessWidget {
+class StoreCard extends StatefulWidget {
   final Store store;
 
   const StoreCard(this.store, {super.key});
+
+  @override
+  State<StoreCard> createState() => _StoreCardState();
+}
+
+class _StoreCardState extends State<StoreCard> {
+  late Store store;
+  final _globalStates = Get.find<GlobalState>();
+
+  void onTapLike() {
+    try {
+      if (_globalStates.userData == null) {
+        loginRequest(context);
+        return;
+      }
+
+      store.likeStore(_globalStates.token, store.id, !store.isLiked);
+      store.isLiked = !store.isLiked;
+
+      setState(() {});
+    } catch (e, s) {
+      showToast("좋아요 실패");
+      log(e.toString(), stackTrace: s);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    store = widget.store;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,6 +158,7 @@ class StoreCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               GestureDetector(
                 onTap: () {
@@ -141,7 +174,7 @@ class StoreCard extends StatelessWidget {
                 child: Row(
                   children: [
                     SizedBox(
-                      height: 60,
+                      height: 40,
                       child: SvgPicture.asset(countToClover(store.clover)),
                     ),
                     Text(
@@ -152,7 +185,17 @@ class StoreCard extends StatelessWidget {
                   ],
                 ),
               ),
-              SvgPicture.asset("assets/icons/like/like.svg")
+              GestureDetector(
+                onTap: onTapLike,
+                child: Container(
+                    alignment: Alignment.centerRight,
+                    margin: const EdgeInsets.only(right: 15),
+                    child: SvgPicture.asset(
+                      (store.isLiked)
+                          ? 'assets/icons/map/heart_selected.svg'
+                          : 'assets/icons/map/heart_unselected.svg',
+                    )),
+              ),
             ],
           ),
           Container(
