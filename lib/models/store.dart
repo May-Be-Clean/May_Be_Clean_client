@@ -199,7 +199,7 @@ class Store {
     }
   }
 
-  Future likeStore(String token, int storeId, bool isLiked) async {
+  Future<void> likeStore(String token, int storeId, bool isLiked) async {
     http.Response response;
 
     if (isLiked) {
@@ -213,6 +213,8 @@ class Store {
       response = await http
           .delete(Uri.parse(api), headers: {"Authorization": "Bearer $token"});
     }
+
+    log(response.body);
 
     if (response.statusCode == 200) {
       return;
@@ -229,9 +231,9 @@ class Store {
       String newAddress,
       String oldAddress,
       String phone,
-      List<String> category,
-      String startAt,
-      String endAt) async {
+      List<String> categories,
+      String? startAt,
+      String? endAt) async {
     const api = '${ENV.apiEndpoint}/store';
 
     final response = await http.post(
@@ -244,7 +246,7 @@ class Store {
         'newAddress': newAddress,
         'oldAddress': oldAddress,
         'phoneNumber': phone,
-        'category': category,
+        'categories': categories,
         'startAt': startAt,
         'endAt': endAt,
       }),
