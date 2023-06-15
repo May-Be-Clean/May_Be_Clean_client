@@ -4,6 +4,7 @@ import 'package:may_be_clean/states/global.dart';
 import 'package:may_be_clean/widgets/widgets.dart';
 import 'package:may_be_clean/models/model.dart';
 import 'package:get/get.dart';
+import 'package:may_be_clean/consts/consts.dart';
 
 class MyVerifyScreen extends StatefulWidget {
   const MyVerifyScreen({super.key});
@@ -43,18 +44,53 @@ class _MyVerifyScreenState extends State<MyVerifyScreen> {
     return Scaffold(
       appBar: const CustomAppBar(title: "내가 인증한 가게"),
       backgroundColor: Colors.white,
-      body: ListView.separated(
-        itemCount: _myVerifyStores.length,
-        shrinkWrap: true,
-        controller: _controller,
-        padding: const EdgeInsets.all(20),
-        itemBuilder: (context, index) {
-          final store = _myVerifyStores[index];
-          return StoreCard(store);
-        },
-        separatorBuilder: (context, index) {
-          return const Divider();
-        },
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: _globalStates.userData!.user.nickname,
+                          style: FontSystem.subtitleSemiBold,
+                        ),
+                        const TextSpan(
+                          text: '님이 인증한',
+                          style: FontSystem.subtitleRegular,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Text(
+                    "친환경 가게 목록이에요.",
+                    style: FontSystem.subtitleRegular,
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView.separated(
+                itemCount: _myVerifyStores.length,
+                shrinkWrap: true,
+                controller: _controller,
+                padding: const EdgeInsets.all(20),
+                itemBuilder: (context, index) {
+                  final store = _myVerifyStores[index];
+                  return StoreCard(store);
+                },
+                separatorBuilder: (context, index) {
+                  return const Divider();
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
