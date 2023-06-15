@@ -48,6 +48,15 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
       _isProcess = false;
       setState(() {});
     });
+    if (_globalStates.isBottomsheetShow == true) {
+      // print(_globalStates.selectedCategories);
+      setState(() {
+        _globalStates.setIsBottomsheetShow(false);
+        _globalStates.selectedCategories = <String>[].obs;
+      });
+      // print(_globalStates.selectedCategories);
+      // Get.offNamed('/HomeScreen');
+    }
   }
 
   void onTapLike() {

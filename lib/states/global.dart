@@ -27,6 +27,13 @@ class GlobalState extends GetxController {
 
   List<Store> get storeList => stores.values.toList();
 
+  bool isBottomsheetShow = false;
+  List<String> selectedCategories = [];
+
+  void setIsBottomsheetShow(check) {
+    isBottomsheetShow = check;
+  }
+
   Future<void> loadLikeStores() async {
     final result = await Store.loadLikeStore(token);
     if (result.isEmpty) {
