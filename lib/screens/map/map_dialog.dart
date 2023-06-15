@@ -9,10 +9,12 @@ import 'package:get/get.dart';
 import 'package:may_be_clean/states/states.dart';
 import 'dart:developer';
 
+// ignore: must_be_immutable
 class StoreComfirmDialog extends StatelessWidget {
   final _globalStates = Get.find<GlobalState>();
   final Store store;
   StoreComfirmDialog(this.store, {super.key});
+  bool _isPrcoess = false;
 
   @override
   Widget build(BuildContext context) {
@@ -209,6 +211,8 @@ class StoreComfirmDialog extends StatelessWidget {
               ),
               onTap: () async {
                 try {
+                  if (_isPrcoess) return;
+                  _isPrcoess = true;
                   Store.verifyStore(_globalStates.token, store.id)
                       .then((value) => Get.back);
                 } catch (e, s) {
@@ -234,6 +238,7 @@ class StoreAddDialog extends StatefulWidget {
 class _StoreAddDialogState extends State<StoreAddDialog> {
   final _globalStates = Get.find<GlobalState>();
   final List<String> _selectedCategories = [];
+  bool _isPrcoess = false;
   final _openTimeHourController = TextEditingController();
   final _openTimeMinuteController = TextEditingController();
   final _closeTimeHourController = TextEditingController();
@@ -578,26 +583,19 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
             if (_name == '' || _selectedCategories.isEmpty) {
               showToast('필수입력요소를 다 입력해주세요');
             } else {
-              if (_openTimeHourController.text.length == 1) {
-                _openTimeHourController.text =
-                    "0${_openTimeHourController.text}";
+              if (_isPrcoess) return;
+              setState(() {
+                _isPrcoess = true;
+              });
+              String? openTime;
+              String? closeTime;
+              if (_openTimeHourController.text.isNotEmpty &&
+                  _openTimeMinuteController.text.isNotEmpty) {
+                openTime =
+                    "${_openTimeHourController.text.padLeft(2, '0')}:${_openTimeMinuteController.text.padLeft(2, '0')}:00";
+                closeTime =
+                    "${_closeTimeHourController.text.padLeft(2, '0')}:${_closeTimeMinuteController.text.padLeft(2, '0')}:00";
               }
-              if (_openTimeMinuteController.text.length == 1) {
-                _openTimeMinuteController.text =
-                    "0${_openTimeMinuteController.text}";
-              }
-              if (_closeTimeHourController.text.length == 1) {
-                _closeTimeHourController.text =
-                    "0${_closeTimeHourController.text}";
-              }
-              if (_closeTimeMinuteController.text.length == 1) {
-                _closeTimeMinuteController.text =
-                    "0${_closeTimeMinuteController.text}";
-              }
-              final openTime =
-                  "${_openTimeHourController.text}:${_openTimeMinuteController.text}:00";
-              final closeTime =
-                  "${_closeTimeHourController.text}:${_closeTimeMinuteController.text}:00";
               Store.postNewStore(
                   _globalStates.token,
                   _name,
