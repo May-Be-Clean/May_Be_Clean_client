@@ -43,12 +43,15 @@ class User {
     }
   }
 
-  static Future<User> authApple(String token) async {
+  static Future<User> authApple(String? nickname, String token) async {
     const api = '${ENV.apiEndpoint}/auth/apple';
 
     final response = await http.post(
       Uri.parse(api),
-      headers: {'Authorization': "Bearer $token"},
+      body: jsonEncode({
+        'nickname': nickname,
+        'token': token,
+      }),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
