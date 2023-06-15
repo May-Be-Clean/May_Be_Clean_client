@@ -20,12 +20,13 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   final _globalStates = Get.find<GlobalState>();
   final _mapStates = Get.find<MapState>();
-  final List<String> _selectedCategories = [];
-  bool _isBottomsheetShow = false;
+  // final List<String> _selectedCategories = [];
+
+  // bool _isBottomsheetShow = _globalStates.isBottomsheetShow;
 
   void _bottomsheetDismiss() {
     setState(() {
-      _isBottomsheetShow = false;
+      _globalStates.setIsBottomsheetShow(false);
     });
   }
 
@@ -41,7 +42,7 @@ class _MapScreenState extends State<MapScreen> {
         bounds.southwest.longitude - 0.001,
         bounds.southwest.latitude + 0.001,
         bounds.northeast.longitude + 0.001,
-        _selectedCategories,
+        _globalStates.selectedCategories,
       );
 
       setState(() {});
@@ -64,7 +65,8 @@ class _MapScreenState extends State<MapScreen> {
               });
             },
             initialCameraPosition: CameraPosition(
-              target: _mapStates.currentLocation!,
+              target: LatLng(37.494705526855, 126.95994559383),
+              // target: _mapStates.currentLocation!,
               zoom: 16,
             ),
             myLocationButtonEnabled: false,
@@ -76,7 +78,8 @@ class _MapScreenState extends State<MapScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              if (_selectedCategories.isEmpty && _globalStates.userData != null)
+              if (_globalStates.selectedCategories.isEmpty &&
+                  _globalStates.userData != null)
                 _header(),
               _categoryListView(),
               _refreshButton(),
@@ -131,10 +134,22 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ),
           ),
-          if (_selectedCategories.isNotEmpty && _isBottomsheetShow)
-            StoreListBottomSheet(
-              dismiss: _bottomsheetDismiss,
-            ),
+          GetBuilder<GlobalState>(builder: (globalStates) {
+            if (globalStates.selectedCategories.isNotEmpty &&
+                globalStates.isBottomsheetShow) {
+              return StoreListBottomSheet(
+                dismiss: _bottomsheetDismiss,
+              );
+            } else {
+              return const SizedBox();
+            }
+          }),
+          // if (_globalStates.selectedCategories.isNotEmpty &&
+          //     _globalStates.isBottomsheetShow)
+          //   // _globalStates.aaa(_bottomsheetDismiss)
+          //   StoreListBottomSheet(
+          //     dismiss: _bottomsheetDismiss,
+          //   ),
         ],
       ),
     );
@@ -186,7 +201,8 @@ class _MapScreenState extends State<MapScreen> {
 
   Widget _categoryListView() {
     return Container(
-      margin: (_selectedCategories.isNotEmpty || _globalStates.userData == null)
+      margin: (_globalStates.selectedCategories.isNotEmpty ||
+              _globalStates.userData == null)
           ? EdgeInsets.only(
               top: MediaQuery.of(context).viewPadding.top,
             )
@@ -201,7 +217,7 @@ class _MapScreenState extends State<MapScreen> {
           final category = storeCategoryMapping.values.toList()[index];
           final categoryName = storeCategoryMapping.keys.toList()[index];
           bool isSelected = false;
-          if (_selectedCategories.contains(categoryName)) {
+          if (_globalStates.selectedCategories.contains(categoryName)) {
             isSelected = true;
           }
           return CategoryButton(
@@ -211,10 +227,10 @@ class _MapScreenState extends State<MapScreen> {
               isSelected: isSelected,
               action: () {
                 if (isSelected) {
-                  _selectedCategories.remove(categoryName);
+                  _globalStates.selectedCategories.remove(categoryName);
                 } else {
-                  _selectedCategories.add(categoryName);
-                  _isBottomsheetShow = true;
+                  _globalStates.selectedCategories.add(categoryName);
+                  _globalStates.setIsBottomsheetShow(true);
                 }
                 isSelected = !isSelected;
                 setState(() {});

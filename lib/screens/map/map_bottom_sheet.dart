@@ -50,6 +50,15 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
       _isProcess = false;
       setState(() {});
     });
+    if (_globalStates.isBottomsheetShow == true) {
+      // print(_globalStates.selectedCategories);
+      setState(() {
+        _globalStates.setIsBottomsheetShow(false);
+        _globalStates.selectedCategories = <String>[].obs;
+      });
+      // print(_globalStates.selectedCategories);
+      // Get.offNamed('/HomeScreen');
+    }
   }
 
   void onTapLike() {
@@ -145,7 +154,7 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
           },
           child: DraggableScrollableSheet(
             minChildSize: 0.3,
-            maxChildSize: 0.8,
+            maxChildSize: _globalStates.userData == null ? 0.8 : 0.7,
             initialChildSize: 0.3,
             controller: _controller,
             builder: (context, scrollController) {
@@ -522,6 +531,7 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
 class StoreListBottomSheet extends StatefulWidget {
   /// 해당 바텀시트를 닫고 싶을 때 사용하는 함수
   final Function() dismiss;
+
   const StoreListBottomSheet({required this.dismiss, super.key});
 
   @override

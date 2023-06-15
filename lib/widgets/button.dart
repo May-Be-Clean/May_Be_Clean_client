@@ -66,11 +66,13 @@ class CategoryButton extends StatelessWidget {
 class ReviewCategoryItem extends StatelessWidget {
   final String title;
   final String image;
+  final bool isImageBottomSheet;
 
   const ReviewCategoryItem({
     super.key,
     required this.title,
     required this.image,
+    this.isImageBottomSheet = false,
   });
 
   @override
@@ -79,7 +81,9 @@ class ReviewCategoryItem extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(6, 4, 6, 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
-        color: ColorSystem.chip,
+        color: isImageBottomSheet
+            ? const Color.fromRGBO(0, 0, 0, 0.4)
+            : ColorSystem.chip,
       ),
       child: Row(
         children: [
@@ -88,7 +92,9 @@ class ReviewCategoryItem extends StatelessWidget {
             width: 16,
           ),
           const SizedBox(width: 2),
-          Text(title, style: FontSystem.caption.copyWith(color: Colors.black)),
+          Text(title,
+              style: FontSystem.caption.copyWith(
+                  color: isImageBottomSheet ? Colors.white : Colors.black)),
         ],
       ),
     );

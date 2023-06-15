@@ -279,6 +279,7 @@ class ReviewCard extends StatelessWidget {
                       imageUrl: image,
                       disableMargin: true,
                       onTap: () => Get.to(() => ExpandImageScreen(
+                            review: review,
                             imageUrls: review.imageUrls,
                             initialIndex: index,
                           )),
