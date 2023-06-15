@@ -80,7 +80,9 @@ class _MyPageState extends State<MyPage> {
               GestureDetector(
                 onTap: () {
                   if (_isProcess) return;
-                  appleLogin(loginStart, loginEnd);
+                  setState(() {
+                    appleLogin(loginStart, loginEnd);
+                  });
                 },
                 child: Column(
                   children: [
@@ -238,8 +240,8 @@ class _MyPageState extends State<MyPage> {
                       CupertinoDialogAction(
                         onPressed: () {
                           Get.back();
-                          _globalState.innerLogout().then((_) {
-                            Get.offAll(() => const LoginScreen());
+                          setState(() {
+                            _globalState.innerLogout();
                           });
                         },
                         isDestructiveAction: true,
