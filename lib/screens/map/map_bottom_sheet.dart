@@ -301,8 +301,11 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                                     alignment: Alignment.centerRight,
                                     child: GestureDetector(
                                       onTap: () {
-                                        Get.dialog(
-                                            EditReviewDialog(store: store!));
+                                        Get.dialog(EditReviewDialog(
+                                          storeId: store!.id,
+                                          storeName: store!.name,
+                                          clover: store!.clover,
+                                        ));
                                       },
                                       child: const Text(
                                         "후기 등록하기",
@@ -319,16 +322,45 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                             () {
                               final firstCategory = store
                                       ?.reviewCategoryCount?.getSortedList[0] ??
-                                  const Tuple2("", 0);
+                                  const Tuple2("CLEAN", 0);
                               final secondCategory = store
                                       ?.reviewCategoryCount?.getSortedList[1] ??
-                                  const Tuple2("", 0);
+                                  const Tuple2("CLEAN", 0);
                               final thirdCategory = store
                                       ?.reviewCategoryCount?.getSortedList[2] ??
-                                  const Tuple2("", 0);
+                                  const Tuple2("CLEAN", 0);
                               //TODO 전체 리뷰 개수 확인
                               final totalCount =
                                   store?.reviewCategoryCount?.countReviews ?? 1;
+
+                              Widget progressWidget(Tuple2 data) {
+                                return Column(
+                                  children: [
+                                    ReviewProgressBar(
+                                        percentage:
+                                            data.item2 / totalCount * 100,
+                                        color: ColorSystem.primary,
+                                        category: data.item1,
+                                        count: data.item2,
+                                        barOpacity: 1.0),
+                                    const SizedBox(height: 10),
+                                  ],
+                                );
+                              }
+
+                              if (firstCategory.item2 == 0 &&
+                                  secondCategory.item2 == 0 &&
+                                  thirdCategory.item2 == 0) {
+                                return Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "아직 후기가 없어요!",
+                                    style: FontSystem.body2.copyWith(
+                                      color: ColorSystem.gray1,
+                                    ),
+                                  ),
+                                );
+                              }
 
                               return GestureDetector(
                                 onTap: () {
@@ -337,32 +369,15 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                                 },
                                 child: Column(
                                   children: [
-                                    ReviewProgressBar(
-                                        percentage: firstCategory.item2 /
-                                            totalCount *
-                                            100,
-                                        color: ColorSystem.primary,
-                                        category: firstCategory.item1,
-                                        count: firstCategory.item2,
-                                        barOpacity: 1.0),
-                                    const SizedBox(height: 10),
-                                    ReviewProgressBar(
-                                        percentage: secondCategory.item2 /
-                                            totalCount *
-                                            100,
-                                        color: ColorSystem.primary,
-                                        category: secondCategory.item1,
-                                        count: secondCategory.item2,
-                                        barOpacity: 0.8),
-                                    const SizedBox(height: 10),
-                                    ReviewProgressBar(
-                                        percentage: thirdCategory.item2 /
-                                            totalCount *
-                                            100,
-                                        color: ColorSystem.primary,
-                                        category: thirdCategory.item1,
-                                        count: thirdCategory.item2,
-                                        barOpacity: 0.6),
+                                    (firstCategory.item2 == 0)
+                                        ? const SizedBox()
+                                        : progressWidget(firstCategory),
+                                    (secondCategory.item2 == 0)
+                                        ? const SizedBox()
+                                        : progressWidget(secondCategory),
+                                    (thirdCategory.item2 == 0)
+                                        ? const SizedBox()
+                                        : progressWidget(thirdCategory),
                                   ],
                                 ),
                               );
