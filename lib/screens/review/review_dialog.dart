@@ -13,9 +13,18 @@ import 'package:may_be_clean/utils/utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class EditReviewDialog extends StatefulWidget {
-  final Store store;
+  final int storeId;
+  final String storeName;
+  final int clover;
   final Review? review;
-  const EditReviewDialog({required this.store, this.review, super.key});
+
+  const EditReviewDialog({
+    required this.storeId,
+    required this.storeName,
+    required this.clover,
+    this.review,
+    super.key,
+  });
 
   @override
   State<EditReviewDialog> createState() => _EditReviewDialogState();
@@ -99,8 +108,8 @@ class _EditReviewDialogState extends State<EditReviewDialog> {
               height: 40,
               child: Row(
                 children: [
-                  SvgPicture.asset(countToClover(widget.store.clover)),
-                  Text(widget.store.name, style: FontSystem.subtitleSemiBold),
+                  SvgPicture.asset(countToClover(widget.clover)),
+                  Text(widget.storeName, style: FontSystem.subtitleSemiBold),
                 ],
               ),
             ),
@@ -268,9 +277,20 @@ class _EditReviewDialogState extends State<EditReviewDialog> {
               return;
             }
             try {
+              if (widget.review != null) {
+                await Review.patchReview(
+                    _globalStates.token,
+                    widget.review!.id,
+                    _selectedCategories,
+                    _textController.text,
+                    _currentImages.sublist(1));
+                Get.back();
+                Get.dialog(const ReviewCheckDialog());
+                return;
+              }
               await Review.postReview(
                   _globalStates.token,
-                  widget.store.id,
+                  widget.storeId,
                   _selectedCategories,
                   _textController.text,
                   _currentImages.sublist(1));
@@ -292,9 +312,9 @@ class _EditReviewDialogState extends State<EditReviewDialog> {
                 color: ColorSystem.primary,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Text(
-                '작성 완료',
-                style: TextStyle(
+              child: Text(
+                (widget.review == null) ? '작성 완료' : '수정 완료',
+                style: const TextStyle(
                   fontSize: 16,
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
