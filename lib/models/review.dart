@@ -159,6 +159,51 @@ class Review {
     }
   }
 
+  static Future<bool> patchReview(String token, int reviewId,
+      List<String> categories, String content, List<String> imagesPath) async {
+    Dio dio = Dio();
+    FormData formData = FormData();
+
+    formData = FormData.fromMap({
+      "reviewId": reviewId,
+      "categories": categories,
+      "content": content,
+    });
+
+    if (imagesPath.isNotEmpty) {
+      for (final imagePath in imagesPath) {
+        final subPath = imagePath.split('/').last;
+        String subString = "";
+        if (subPath.length <= 15) {
+          subString = subPath;
+        } else {
+          subString = subPath.substring(subPath.length - 15);
+        }
+
+        final file =
+            await MultipartFile.fromFile(imagePath, filename: subString);
+        formData.files.add(MapEntry("images", file));
+      }
+    }
+
+    final response = await dio.patch(
+      "${ENV.apiEndpoint}/review",
+      options: Options(headers: {
+        "Content-Type": 'multipart/form-data',
+        'Authorization': "Bearer $token",
+      }),
+      data: formData,
+    );
+
+    log('Response data: ${response.data}');
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      throw newHTTPException(response.statusCode ?? 500, response.data);
+    }
+  }
+
   Future<bool> deleteReview(String token) async {
     return true;
   }
