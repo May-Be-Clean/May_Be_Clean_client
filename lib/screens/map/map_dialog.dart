@@ -52,7 +52,7 @@ class StoreComfirmDialog extends StatelessWidget {
                         FontSystem.caption.copyWith(color: ColorSystem.primary),
                     children: const [
                       TextSpan(
-                        text: "님이 등록한 가계예요.",
+                        text: "님이 등록한 가게예요.",
                         style: TextStyle(color: Colors.black),
                       )
                     ]),
@@ -216,6 +216,7 @@ class StoreComfirmDialog extends StatelessWidget {
                   _isPrcoess = true;
                   Store.verifyStore(_globalStates.token, store.id)
                       .then((value) => Get.back);
+                  showToast("친환경 가게를 인증했습니다!");
                 } catch (e, s) {
                   showToast("이미 친환경 가계 인증을 완료하였습니다.");
                   log(e.toString(), stackTrace: s);
@@ -319,7 +320,7 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                         storeCategoryMapping.values.toList()[index];
 
                     bool isSelected = false;
-                    if (_selectedCategories.contains(categoryValue[0])) {
+                    if (_selectedCategories.contains(categoryKey)) {
                       isSelected = true;
                     }
                     return CategoryButton(
@@ -352,7 +353,7 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                     final categoryValue =
                         storeCategoryMapping.values.toList()[index + 3];
                     bool isSelected = false;
-                    if (_selectedCategories.contains(categoryValue[0])) {
+                    if (_selectedCategories.contains(categoryKey)) {
                       isSelected = true;
                     }
                     return CategoryButton(
@@ -365,9 +366,9 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                       padding: const EdgeInsets.fromLTRB(8, 6, 10, 6),
                       action: () {
                         if (isSelected) {
-                          _selectedCategories.remove(categoryKey[0]);
+                          _selectedCategories.remove(categoryKey);
                         } else {
-                          _selectedCategories.add(categoryKey[0]);
+                          _selectedCategories.add(categoryKey);
                         }
                         isSelected = !isSelected;
                         setState(() {});
@@ -586,7 +587,11 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
       actions: [
         GestureDetector(
           onTap: () async {
-            if (_name == '' || _selectedCategories.isEmpty) {
+            if (_name == '' ||
+                _selectedCategories.isEmpty ||
+                (_selectedCategories.contains("REFILL") ||
+                    _selectedCategories.contains("UPCYCLE") ||
+                    _selectedCategories.contains("NO_DISPOSABLE"))) {
               showToast('필수 입력 요소를 다 입력해주세요');
             } else {
               if (_isPrcoess) return;
