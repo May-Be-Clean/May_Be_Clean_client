@@ -35,6 +35,7 @@ class _EditReviewDialogState extends State<EditReviewDialog> {
   final List<String> _currentImages = [""];
   final _textController = TextEditingController();
   final _globalStates = Get.find<GlobalState>();
+  bool _isProcess = false;
 
   @override
   void initState() {
@@ -277,6 +278,11 @@ class _EditReviewDialogState extends State<EditReviewDialog> {
               return;
             }
             try {
+              if (_isProcess) return;
+              setState(() {
+                _isProcess = true;
+              });
+
               if (widget.review != null) {
                 await Review.patchReview(
                     _globalStates.token,
@@ -294,7 +300,9 @@ class _EditReviewDialogState extends State<EditReviewDialog> {
                   _selectedCategories,
                   _textController.text,
                   _currentImages.sublist(1));
-
+              setState(() {
+                _isProcess = false;
+              });
               Get.back();
               Get.dialog(const ReviewCheckDialog());
             } catch (e, s) {
