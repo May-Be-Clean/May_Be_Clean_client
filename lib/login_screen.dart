@@ -79,6 +79,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           setState(() {
                             _isProcess = false;
                           });
+                        }).then((value) {
+                          Get.off(() => const HomeScreen());
                         });
                       },
                       child: Image.asset('assets/icons/login/apple_login.png'),
