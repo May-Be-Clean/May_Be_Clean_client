@@ -553,6 +553,7 @@ class _StoreListBottomSheetState extends State<StoreListBottomSheet> {
   final List<String> _selectedCategories = [];
   final _globalStates = Get.find<GlobalState>();
   final List<Store> _reviewFilteredStores = [];
+  bool _isProcess = false;
 
   @override
   void dispose() {
@@ -563,8 +564,37 @@ class _StoreListBottomSheetState extends State<StoreListBottomSheet> {
   @override
   void initState() {
     super.initState();
+    _globalStates.addListnerToFilteredStores(() {
+      reloadData();
+    });
+  }
+
+  void reloadData() {
+    if (!mounted) return;
+    if (_isProcess) return;
+    setState(() {
+      _isProcess = true;
+    });
     _reviewFilteredStores.clear();
-    _reviewFilteredStores.addAll(_globalStates.filteredStoreList);
+
+    Timer(const Duration(milliseconds: 100), () {
+      _reviewFilteredStores
+          .addAll(_globalStates.filteredStoreList.where((store) {
+        if (_selectedCategories.isEmpty) {
+          return true;
+        }
+
+        for (final reviewCategory in store.reviewCategories) {
+          if (_selectedCategories.contains(reviewCategory)) {
+            return true;
+          }
+        }
+        return false;
+      }));
+      setState(() {
+        _isProcess = false;
+      });
+    });
   }
 
   void _onDrag(double extent) {
@@ -655,63 +685,47 @@ class _StoreListBottomSheetState extends State<StoreListBottomSheet> {
                       CustomScrollView(
                         controller: scrollController,
                         slivers: [
-                          // SliverToBoxAdapter(
-                          //   child: Container(
-                          //     height: 40,
-                          //     margin: const EdgeInsets.only(bottom: 10),
-                          //     child: ListView.separated(
-                          //       itemCount: reviewCategoryMapping.length,
-                          //       scrollDirection: Axis.horizontal,
-                          //       padding:
-                          //           const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                          //       separatorBuilder: (context, index) =>
-                          //           const SizedBox(width: 5),
-                          //       itemBuilder: (context, index) {
-                          //         final category = reviewCategoryMapping.values
-                          //             .toList()[index];
-                          //         final categoryName = reviewCategoryMapping
-                          //             .keys
-                          //             .toList()[index];
-                          //         bool isSelected = false;
-                          //         if (_selectedCategories
-                          //             .contains(categoryName)) {
-                          //           isSelected = true;
-                          //         }
-                          //         return ReviewButton(
-                          //             title: category[0],
-                          //             isSelected: isSelected,
-                          //             image: category[1],
-                          //             action: () {
-                          //               if (isSelected) {
-                          //                 _selectedCategories
-                          //                     .remove(categoryName);
-                          //               } else {
-                          //                 _selectedCategories.add(categoryName);
-                          //               }
-                          //               _reviewFilteredStores.clear();
-                          //               for (final store in _globalStates
-                          //                   .filteredStoreList) {
-                          //                 if (_selectedCategories.isEmpty) {
-                          //                   _reviewFilteredStores.add(store);
-                          //                   continue;
-                          //                 }
-                          //                 for (final reviewCategory
-                          //                     in store.reviewCategories) {
-                          //                   if (_selectedCategories
-                          //                       .contains(reviewCategory)) {
-                          //                     _reviewFilteredStores.add(store);
-
-                          //                     break;
-                          //                   }
-                          //                 }
-                          //               }
-                          //               isSelected = !isSelected;
-                          //               setState(() {});
-                          //             });
-                          //       },
-                          //     ),
-                          //   ),
-                          // ),
+                          SliverToBoxAdapter(
+                            child: Container(
+                              height: 40,
+                              margin: const EdgeInsets.only(bottom: 10),
+                              child: ListView.separated(
+                                itemCount: reviewCategoryMapping.length,
+                                scrollDirection: Axis.horizontal,
+                                padding:
+                                    const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(width: 5),
+                                itemBuilder: (context, index) {
+                                  final category = reviewCategoryMapping.values
+                                      .toList()[index];
+                                  final categoryName = reviewCategoryMapping
+                                      .keys
+                                      .toList()[index];
+                                  bool isSelected = false;
+                                  if (_selectedCategories
+                                      .contains(categoryName)) {
+                                    isSelected = true;
+                                  }
+                                  return ReviewButton(
+                                      title: category[0],
+                                      isSelected: isSelected,
+                                      image: category[1],
+                                      action: () {
+                                        if (isSelected) {
+                                          _selectedCategories
+                                              .remove(categoryName);
+                                        } else {
+                                          _selectedCategories.add(categoryName);
+                                        }
+                                        reloadData();
+                                        isSelected = !isSelected;
+                                        setState(() {});
+                                      });
+                                },
+                              ),
+                            ),
+                          ),
                           SliverList(
                             delegate:
                                 SliverChildBuilderDelegate((context, index) {

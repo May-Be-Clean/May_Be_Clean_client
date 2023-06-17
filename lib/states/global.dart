@@ -33,6 +33,8 @@ class GlobalState extends GetxController {
       double lowerLon, List<String> categories) async {
     stores.clear();
     markers.clear();
+    filteredMarkers.clear();
+    filteredStores.clear();
 
     final result = await Store.getNearbyStore(
         token, upperLat, upperLon, lowerLat, lowerLon, categories);
@@ -40,7 +42,15 @@ class GlobalState extends GetxController {
       final marker = await storeToMarker(store);
       markers[store.id.toString()] = marker;
       stores[store.id] = store;
+      filteredMarkers[store.id.toString()] = marker;
+      filteredStores[store.id] = store;
     }
+  }
+
+  void addListnerToFilteredStores(Function() callback) {
+    filteredStores.listen((_) {
+      callback();
+    });
   }
 
   Future<Marker> storeToMarker(Store store) async {
