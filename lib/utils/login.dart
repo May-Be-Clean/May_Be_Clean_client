@@ -58,6 +58,7 @@ Future<void> appleLogin(Function() loginStart, Function() loginEnd) async {
         ),
       ),
     );
+    log(appleCredential.identityToken.toString());
 
     final model.User user = await model.User.authApple(
         appleCredential.givenName, appleCredential.identityToken!);
