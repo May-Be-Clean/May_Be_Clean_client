@@ -22,27 +22,12 @@ class GlobalState extends GetxController {
   RxMap<String, Marker> filteredMarkers = RxMap<String, Marker>({});
 
   RxMap<int, Store> stores = RxMap<int, Store>({});
+  RxMap<int, Store> filteredStores = RxMap<int, Store>({});
 
   Set<Marker> get markerSet => markers.values.toSet();
-
+  Set<Marker> get filteredMarkerSet => filteredMarkers.values.toSet();
   List<Store> get storeList => stores.values.toList();
-
-  bool isBottomsheetShow = false;
-  List<String> selectedCategories = [];
-
-  void setIsBottomsheetShow(check) {
-    isBottomsheetShow = check;
-  }
-
-  // Future<void> loadLikeStores() async {
-  //   final result = await Store.loadLikeStore(token);
-  //   if (result.isEmpty) {
-  //     return;
-  //   }
-  //   for (final store in result) {
-  //     likeStores[store.id] = store;
-  //   }
-  // }
+  List<Store> get filteredStoreList => filteredStores.values.toList();
 
   Future loadMarker(double upperLat, double upperLon, double lowerLat,
       double lowerLon, List<String> categories) async {
@@ -52,12 +37,13 @@ class GlobalState extends GetxController {
     final result = await Store.getNearbyStore(
         token, upperLat, upperLon, lowerLat, lowerLon, categories);
     for (final store in result) {
-      final marker = await _storeToMarker(store);
+      final marker = await storeToMarker(store);
       markers[store.id.toString()] = marker;
+      stores[store.id] = store;
     }
   }
 
-  Future<Marker> _storeToMarker(Store store) async {
+  Future<Marker> storeToMarker(Store store) async {
     final markerIcon = await markerImageTransform(store.storeCategories);
 
     return Marker(
@@ -65,17 +51,14 @@ class GlobalState extends GetxController {
         position: LatLng(store.latitude, store.longitude),
         icon: BitmapDescriptor.fromBytes(markerIcon),
         onTap: () {
-          final storeData = stores[store.id] ?? store;
-
           _mapStates.mapController!.animateCamera(
               CameraUpdate.newCameraPosition(CameraPosition(
-                  target:
-                      LatLng(storeData.latitude - 0.0001, storeData.longitude),
+                  target: LatLng(store.latitude - 0.0001, store.longitude),
                   zoom: 16)));
 
           Get.bottomSheet(
             StoreBottomSheet(
-              storeData.id,
+              store.id,
               dismiss: Get.back,
               isBottomSheet: true,
             ),
@@ -83,14 +66,6 @@ class GlobalState extends GetxController {
             barrierColor: Colors.transparent,
           );
         });
-  }
-
-  void updateStore(Store store) async {
-    final response = await store.getStoreData(token, store.id);
-
-    stores[response.id] = store;
-    final marker = await _storeToMarker(store);
-    markers[store.id.toString()] = marker;
   }
 
   Future<void> init() async {
