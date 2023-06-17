@@ -618,6 +618,7 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                   _selectedCategories,
                   openTime,
                   closeTime);
+              showToast("가게 등록이 완료되었습니다.");
               Get.back();
             }
           },
