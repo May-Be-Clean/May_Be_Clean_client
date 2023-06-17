@@ -8,6 +8,7 @@ import 'package:may_be_clean/utils/utils.dart';
 import 'package:may_be_clean/widgets/widgets.dart';
 import 'package:may_be_clean/states/states.dart';
 import 'package:may_be_clean/models/model.dart';
+import 'dart:developer';
 
 class MyPage extends StatefulWidget {
   const MyPage({super.key});
@@ -25,6 +26,8 @@ class _MyPageState extends State<MyPage> {
     super.initState();
     UserData.getUserData(_globalState.token).then((value) {
       _globalState.userData = value;
+      log(value.user.nickname);
+      log(value.user.email);
       setState(() {});
     });
   }
