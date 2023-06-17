@@ -165,7 +165,8 @@ class StoreComfirmDialog extends StatelessWidget {
                 if (store.startAt == null || store.endAt == null)
                   const Text("영업 시간 미지정", style: FontSystem.body2)
                 else
-                  Text("${store.startAt} - ${store.endAt}",
+                  Text(
+                      "${store.startAt!.substring(0, 5)} - ${store.endAt!.substring(0, 5)}",
                       style: FontSystem.body2),
               ],
             ),
@@ -216,8 +217,8 @@ class StoreComfirmDialog extends StatelessWidget {
                   Store.verifyStore(_globalStates.token, store.id)
                       .then((value) => Get.back);
                 } catch (e, s) {
-                  log(e.toString(), stackTrace: s);
                   showToast("이미 친환경 가계 인증을 완료하였습니다.");
+                  log(e.toString(), stackTrace: s);
                 }
               },
             ),
@@ -312,25 +313,28 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                 children: List<Widget>.generate(
                   3,
                   (index) {
-                    final category =
+                    final categoryKey =
+                        storeCategoryMapping.keys.toList()[index];
+                    final categoryValue =
                         storeCategoryMapping.values.toList()[index];
+
                     bool isSelected = false;
-                    if (_selectedCategories.contains(category[0])) {
+                    if (_selectedCategories.contains(categoryValue[0])) {
                       isSelected = true;
                     }
                     return CategoryButton(
-                      title: category[0],
-                      unselectedSvg: category[1],
-                      selectedSvg: category[2],
+                      title: categoryValue[0],
+                      unselectedSvg: categoryValue[1],
+                      selectedSvg: categoryValue[2],
                       isSelected: isSelected,
                       padding: const EdgeInsets.fromLTRB(8, 6, 10, 6),
                       fontSize: 12,
                       imageSize: 12,
                       action: () {
                         if (isSelected) {
-                          _selectedCategories.remove(category[0]);
+                          _selectedCategories.remove(categoryKey);
                         } else {
-                          _selectedCategories.add(category[0]);
+                          _selectedCategories.add(categoryKey);
                         }
                         isSelected = !isSelected;
                         setState(() {});
@@ -343,25 +347,27 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
                 children: List<Widget>.generate(
                   storeCategoryMapping.length - 3,
                   (index) {
-                    final category =
+                    final categoryKey =
+                        storeCategoryMapping.keys.toList()[index + 3];
+                    final categoryValue =
                         storeCategoryMapping.values.toList()[index + 3];
                     bool isSelected = false;
-                    if (_selectedCategories.contains(category[0])) {
+                    if (_selectedCategories.contains(categoryValue[0])) {
                       isSelected = true;
                     }
                     return CategoryButton(
-                      title: category[0],
-                      unselectedSvg: category[1],
-                      selectedSvg: category[2],
+                      title: categoryValue[0],
+                      unselectedSvg: categoryValue[1],
+                      selectedSvg: categoryValue[2],
                       isSelected: isSelected,
                       fontSize: 12,
                       imageSize: 12,
                       padding: const EdgeInsets.fromLTRB(8, 6, 10, 6),
                       action: () {
                         if (isSelected) {
-                          _selectedCategories.remove(category[0]);
+                          _selectedCategories.remove(categoryKey[0]);
                         } else {
-                          _selectedCategories.add(category[0]);
+                          _selectedCategories.add(categoryKey[0]);
                         }
                         isSelected = !isSelected;
                         setState(() {});
@@ -581,7 +587,7 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
         GestureDetector(
           onTap: () async {
             if (_name == '' || _selectedCategories.isEmpty) {
-              showToast('필수입력요소를 다 입력해주세요');
+              showToast('필수 입력 요소를 다 입력해주세요');
             } else {
               if (_isPrcoess) return;
               setState(() {

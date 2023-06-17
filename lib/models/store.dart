@@ -238,7 +238,10 @@ class Store {
 
     final response = await http.post(
       Uri.parse(api),
-      headers: {'Authorization': "Bearer $token"},
+      headers: {
+        'Authorization': "Bearer $token",
+        'Content-Type': 'application/json'
+      },
       body: jsonEncode({
         'name': name,
         'latitude': latitude,
