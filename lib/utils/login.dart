@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'dart:developer';
 import 'package:may_be_clean/utils/utils.dart';
@@ -30,10 +29,6 @@ Future<void> kakaoLogin(Function() loginStart, Function() loginEnd) async {
   } catch (e, s) {
     loginEnd();
 
-    if (e == PlatformException(code: "CANCELED")) {
-      return;
-    }
-
     if (e is KakaoAuthException && e.error.toString() == "access_denied") {
       return;
     }
@@ -60,8 +55,8 @@ Future<void> appleLogin(Function() loginStart, Function() loginEnd) async {
     );
     log(appleCredential.identityToken.toString());
 
-    final model.User user = await model.User.authApple(
-        appleCredential.givenName, appleCredential.identityToken!);
+    final model.User user =
+        await model.User.authApple(null, appleCredential.identityToken!);
     globalStates.setAutoLogin(user.accessToken ?? "");
     final model.UserData userData =
         await model.UserData.getUserData(user.accessToken!);
