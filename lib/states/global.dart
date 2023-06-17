@@ -7,7 +7,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:may_be_clean/models/model.dart';
 import 'package:may_be_clean/screens.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:may_be_clean/utils/utils.dart';
 import 'states.dart';
 
