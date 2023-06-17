@@ -90,46 +90,29 @@ class _ExpandImageScreenState extends State<ExpandImageScreen> {
             ],
           ),
           Expanded(
-              child: Stack(
-            children: [
-              CarouselSlider(
-                items: widget.imageUrls
-                    .map((e) => Image.network(
-                          e,
-                          fit: BoxFit.cover,
-                        ))
-                    .toList(),
-                options: CarouselOptions(
-                  viewportFraction: 1.0,
-                  enlargeCenterPage: false,
-                  height: double.infinity,
-                  initialPage: widget.initialIndex,
-                  enableInfiniteScroll: false,
-                  scrollPhysics: const BouncingScrollPhysics(),
-                  autoPlay: false,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      _index = index;
-                    });
-                  },
-                ),
+            child: CarouselSlider(
+              items: widget.imageUrls
+                  .map((e) => Image.network(
+                        e,
+                        fit: BoxFit.contain,
+                      ))
+                  .toList(),
+              options: CarouselOptions(
+                viewportFraction: 1.0,
+                enlargeCenterPage: false,
+                height: double.infinity,
+                initialPage: widget.initialIndex,
+                enableInfiniteScroll: false,
+                scrollPhysics: const BouncingScrollPhysics(),
+                autoPlay: false,
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    _index = index;
+                  });
+                },
               ),
-              // StoreImageBottomSheet(dismiss: _bottomsheetDismiss),
-              Positioned(
-                bottom: 0,
-                height: 200,
-                width: Get.width,
-                child: Container(
-                    alignment: Alignment.bottomCenter,
-                    child: StoreImageBottomSheet(
-                      review: widget.review,
-                      initialChildSize: 0.4,
-                      maxChildSize: 1.0,
-                      minChildSize: 0.4,
-                    )),
-              ),
-            ],
-          )),
+            ),
+          ),
         ]),
       ),
     );
