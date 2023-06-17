@@ -113,6 +113,7 @@ class GlobalState extends GetxController {
   }
 
   void setAutoLogin(String token) {
+    this.token = token;
     SharedPreferences.getInstance().then((prefs) {
       prefs.setString('accessToken', token);
     });
