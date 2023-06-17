@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.url_launcher_example">
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <queries>
         <!-- If your app opens https URLs -->
         <intent>
@@ -24,7 +26,7 @@
     </queries>
     <application
         android:label="may_be_clean"
-        android:name="${applicationName}"
+        android:name="may_be_clean"
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="${googleMapApiKey}"/>
