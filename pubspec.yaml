@@ -2,7 +2,7 @@ name: may_be_clean
 description: A new Flutter project.
 publish_to: "none"
 
-version: 1.0.0+10
+version: 1.0.0+11
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
