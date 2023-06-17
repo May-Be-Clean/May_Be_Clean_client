@@ -589,9 +589,9 @@ class _StoreAddDialogState extends State<StoreAddDialog> {
           onTap: () async {
             if (_name == '' ||
                 _selectedCategories.isEmpty ||
-                (_selectedCategories.contains("REFILL") ||
-                    _selectedCategories.contains("UPCYCLE") ||
-                    _selectedCategories.contains("NO_DISPOSABLE"))) {
+                (!_selectedCategories.contains("REFILL") &&
+                    !_selectedCategories.contains("UPCYCLE") &&
+                    !_selectedCategories.contains("NO_DISPOSABLE"))) {
               showToast('필수 입력 요소를 다 입력해주세요');
             } else {
               if (_isPrcoess) return;
