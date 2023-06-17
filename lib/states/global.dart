@@ -125,12 +125,6 @@ class GlobalState extends GetxController {
 
   Future<void> innerLogout() async {
     // 카카오 로그인은 로그아웃해야함
-    try {
-      await UserApi.instance.logout();
-    } catch (e, s) {
-      log(e.toString(), stackTrace: s);
-    }
-
     userData = null;
     token = "";
     SharedPreferences.getInstance().then((prefs) {
