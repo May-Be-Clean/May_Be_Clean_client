@@ -21,6 +21,7 @@ Future<void> kakaoLogin(Function() loginStart, Function() loginEnd) async {
 
     final model.User user = await model.User.authKakao(oauth.accessToken);
     globalStates.setAutoLogin(user.accessToken ?? "");
+    globalStates.token = user.accessToken ?? "";
     final model.UserData userData =
         await model.UserData.getUserData(user.accessToken!);
     globalStates.innerLogin(userData);
@@ -58,6 +59,7 @@ Future<void> appleLogin(Function() loginStart, Function() loginEnd) async {
     final model.User user =
         await model.User.authApple(null, appleCredential.identityToken!);
     globalStates.setAutoLogin(user.accessToken ?? "");
+    globalStates.token = user.accessToken ?? "";
     final model.UserData userData =
         await model.UserData.getUserData(user.accessToken!);
     globalStates.innerLogin(userData);
