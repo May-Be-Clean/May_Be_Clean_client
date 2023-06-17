@@ -133,42 +133,6 @@ class ReviewCard extends StatelessWidget {
                 style: TextStyle(color: Colors.blue),
               ),
             ),
-            CupertinoActionSheetAction(
-              onPressed: () {
-                Get.back();
-                showCupertinoDialog(
-                  context: context,
-                  builder: (context) {
-                    return CupertinoAlertDialog(
-                      title: const Text("후기를 정말 삭제할까요?"),
-                      content: const Text("이 동작은 취소할 수 없어요."),
-                      actions: [
-                        CupertinoDialogAction(
-                          onPressed: () {
-                            Get.back();
-                          },
-                          child: const Text(
-                            "취소",
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                        ),
-                        CupertinoDialogAction(
-                          onPressed: () {
-                            Get.back();
-                          },
-                          child: const Text("삭제",
-                              style: TextStyle(color: ColorSystem.red)),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              child: const Text(
-                "삭제하기",
-                style: TextStyle(color: ColorSystem.red),
-              ),
-            ),
           ],
           cancelButton: CupertinoActionSheetAction(
             onPressed: () {

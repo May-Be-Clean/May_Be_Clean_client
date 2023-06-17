@@ -203,10 +203,6 @@ class Review {
       throw newHTTPException(response.statusCode ?? 500, response.data);
     }
   }
-
-  Future<bool> deleteReview(String token) async {
-    return true;
-  }
 }
 
 final emptyReviewCategoryCount = ReviewCategoryCount(
