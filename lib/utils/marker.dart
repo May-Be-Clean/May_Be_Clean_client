@@ -17,8 +17,8 @@ Future<Uint8List> markerImageTransform(List<String> categories) async {
       marker += "upcycle";
     }
   }
-  if (categories.contains("REFILL") &&
-      categories.contains("NO_DISPOSABLE") &&
+  if (categories.contains("REFILL") ||
+      categories.contains("NO_DISPOSABLE") ||
       categories.contains("UPCYCLE")) {
     if (categories.contains("RESTAURANT")) {
       marker += "_restaurant";
