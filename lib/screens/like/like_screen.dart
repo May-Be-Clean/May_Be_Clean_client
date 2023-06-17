@@ -8,6 +8,7 @@ import 'package:may_be_clean/utils/utils.dart';
 import 'package:may_be_clean/states/states.dart';
 import 'package:get/get.dart';
 import 'dart:developer';
+import 'dart:async';
 
 class LikeScreen extends StatefulWidget {
   const LikeScreen({super.key});
@@ -103,23 +104,22 @@ class _LikeScreenState extends State<LikeScreen> {
                             _selectedCategories.add(categoryName);
                           }
                           _filteredStores.clear();
-                          _filteredStores.addAll(_likeStores.where((store) {
-                            if (_selectedCategories.isEmpty) {
-                              return true;
-                            }
-                            if (store.storeCategories.isEmpty) {
-                              return false;
-                            }
-                            for (final cateogry in store.storeCategories) {
-                              if (_selectedCategories.contains(cateogry)) {
+
+                          Timer(const Duration(milliseconds: 100), () {
+                            _filteredStores.addAll(_likeStores.where((store) {
+                              if (_selectedCategories.isEmpty) {
                                 return true;
                               }
-                            }
-                            return false;
-                          }));
-                          for (final store in _filteredStores) {
-                            log(store.name);
-                          }
+                              for (final cateogry in store.storeCategories) {
+                                if (_selectedCategories.contains(cateogry)) {
+                                  return true;
+                                }
+                              }
+                              return false;
+                            }));
+                            setState(() {});
+                          });
+
                           isSelected = !isSelected;
                           setState(() {});
                         });
