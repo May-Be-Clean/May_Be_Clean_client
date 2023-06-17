@@ -272,17 +272,17 @@ class _EditReviewDialogState extends State<EditReviewDialog> {
         GestureDetector(
           onTap: () async {
             dismissKeyboard(context);
+
+            if (_isProcess) return;
+            setState(() {
+              _isProcess = true;
+            });
             if (_selectedCategories.isEmpty ||
                 _textController.text.trim() == "") {
               showToast("후기 카테고리와 내용을 모두 작성해주세요.");
               return;
             }
             try {
-              if (_isProcess) return;
-              setState(() {
-                _isProcess = true;
-              });
-
               if (widget.review != null) {
                 await Review.patchReview(
                     _globalStates.token,
@@ -308,6 +308,9 @@ class _EditReviewDialogState extends State<EditReviewDialog> {
             } catch (e, s) {
               log(e.toString(), stackTrace: s);
               showToast("후기 작성에 실패했습니다.");
+              setState(() {
+                _isProcess = false;
+              });
             }
           },
           child: Container(
