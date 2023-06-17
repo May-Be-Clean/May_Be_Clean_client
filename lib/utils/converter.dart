@@ -22,7 +22,7 @@ String expToBadgeTitle(int exp) {
     return "새싹";
   }
   if (exp < 24) {
-    return "숲";
+    return "나무";
   }
   if (exp < 32) {
     return "꽃";
@@ -35,7 +35,7 @@ String expNextTitle(int exp) {
     return "새싹";
   }
   if (exp < 16) {
-    return "숲";
+    return "나무";
   }
   if (exp < 24) {
     return "꽃";
