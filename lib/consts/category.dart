@@ -6,7 +6,7 @@ Map<String, List<String>> storeCategoryMapping = {
     'assets/icons/category/refill.svg',
   ],
   'UPCYCLE': [
-    '업사이클',
+    '업사이클링',
     'assets/icons/category/upcycle.svg',
     'assets/icons/category/upcycle.svg',
   ],
