@@ -225,8 +225,14 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                             ),
                             if ((store?.clover ?? 0) < 4)
                               GestureDetector(
-                                onTap: () {
+                                onTap: () async {
                                   Get.dialog(StoreComfirmDialog(store!));
+                                  await Store.getStore(
+                                          _globalStates.token, store!.id)
+                                      .then((value) {
+                                    store = value;
+                                    setState(() {});
+                                  });
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
