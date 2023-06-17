@@ -31,6 +31,14 @@ class _StoreReviewListScreenState extends State<StoreReviewListScreen> {
     setState(() {});
   }
 
+  @override
+  void initState() {
+    super.initState();
+    store = widget.store;
+
+    loadMore();
+  }
+
   void onTapLike() {
     try {
       if (_globalStates.userData == null) {
@@ -48,14 +56,6 @@ class _StoreReviewListScreenState extends State<StoreReviewListScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    store = widget.store;
-
-    loadMore();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(
@@ -65,25 +65,9 @@ class _StoreReviewListScreenState extends State<StoreReviewListScreen> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(store.name, softWrap: true, style: FontSystem.title),
-                GestureDetector(
-                  onTap: onTapLike,
-                  child: Container(
-                      alignment: Alignment.centerRight,
-                      margin: const EdgeInsets.only(right: 15),
-                      padding: const EdgeInsets.only(left: 20),
-                      child: SvgPicture.asset(
-                        (store.isLiked)
-                            ? 'assets/icons/map/heart_selected.svg'
-                            : 'assets/icons/map/heart_unselected.svg',
-                      )),
-                ),
-              ],
-            ),
+            Text(store.name, softWrap: true, style: FontSystem.title),
             SizedBox(
               width: Get.width - 40,
               child: Wrap(
