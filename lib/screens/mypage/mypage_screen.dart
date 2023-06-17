@@ -243,8 +243,8 @@ class _MyPageState extends State<MyPage> {
                       CupertinoDialogAction(
                         onPressed: () {
                           Get.back();
-                          setState(() {
-                            _globalState.innerLogout();
+                          _globalState.innerLogout().then((value) {
+                            setState(() {});
                           });
                         },
                         isDestructiveAction: true,
