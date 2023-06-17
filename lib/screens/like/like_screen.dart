@@ -18,6 +18,7 @@ class LikeScreen extends StatefulWidget {
 
 class _LikeScreenState extends State<LikeScreen> {
   final List<String> _selectedCategories = [];
+  final List<Store> _filteredStores = [];
   final _globalStates = Get.find<GlobalState>();
   final _likeStores = <Store>[];
   int _page = 0;
@@ -39,6 +40,7 @@ class _LikeScreenState extends State<LikeScreen> {
     final stores = await Store.getLikedStores(
         _globalStates.token, _page, _globalStates.pageSize);
     _likeStores.addAll(stores);
+    _filteredStores.addAll(stores);
     _page++;
     setState(() {});
   }
@@ -100,6 +102,24 @@ class _LikeScreenState extends State<LikeScreen> {
                           } else {
                             _selectedCategories.add(categoryName);
                           }
+                          _filteredStores.clear();
+                          _filteredStores.addAll(_likeStores.where((store) {
+                            if (_selectedCategories.isEmpty) {
+                              return true;
+                            }
+                            if (store.storeCategories.isEmpty) {
+                              return false;
+                            }
+                            for (final cateogry in store.storeCategories) {
+                              if (_selectedCategories.contains(cateogry)) {
+                                return true;
+                              }
+                            }
+                            return false;
+                          }));
+                          for (final store in _filteredStores) {
+                            log(store.name);
+                          }
                           isSelected = !isSelected;
                           setState(() {});
                         });
@@ -110,9 +130,9 @@ class _LikeScreenState extends State<LikeScreen> {
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate((context, index) {
-              final store = _likeStores[index];
+              final store = _filteredStores[index];
               return StoreCard(store);
-            }, childCount: _likeStores.length),
+            }, childCount: _filteredStores.length),
           ),
         ],
       ),
@@ -183,10 +203,14 @@ class _StoreCardState extends State<StoreCard> {
                       height: 40,
                       child: SvgPicture.asset(countToClover(store.clover)),
                     ),
-                    Text(
-                      store.name,
-                      style: FontSystem.subtitleSemiBold
-                          .copyWith(color: ColorSystem.primary),
+                    SizedBox(
+                      width: Get.width * 0.7,
+                      child: Text(
+                        store.name,
+                        softWrap: true,
+                        style: FontSystem.subtitleSemiBold
+                            .copyWith(color: ColorSystem.primary),
+                      ),
                     ),
                   ],
                 ),
@@ -221,24 +245,25 @@ class _StoreCardState extends State<StoreCard> {
               separatorBuilder: (context, index) => const SizedBox(width: 3),
             ),
           ),
-          Container(
-            height: 24,
-            margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-            child: ListView.separated(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              itemCount: store.storeCategories.length,
-              separatorBuilder: (context, index) => const SizedBox(width: 4),
-              itemBuilder: (context, index) {
-                final reviewCategoryData =
-                    reviewCategoryMapping[store.storeCategories[index]];
-                final String title = reviewCategoryData?[0] ?? "기타";
-                final String image =
-                    reviewCategoryData?[1] ?? "assets/icons/review/clean.png";
-                return ReviewCategoryItem(title: title, image: image);
-              },
+          if (store.reviewCategories.isNotEmpty)
+            Container(
+              height: 24,
+              margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+              child: ListView.separated(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemCount: store.reviewCategories.length,
+                separatorBuilder: (context, index) => const SizedBox(width: 4),
+                itemBuilder: (context, index) {
+                  final reviewCategoryData =
+                      reviewCategoryMapping[store.reviewCategories[index]];
+                  final String title = reviewCategoryData?[0] ?? "기타";
+                  final String image =
+                      reviewCategoryData?[1] ?? "assets/icons/review/clean.png";
+                  return ReviewCategoryItem(title: title, image: image);
+                },
+              ),
             ),
-          ),
           const Divider(height: 10),
         ],
       ),

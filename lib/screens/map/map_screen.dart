@@ -20,13 +20,13 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   final _globalStates = Get.find<GlobalState>();
   final _mapStates = Get.find<MapState>();
-  // final List<String> _selectedCategories = [];
+  final List<String> _selectedCategories = [];
 
-  // bool _isBottomsheetShow = _globalStates.isBottomsheetShow;
+  bool _isBottomsheetShow = false;
 
   void _bottomsheetDismiss() {
     setState(() {
-      _globalStates.setIsBottomsheetShow(false);
+      _isBottomsheetShow = false;
     });
   }
 
@@ -42,7 +42,7 @@ class _MapScreenState extends State<MapScreen> {
         bounds.southwest.longitude - 0.001,
         bounds.southwest.latitude + 0.001,
         bounds.northeast.longitude + 0.001,
-        _globalStates.selectedCategories,
+        _selectedCategories,
       );
 
       setState(() {});
@@ -65,21 +65,19 @@ class _MapScreenState extends State<MapScreen> {
               });
             },
             initialCameraPosition: CameraPosition(
-              target: LatLng(37.494705526855, 126.95994559383),
-              // target: _mapStates.currentLocation!,
+              target: _mapStates.currentLocation!,
               zoom: 16,
             ),
             myLocationButtonEnabled: false,
             myLocationEnabled: true,
-            markers: _globalStates.markerSet,
+            markers: _globalStates.filteredMarkerSet,
             tiltGesturesEnabled: false,
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              if (_globalStates.selectedCategories.isEmpty &&
-                  _globalStates.userData != null)
+              if (_selectedCategories.isEmpty && _globalStates.userData != null)
                 _header(),
               _categoryListView(),
               _refreshButton(),
@@ -135,8 +133,7 @@ class _MapScreenState extends State<MapScreen> {
             ),
           ),
           GetBuilder<GlobalState>(builder: (globalStates) {
-            if (globalStates.selectedCategories.isNotEmpty &&
-                globalStates.isBottomsheetShow) {
+            if (_selectedCategories.isNotEmpty && _isBottomsheetShow) {
               return StoreListBottomSheet(
                 dismiss: _bottomsheetDismiss,
               );
@@ -144,22 +141,41 @@ class _MapScreenState extends State<MapScreen> {
               return const SizedBox();
             }
           }),
-          // if (_globalStates.selectedCategories.isNotEmpty &&
-          //     _globalStates.isBottomsheetShow)
-          //   // _globalStates.aaa(_bottomsheetDismiss)
-          //   StoreListBottomSheet(
-          //     dismiss: _bottomsheetDismiss,
-          //   ),
         ],
       ),
     );
   }
 
+  void loadFilteredMarkers() async {
+    loadMarkers(_mapStates.mapController!).then((value) async {
+      _globalStates.filteredStores.clear();
+      _globalStates.filteredMarkers.clear();
+
+      for (var store in _globalStates.storeList) {
+        final storeCategories = store.storeCategories;
+        if (_selectedCategories.isEmpty) {
+          _globalStates.filteredMarkers[store.id.toString()] =
+              await _globalStates.storeToMarker(store);
+          _globalStates.filteredStores[store.id] = store;
+          continue;
+        }
+
+        for (var category in storeCategories) {
+          if (_selectedCategories.contains(category)) {
+            _globalStates.filteredMarkers[store.id.toString()] =
+                await _globalStates.storeToMarker(store);
+            _globalStates.filteredStores[store.id] = store;
+            break;
+          }
+        }
+      }
+      setState(() {});
+    });
+  }
+
   Widget _refreshButton() {
     return GestureDetector(
-      onTap: () {
-        loadMarkers(_mapStates.mapController!);
-      },
+      onTap: loadFilteredMarkers,
       child: Container(
         margin: const EdgeInsets.only(right: 5),
         child: SvgPicture.asset('assets/icons/map/refresh.svg'),
@@ -201,8 +217,7 @@ class _MapScreenState extends State<MapScreen> {
 
   Widget _categoryListView() {
     return Container(
-      margin: (_globalStates.selectedCategories.isNotEmpty ||
-              _globalStates.userData == null)
+      margin: (_selectedCategories.isNotEmpty || _globalStates.userData == null)
           ? EdgeInsets.only(
               top: MediaQuery.of(context).viewPadding.top,
             )
@@ -217,7 +232,7 @@ class _MapScreenState extends State<MapScreen> {
           final category = storeCategoryMapping.values.toList()[index];
           final categoryName = storeCategoryMapping.keys.toList()[index];
           bool isSelected = false;
-          if (_globalStates.selectedCategories.contains(categoryName)) {
+          if (_selectedCategories.contains(categoryName)) {
             isSelected = true;
           }
           return CategoryButton(
@@ -227,11 +242,12 @@ class _MapScreenState extends State<MapScreen> {
               isSelected: isSelected,
               action: () {
                 if (isSelected) {
-                  _globalStates.selectedCategories.remove(categoryName);
+                  _selectedCategories.remove(categoryName);
                 } else {
-                  _globalStates.selectedCategories.add(categoryName);
-                  _globalStates.setIsBottomsheetShow(true);
+                  _selectedCategories.add(categoryName);
+                  _isBottomsheetShow = true;
                 }
+                loadFilteredMarkers();
                 isSelected = !isSelected;
                 setState(() {});
               });
