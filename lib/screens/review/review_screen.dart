@@ -160,6 +160,7 @@ class ReviewCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   GestureDetector(
                     onTap: () {
@@ -178,6 +179,7 @@ class ReviewCard extends StatelessWidget {
                     },
                     behavior: HitTestBehavior.translucent,
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         SvgPicture.asset(countToClover(review.store.clover)),
                         const SizedBox(width: 5),
