@@ -24,10 +24,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
   final ScrollController _scrollController = ScrollController();
 
   void loadMore() {
-    _page++;
     Review.getReviews(_globalStates.token, _page, _globalStates.pageSize)
         .then((value) {
       _reviews.addAll(value);
+      _page++;
       setState(() {});
     });
   }
