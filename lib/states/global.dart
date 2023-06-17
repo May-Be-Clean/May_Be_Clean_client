@@ -134,7 +134,7 @@ class GlobalState extends GetxController {
     userData = null;
     token = "";
     SharedPreferences.getInstance().then((prefs) {
-      prefs.remove('accessToken');
+      prefs.setString('accessToken', "");
     });
   }
 
