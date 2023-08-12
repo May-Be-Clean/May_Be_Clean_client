@@ -9,7 +9,7 @@
 ## 내부 기능
 
 ### 로그인
-![](https://github.com/May-Be-Clean/.github/blob/main/profile/%E1%84%80%E1%85%A1%E1%84%80%E1%85%A6%E1%84%83%E1%85%B3%E1%86%BC%E1%84%85%E1%85%A9%E1%86%A8.gif)
+![](https://github.com/May-Be-Clean/.github/blob/main/profile/%E1%84%89%E1%85%A9%E1%84%89%E1%85%A7%E1%86%AF%E1%84%85%E1%85%A9%E1%84%80%E1%85%B3%E1%84%8B%E1%85%B5%E1%86%AB.gif)
 
 카카오, 애플 로그인 지원
 
