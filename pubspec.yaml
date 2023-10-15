@@ -54,7 +54,7 @@ flutter:
     - assets/icons/badge/
     - assets/icons/login/
     - assets/icons/marker/
-
+    - assets/icons/store/
 fonts:
   - family: pretendard
     fonts:
