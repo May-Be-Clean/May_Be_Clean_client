@@ -38,6 +38,8 @@ class _MapScreenState extends State<MapScreen> {
 
   Future<void> loadMarkers(GoogleMapController controller) async {
     await controller.getVisibleRegion().then((bounds) async {
+      log("upperLat: ${bounds.northeast.latitude}, upperLon: ${bounds.northeast.longitude}, lowerLat: ${bounds.southwest.latitude}, lowerLon: ${bounds.southwest.longitude}");
+
       await _globalStates.loadMarker(
         bounds.northeast.latitude - 0.001,
         bounds.southwest.longitude - 0.001,

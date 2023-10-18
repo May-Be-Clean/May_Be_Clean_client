@@ -125,7 +125,7 @@ class Store {
 
     final response = await http.get(
       Uri.parse(api),
-      headers: {'Authorization': "Bearer $token"},
+      headers: {'Authorization': "Bearer test"},
     );
 
     log(response.body);

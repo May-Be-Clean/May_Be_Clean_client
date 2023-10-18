@@ -25,7 +25,7 @@ Future<Uint8List> markerImageTransform(List<String> categories) async {
     } else if (categories.contains("CAFE")) {
       marker += "_cafe";
     } else if (categories.contains("ACCESSORY")) {
-      marker += "_accessory";
+      marker += "_shop";
     }
   }
   marker += ".png";
