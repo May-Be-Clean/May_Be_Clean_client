@@ -36,6 +36,7 @@ class _EditReviewDialogState extends State<EditReviewDialog> {
   final _textController = TextEditingController();
   final _globalStates = Get.find<GlobalState>();
   bool _isProcess = false;
+  double _sliderValue = 3;
 
   @override
   void initState() {
@@ -113,6 +114,56 @@ class _EditReviewDialogState extends State<EditReviewDialog> {
                   Text(widget.storeName, style: FontSystem.subtitleSemiBold),
                 ],
               ),
+            ),
+            const Text(
+              "이 가게의 친환경 정도는 몇 점인가요?",
+              style: FontSystem.body1,
+            ),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "1점",
+                  style: FontSystem.caption,
+                ),
+                Text(
+                  "5점",
+                  style: FontSystem.caption,
+                )
+              ],
+            ),
+            const SizedBox(height: 5),
+            SliderTheme(
+              data: SliderTheme.of(context).copyWith(
+                  trackHeight: 10, overlayShape: SliderComponentShape.noThumb),
+              child: Slider(
+                value: _sliderValue,
+                onChanged: (value) {
+                  setState(() {
+                    _sliderValue = value;
+                  });
+                },
+                min: 1,
+                max: 5,
+                divisions: 4,
+                activeColor: ColorSystem.primary,
+                inactiveColor: ColorSystem.gray2,
+              ),
+            ),
+            const SizedBox(height: 5),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "친환경 가게가\n아니에요.",
+                  style: FontSystem.caption,
+                ),
+                Text(
+                  "친환경 가게\n그 자체에요!",
+                  style: FontSystem.caption,
+                  textAlign: TextAlign.end,
+                )
+              ],
             ),
             Container(
               margin: const EdgeInsets.fromLTRB(0, 20, 0, 10),
@@ -299,7 +350,8 @@ class _EditReviewDialogState extends State<EditReviewDialog> {
                   widget.storeId,
                   _selectedCategories,
                   _textController.text,
-                  _currentImages.sublist(1));
+                  _currentImages.sublist(1),
+                  _sliderValue.toInt());
               setState(() {
                 _isProcess = false;
               });

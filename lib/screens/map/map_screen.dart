@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -169,6 +170,7 @@ class _MapScreenState extends State<MapScreen> {
           }
         }
       }
+
       setState(() {});
     });
   }

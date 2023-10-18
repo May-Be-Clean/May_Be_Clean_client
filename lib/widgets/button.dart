@@ -120,7 +120,7 @@ class ReviewButton extends StatelessWidget {
     return GestureDetector(
       onTap: action,
       child: Container(
-        padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
+        padding: const EdgeInsets.fromLTRB(6, 3, 6, 3),
         margin: const EdgeInsets.all(3),
         decoration: (isSelected)
             ? BoxDecoration(

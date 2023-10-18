@@ -133,8 +133,13 @@ class Review {
     }
   }
 
-  static Future<bool> postReview(String token, int storeId,
-      List<String> categories, String content, List<String> imagesPath) async {
+  static Future<bool> postReview(
+      String token,
+      int storeId,
+      List<String> categories,
+      String content,
+      List<String> imagesPath,
+      int point) async {
     Dio dio = Dio();
     FormData formData = FormData();
 
@@ -142,6 +147,7 @@ class Review {
       "storeId": storeId,
       "categories": categories,
       "content": content,
+      "point": point,
     });
 
     if (imagesPath.isNotEmpty) {
