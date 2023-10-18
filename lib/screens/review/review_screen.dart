@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:may_be_clean/consts/consts.dart';
 import 'package:may_be_clean/screens.dart';
+import 'package:may_be_clean/screens/review/user_profile_view.dart';
 import 'package:may_be_clean/widgets/widgets.dart';
 import 'package:readmore/readmore.dart';
 import 'package:get/get.dart';
@@ -271,26 +272,35 @@ class ReviewCard extends StatelessWidget {
               },
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
+          GestureDetector(
+              onTap: () {
+                Get.to(() => UserPropfile(
+                      point: review.point,
+                      userId: review.userId,
+                      nickname: review.nickname,
+                    ));
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SvgPicture.asset(expToBadge(4), width: 16),
+                  Row(
+                    children: [
+                      SvgPicture.asset(expToBadge(4), width: 16),
+                      Text(
+                        "${review.nickname}이 작성했어요",
+                        style: FontSystem.caption
+                            .copyWith(color: ColorSystem.gray1),
+                      ),
+                    ],
+                  ),
                   Text(
-                    "${review.nickname}이 작성했어요",
+                    convertTimeGapToString(review.createdAt),
                     style:
                         FontSystem.caption.copyWith(color: ColorSystem.gray1),
                   ),
                 ],
-              ),
-              Text(
-                convertTimeGapToString(review.createdAt),
-                style: FontSystem.caption.copyWith(color: ColorSystem.gray1),
-              ),
-            ],
-          )
+              )),
         ],
       ),
     );

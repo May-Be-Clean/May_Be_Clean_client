@@ -9,4 +9,5 @@ class ColorSystem {
   static const Color gray2 = Color(0xFFE5E5E5);
   static const Color gray3 = Color(0xFFFBFBFB);
   static const Color chip = Color(0xFFF5F5F5);
+  static const Color green = Color(0xFF689E84);
 }

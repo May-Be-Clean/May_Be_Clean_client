@@ -185,10 +185,10 @@ class _MyPageState extends State<MyPage> {
               height: 50,
             ),
             MyPageButton(
-              title: "내가 등록한 가게",
-              count: _globalState.userData?.registeredCount ?? 0,
+              title: "내가 찜한 가게",
+              count: _globalState.userData?.likedCount ?? 0,
               onTap: () {
-                Get.to(() => const MyRegisterScreen());
+                Get.to(() => const LikeScreen());
               },
             ),
             Container(
@@ -197,7 +197,7 @@ class _MyPageState extends State<MyPage> {
               height: 50,
             ),
             MyPageButton(
-              title: "내가 인증한 가게",
+              title: "내가 등록한 가게",
               count: _globalState.userData?.verifiedCount ?? 0,
               onTap: () {
                 Get.to(() => const MyVerifyScreen());

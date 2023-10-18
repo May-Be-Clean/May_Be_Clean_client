@@ -112,6 +112,27 @@ class Review {
     }
   }
 
+  static Future<List<Review>> getUserReviews(
+      int userId, int page, int size) async {
+    final api =
+        "${ENV.apiEndpoint}/review/myReview/user/$userId?page=$page&size=$size";
+
+    final response = await http.get(
+      Uri.parse(api),
+      headers: {'Authorization': "Bearer test"},
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> result = json.decode(response.body)["reviews"];
+
+      return result
+          .map((data) => Review.fromJson(data as Map<String, dynamic>))
+          .toList();
+    } else {
+      throw newHTTPException(response.statusCode, response.body);
+    }
+  }
+
   static Future<bool> postReview(String token, int storeId,
       List<String> categories, String content, List<String> imagesPath) async {
     Dio dio = Dio();
