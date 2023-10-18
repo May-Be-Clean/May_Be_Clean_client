@@ -154,6 +154,25 @@ class _StoreReviewListScreenState extends State<StoreReviewListScreen> {
                     const TextSpan(text: "건"), //후기 총 개수
                   ]),
                 ),
+                if (store.score != 0.0)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text.rich(
+                        TextSpan(
+                          text: "친환경 점수 ",
+                          style: FontSystem.body2,
+                          children: [
+                            TextSpan(
+                              text: store.score.toString(),
+                              style: const TextStyle(color: Colors.green),
+                            ),
+                            const TextSpan(text: "점을 받은 가게에요."),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 Flexible(
                   fit: FlexFit.tight,
                   child: Container(

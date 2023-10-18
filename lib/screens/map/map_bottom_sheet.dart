@@ -333,6 +333,26 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                                 ),
                               ],
                             ),
+                            if (store?.score != 0)
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text.rich(
+                                    TextSpan(
+                                      text: "친환경 점수 ",
+                                      style: FontSystem.body2,
+                                      children: [
+                                        TextSpan(
+                                          text: store?.score.toString() ?? "0",
+                                          style: const TextStyle(
+                                              color: Colors.green),
+                                        ),
+                                        const TextSpan(text: "점을 받은 가게에요."),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             () {
                               final firstCategory = store
                                       ?.reviewCategoryCount?.getSortedList[0] ??
