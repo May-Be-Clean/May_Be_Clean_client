@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:may_be_clean/consts/consts.dart';
-import 'package:may_be_clean/consts/font.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:may_be_clean/utils/utils.dart';
 
 class StoreList extends StatefulWidget {
   const StoreList({super.key});
@@ -112,11 +110,11 @@ class _StoreListState extends State<StoreList> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   "깨끗해질 가게",
                   style: FontSystem.subtitleSemiBold,
                 ),
-                Text(
+                const Text(
                   '지구를 깨끗하게 만드는 가게를 온라인에서 만나보세요!',
                   style: FontSystem.body2,
                 ),
@@ -147,28 +145,29 @@ class StoreContainer extends StatelessWidget {
   final String description;
   final String hashtag;
   final String link;
-  final int index; // 인덱스를 추가합니다.
+  final int index;
 
-  StoreContainer({
+  const StoreContainer({
     required this.title,
     required this.description,
     required this.hashtag,
     required this.link,
-    required this.index, // 초기화 리스트에 인덱스를 추가합니다.
+    required this.index,
+    super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        if (await canLaunch(link)) {
-          await launch(link);
-        } else {
-          throw 'Could not launch $link';
+        try {
+          urlLauncher(link);
+        } catch (e) {
+          showToast("링크를 열 수 없습니다.");
         }
       },
       child: Container(
-        padding: EdgeInsets.only(top: 16, bottom: 16),
+        padding: const EdgeInsets.only(top: 16, bottom: 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8.0),
         ),
@@ -179,8 +178,7 @@ class StoreContainer extends StatelessWidget {
                 width: 74,
                 height: 74,
                 child: Image.asset(
-                  'assets/icons/store/${index}.png', // 파일 경로와 인덱스를 사용합니다.
-                  fit: BoxFit.cover, // 이미지를 채웁니다.
+                  'assets/icons/store/$index.png',
                 ),
               ),
             ),
@@ -193,16 +191,10 @@ class StoreContainer extends StatelessWidget {
                 Row(
                   children: [
                     Image.asset("assets/images/CloverLeaves4.png"),
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    Text(title, style: FontSystem.body1),
                   ],
                 ),
-                SizedBox(height: 8.0),
+                const SizedBox(height: 8.0),
                 Container(
                   constraints: BoxConstraints(maxWidth: Get.width - 135),
                   child: Text(
@@ -210,7 +202,7 @@ class StoreContainer extends StatelessWidget {
                     style: FontSystem.body2,
                   ),
                 ),
-                SizedBox(height: 8.0),
+                const SizedBox(height: 8.0),
                 Text(
                   hashtag,
                   style: FontSystem.body2.copyWith(

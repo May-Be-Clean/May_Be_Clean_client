@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:may_be_clean/screens/store/storelist_screen.dart';
 import 'package:may_be_clean/screens/story/story_screen.dart';
 import 'package:may_be_clean/states/global.dart';
 import 'package:flutter/services.dart';
@@ -84,7 +85,7 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
               physics: const NeverScrollableScrollPhysics(),
               children: const [
                 MapScreen(),
-                LikeScreen(),
+                StoreList(),
                 ReviewScreen(),
                 StoryScreen(),
                 MyPage(),
