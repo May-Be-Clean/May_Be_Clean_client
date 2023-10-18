@@ -64,12 +64,14 @@ class UserData {
   final int reviewCount;
   final int registeredCount;
   final int verifiedCount;
+  final int? likedCount;
   final User user;
 
   UserData({
     required this.reviewCount,
     required this.registeredCount,
     required this.verifiedCount,
+    this.likedCount,
     required this.user,
   });
 
@@ -78,6 +80,7 @@ class UserData {
       user: User.fromJson(json['user']),
       reviewCount: json['reviewCount'],
       registeredCount: json['registeredCount'],
+      likedCount: json['likedCount'],
       verifiedCount: json['verifiedCount'],
     );
   }

@@ -80,6 +80,25 @@ class Store {
     }
   }
 
+  static Future<List<Store>> getUserStores(
+      int userId, int page, int size) async {
+    final response = await http.get(
+      Uri.parse(
+          "${ENV.apiEndpoint}/store/myRegistered/user/$userId?page=$page&size=$size"),
+      headers: {"Authorization": "Bearer test"},
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> result = json.decode(response.body)["stores"];
+
+      return result
+          .map((data) => Store.fromJson(data as Map<String, dynamic>))
+          .toList();
+    } else {
+      throw newHTTPException(response.statusCode, response.body);
+    }
+  }
+
   static Future<List<Store>> getNearbyStore(
       String token,
       double upperLatitude,

@@ -56,15 +56,18 @@ class _LikeScreenState extends State<LikeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 40,
         backgroundColor: Colors.white,
         shadowColor: Colors.transparent,
-        leadingWidth: 0,
         title: Container(
           padding: const EdgeInsets.all(10),
-          child: const Text("찜한 가게", style: FontSystem.subtitleSemiBold),
+          child: const Text("찜한 가게", style: FontSystem.body1),
         ),
-        centerTitle: false,
+        leading: IconButton(
+          onPressed: () {
+            Get.back();
+          },
+          icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+        ),
       ),
       backgroundColor: ColorSystem.white,
       body: CustomScrollView(
@@ -267,6 +270,41 @@ class _StoreCardState extends State<StoreCard> {
           const Divider(height: 10),
         ],
       ),
+    );
+  }
+}
+
+class _StoreCard extends StatelessWidget {
+  final String imagePath;
+  final String title;
+  final String description;
+  final List<String> tags;
+
+  const _StoreCard(
+      {required this.imagePath,
+      required this.title,
+      required this.description,
+      required this.tags,
+      super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(50)),
+          child: Image.network(imagePath),
+        ),
+        Column(
+          children: [
+            Text(title),
+            Text(description),
+            Row(
+              children: [],
+            )
+          ],
+        )
+      ],
     );
   }
 }
