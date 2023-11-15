@@ -21,6 +21,7 @@ class Store {
   final int clover;
   bool isLiked;
   final double score;
+  final int? reviewCount;
   final ReviewCategoryCount? reviewCategoryCount;
   final DateTime updatedAt = DateTime.now();
   final User? user;
@@ -39,6 +40,7 @@ class Store {
     this.endAt,
     required this.clover,
     required this.isLiked,
+    this.reviewCount = 0,
     this.score = 0,
     this.reviewCategoryCount,
     this.user,
@@ -61,6 +63,7 @@ class Store {
       clover: json['clover'],
       isLiked: json['isLiked'] ?? false,
       score: json['score'] ?? 0,
+      reviewCount: json['reviewCount'] ?? 0,
       reviewCategoryCount: ReviewCategoryCount.fromJson(
           json['reviewCategoryCount'] ?? emptyReviewCategoryCount.toJson()),
       user: json['user'] != null ? User.fromJson(json['user']) : null,

@@ -92,6 +92,10 @@ class _StoreReviewListScreenState extends State<StoreReviewListScreen> {
             if (store.clover < 4)
               GestureDetector(
                 onTap: () async {
+                  if (_globalStates.userData == null) {
+                    loginRequest(context);
+                    return;
+                  }
                   Get.dialog(StoreComfirmDialog(store));
                   await Store.getStore(_globalStates.token, store.id)
                       .then((value) {

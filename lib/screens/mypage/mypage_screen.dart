@@ -336,7 +336,6 @@ class _MyPageState extends State<MyPage> {
                       urlLauncher(
                           "https://archive-halfmoon-mind.s3.ap-northeast-2.amazonaws.com/MayBeClean+Privacy.html");
                     }),
-                MyPageInformationButton(title: "오픈소스 사용정보", onTap: () {}),
               ],
             ),
             if (_globalState.userData == null)

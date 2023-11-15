@@ -214,12 +214,16 @@ class StoreComfirmDialog extends StatelessWidget {
                 try {
                   if (_isPrcoess) return;
                   _isPrcoess = true;
-                  Store.verifyStore(_globalStates.token, store.id)
-                      .then((value) => Get.back);
-                  showToast("친환경 가게를 인증했습니다!");
+                  await Store.verifyStore(_globalStates.token, store.id)
+                      .then((value) {
+                    showToast("친환경 가게를 인증했습니다!");
+                    Get.back();
+                  });
                 } catch (e, s) {
                   showToast("이미 친환경 가계 인증을 완료하였습니다.");
                   log(e.toString(), stackTrace: s);
+                } finally {
+                  _isPrcoess = false;
                 }
               },
             ),

@@ -72,8 +72,10 @@ class _MapScreenState extends State<MapScreen> {
               zoom: 16,
             ),
             myLocationButtonEnabled: false,
+            compassEnabled: false,
             myLocationEnabled: true,
             markers: _globalStates.filteredMarkerSet,
+            zoomControlsEnabled: false,
             tiltGesturesEnabled: false,
           ),
           Column(

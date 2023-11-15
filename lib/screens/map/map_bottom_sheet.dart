@@ -223,9 +223,13 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                             const SizedBox(
                               height: 15,
                             ),
-                            if ((store?.clover ?? 0) < 4)
+                            if ((store?.clover ?? 0) < 4) ...[
                               GestureDetector(
                                 onTap: () async {
+                                  if (_globalStates.userData == null) {
+                                    loginRequest(context);
+                                    return;
+                                  }
                                   Get.dialog(StoreComfirmDialog(store!));
                                   await Store.getStore(
                                           _globalStates.token, store!.id)
@@ -260,18 +264,19 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                                   ),
                                 ),
                               ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              child: Text(
-                                "버튼을 눌러 친환경 가게 인증에 동참해주세요!",
-                                style: FontSystem.caption.copyWith(
-                                  color: ColorSystem.primary,
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Container(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "버튼을 눌러 친환경 가게 인증에 동참해주세요!",
+                                  style: FontSystem.caption.copyWith(
+                                    color: ColorSystem.primary,
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                             const SizedBox(
                               height: 15,
                             ),
@@ -297,10 +302,7 @@ class _StoreBottomSheetState extends State<StoreBottomSheet> {
                                     ),
                                     TextSpan(text: "방문자 후기 ", children: [
                                       TextSpan(
-                                        text: store?.reviewCategoryCount
-                                                ?.countReviews
-                                                .toString() ??
-                                            "0",
+                                        text: store?.reviewCount.toString(),
                                         style: const TextStyle(
                                             color: Colors.green),
                                       ),

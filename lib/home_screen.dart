@@ -46,11 +46,6 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
 
     if (index == _index) return;
 
-    if (index == 2 && _globalStates.userData == null) {
-      loginRequest(context);
-      return;
-    }
-
     setState(() {
       _globalStates.tabController.animateTo(index);
       _index = index;
