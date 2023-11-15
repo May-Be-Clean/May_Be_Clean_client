@@ -25,8 +25,8 @@
         </intent>
     </queries>
     <application
-        android:label="may_be_clean"
-        android:name="may_be_clean"
+        android:label="깨끗해질지도"
+        android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="${googleMapApiKey}"/>
